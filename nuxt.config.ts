@@ -11,6 +11,14 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID
+    },
+    firebase2: {
+      apiKey: process.env.NUXT_FIREBASE2_API_KEY,
+      authDomain: process.env.NUXT_FIREBASE2_AUTH_DOMAIN,
+      projectId: process.env.NUXT_FIREBASE2_PROJECT_ID,
+      storageBucket: process.env.NUXT_FIREBASE2_STORAGE_BUCKET,
+      messagingSenderId: process.env.NUXT_FIREBASE2_MESSAGING_SENDER_ID,
+      appId: process.env.NUXT_FIREBASE2_APP_ID
     }
   }
 })
