@@ -1,72 +1,96 @@
 <template>
   <header
-    class="sticky top-0 z-50 w-full backdrop-blur-lg bg-white/75 dark:bg-gray-900/75 border-b border-gray-200 dark:border-gray-800 transition-all duration-300"
+    class="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-800/50 backdrop-blur-xl bg-white/70 dark:bg-gray-950/70 transition-all duration-300 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-950/60"
     :class="{ 'shadow-sm': isScrolled }"
   >
     <UContainer class="h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <NuxtLink to="/" class="text-xl font-bold bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
-          Publistand Pados
+      <div class="flex items-center gap-2 z-50 relative">
+        <NuxtLink to="/" class="group flex items-center gap-2" @click="isOpen = false">
+          <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/20 transition-transform duration-300 group-hover:scale-105">
+             <span class="font-bold text-lg">P</span>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
+            Publistand
+          </span>
         </NuxtLink>
       </div>
-      <nav class="hidden md:flex items-center gap-1">
-        <UButton
+      <nav class="hidden md:flex items-center gap-2">
+        <NuxtLink
           v-for="item in menuItems"
           :key="item.id"
           :to="item.to"
-          variant="ghost"
-          color="gray"
-          class="font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          active-class="text-primary-500 bg-primary-50 dark:bg-primary-900/10"
+          class="relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out
+                 text-gray-600 dark:text-gray-300
+                 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400
+                 active:scale-95"
+          active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/10 font-semibold"
         >
           {{ item.label }}
-        </UButton>
+        </NuxtLink>
       </nav>
-      <UButton
-        icon="i-heroicons-bars-3"
-        color="gray"
-        variant="ghost"
-        class="md:hidden"
-        @click="isOpen = true"
-      />
-      <USlideover v-model="isOpen">
-        <div class="p-4 flex-1 flex flex-col gap-4 bg-white dark:bg-gray-900">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-lg font-bold">Menu</span>
-            <UButton
-              icon="i-heroicons-x-mark"
-              color="gray"
-              variant="ghost"
-              @click="isOpen = false"
-            />
-          </div>
-          
-          <nav class="flex flex-col gap-2">
-            <UButton
-              v-for="item in menuItems"
-              :key="item.id"
-              :to="item.to"
-              variant="ghost"
-              color="gray"
-              class="justify-start text-lg"
-              active-class="text-primary-500 bg-primary-50 dark:bg-primary-900/10"
-              @click="isOpen = false"
-            >
-              {{ item.label }}
-            </UButton>
-          </nav>
-          <div v-if="menuItems.length === 0 && !loading" class="mt-auto">
-            <UButton
-              block
-              color="gray"
-              variant="outline"
-              @click="handleInitialize"
-            >
-              Initialize Menu
-            </UButton>
-          </div>
+      <button
+        type="button"
+        class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden"
+        @click="isOpen = !isOpen"
+        aria-label="Toggle menu"
+      >
+        <div class="relative h-4 w-5 overflow-hidden">
+          <span
+            class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+            :class="isOpen ? 'top-1.5 rotate-45' : 'top-0'"
+          />
+          <span
+            class="absolute left-0 top-1.5 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+            :class="isOpen ? 'opacity-0 translate-x-full' : 'opacity-100'"
+          />
+          <span
+            class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+            :class="isOpen ? 'top-1.5 -rotate-45' : 'top-3'"
+          />
         </div>
-      </USlideover>
+      </button>
+      <ClientOnly>
+        <Teleport to="body">
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 translate-y-4"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 translate-y-4"
+          >
+            <div
+              v-if="isOpen"
+              class="fixed inset-0 z-40 flex flex-col bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl md:hidden pt-24 px-6"
+            >
+               <nav class="flex flex-col gap-6">
+                  <NuxtLink
+                    v-for="(item, index) in menuItems"
+                    :key="item.id"
+                    :to="item.to"
+                    class="text-2xl font-semibold text-gray-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-all duration-200 active:scale-95 origin-left"
+                    active-class="text-primary-600 dark:text-primary-400"
+                    :style="{ transitionDelay: `${index * 50}ms` }"
+                    @click="isOpen = false"
+                  >
+                    {{ item.label }}
+                  </NuxtLink>
+               </nav>
+               <div v-if="menuItems.length === 0 && !loading" class="mt-auto mb-10">
+                  <UButton
+                    block
+                    color="primary"
+                    variant="soft"
+                    size="xl"
+                    @click="handleInitialize"
+                  >
+                    Initialize Menu
+                  </UButton>
+               </div>
+            </div>
+          </Transition>
+        </Teleport>
+      </ClientOnly>
     </UContainer>
   </header>
 </template>
@@ -75,6 +99,8 @@
 const { menuItems, fetchMenu, initializeMenu, loading } = useMenu()
 const isOpen = ref(false)
 const isScrolled = ref(false)
+const route = useRoute()
+
 await fetchMenu()
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -90,5 +116,20 @@ const handleScroll = () => {
 
 const handleInitialize = async () => {
   await initializeMenu()
+  isOpen.value = false
 }
+
+watch(isOpen, (value) => {
+  if (import.meta.client) {
+    if (value) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }
+})
+
+watch(() => route.path, () => {
+  isOpen.value = false
+})
 </script>
