@@ -4,5 +4,8 @@
   "editor.detectIndentation": false,
   "files.autoSave": "onFocusChange",
   "workbench.editor.enablePreview": false,
-  "workbench.editor.revealIfOpen": true
+  "workbench.editor.revealIfOpen": true,
+  "cSpell.words": [
+    "heroicons"
+  ]
 }
