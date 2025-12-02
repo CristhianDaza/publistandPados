@@ -13,7 +13,5 @@
         </div>
       </UContainer>
     </footer>
-    
-    <UNotifications />
   </div>
 </template>
