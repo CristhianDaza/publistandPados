@@ -1,11 +1,13 @@
 import { collection, getDocs, doc, setDoc, writeBatch } from 'firebase/firestore'
-import { db as db1 } from '~/services/firebase/config'
 
 export default defineEventHandler(async (event) => {
   try {
+    const db1 = useFirebase1()
     const db2 = useFirebase2()
+    const config = useRuntimeConfig()
 
-    const sourceCollection = collection(db2, 'products')
+    const sourceCollectionName = config.firebase2.sourceCollection
+    const sourceCollection = collection(db2, sourceCollectionName)
     const snapshot = await getDocs(sourceCollection)
 
     if (snapshot.empty) {
