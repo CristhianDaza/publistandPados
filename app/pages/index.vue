@@ -11,6 +11,7 @@
     </div>
 
     <HomeInspiration />
+    <HomeSocialProof />
 
     <UContainer class="py-12">
       <div class="text-center mb-12">
