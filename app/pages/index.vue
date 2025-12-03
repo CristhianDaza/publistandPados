@@ -10,6 +10,8 @@
       <h2 class="text-2xl font-bold mb-4">No hay items en el carrusel</h2>
     </div>
 
+    <HomeInspiration />
+
     <UContainer class="py-12">
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
