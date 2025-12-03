@@ -12,6 +12,7 @@
 
     <HomeInspiration />
     <HomeSocialProof />
+    <HomeProcess />
 
     <UContainer class="py-12">
       <div class="text-center mb-12">
