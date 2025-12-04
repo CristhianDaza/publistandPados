@@ -65,7 +65,7 @@ export const seedFooter = async () => {
       contact: {
         address: 'Calle 123 # 45-67\nBogotá, Colombia',
         phone: '+57 300 123 4567',
-        email: 'info@publistand.com'
+        email: 'info@publistandpados.com'
       },
       cta: {
         title: 'Inicia tu Proyecto',

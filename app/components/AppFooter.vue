@@ -4,11 +4,14 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         <div class="space-y-4">
           <NuxtLink to="/" class="flex items-center gap-2 group">
-            <div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
-               <span class="font-bold text-xl">P</span>
-            </div>
+          <div v-if="logo && (logo.url || logo.urlDark)" class="relative flex h-10 w-auto items-center justify-center transition-transform duration-300 group-hover:scale-105">
+             <img :src="isDark && logo.urlDark ? logo.urlDark : logo.url" :alt="logo.name || 'Logo'" class="h-full w-auto object-contain" />
+          </div>
+          <div v-else class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
+             <span class="font-bold text-lg">P</span>
+          </div>
             <span class="text-2xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
-              Publistand
+              Publistand Pados
             </span>
           </NuxtLink>
           <p class="text-secondary text-sm leading-relaxed max-w-xs">
@@ -96,9 +99,14 @@
 <script setup>
 const { menuItems, fetchMenu } = useMenu()
 const { socialLinks, footerConfig, fetchFooterData } = useFooter()
+const { logo, initializeLogo } = useLogo()
+const colorMode = useColorMode()
+
+const isDark = computed(() => colorMode.value === 'dark')
 
 await Promise.all([
   fetchMenu(),
-  fetchFooterData()
+  fetchFooterData(),
+  initializeLogo()
 ])
 </script>
