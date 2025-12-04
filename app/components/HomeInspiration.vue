@@ -1,14 +1,13 @@
 <template>
   <section class="relative bg-background overflow-hidden">
-    <!-- New Background: Subtle Stains/Blobs -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-3xl animate-pulse"></div>
       <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
       <div class="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-secondary/10 blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
     </div>
     
-    <UContainer class="py-32 relative z-10">
-      <div class="text-center mb-32 relative z-10 animate-fade-in">
+    <UContainer class="py-16 md:py-32 relative z-10">
+      <div class="text-center mb-16 md:mb-32 relative z-10 animate-fade-in">
         <div class="inline-flex items-center gap-3 mb-8">
           <div class="h-px w-12 bg-gradient-to-r from-transparent to-primary"></div>
           <span class="py-2 px-4 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-sm">
@@ -22,7 +21,6 @@
             Inspiración
           </span>
           <br />
-          <!-- Improved Text Visibility: Darker gradient start and end -->
           <span class="inline-block text-primary animate-gradient-x pb-2">
             que Transforma
           </span>
@@ -45,7 +43,7 @@
         </div>
       </div>
 
-      <div v-else class="space-y-48">
+      <div v-else class="space-y-24 md:space-y-48">
         <div
           v-for="(item, index) in inspirationItems"
           :key="item.id"
