@@ -6,12 +6,6 @@
       <slot />
     </main>
 
-    <footer class="border-t border-secondary/20 py-8">
-      <UContainer>
-        <div class="text-center text-secondary text-sm">
-          &copy; {{ new Date().getFullYear() }} PubliStand. Todos los derechos reservados.
-        </div>
-      </UContainer>
-    </footer>
+    <AppFooter />
   </div>
 </template>
