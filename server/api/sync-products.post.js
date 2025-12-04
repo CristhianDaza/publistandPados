@@ -14,19 +14,53 @@ export default defineEventHandler(async (event) => {
       return { success: true, message: 'No products to sync', count: 0 }
     }
 
-    const batch = writeBatch(db1)
-    let count = 0
+    const docsToSync = snapshot.docs.filter((docSnap) => !docSnap.id.startsWith('api_cataprom'))
 
-    snapshot.docs.forEach((docSnap) => {
-      const data = docSnap.data()
+    if (docsToSync.length === 0) {
+      return { success: true, message: 'No products to sync after filtering', count: 0 }
+    }
+
+    const CHUNK_SIZE = 50
+    let chunkCount = 0
+    let totalSynced = 0
+    let batch = writeBatch(db1)
+
+    const sanitizeData = (data) => {
+      if (data === null || typeof data !== 'object') return data
+      if (data.constructor && (data.constructor.name === 'Timestamp' || data.constructor.name === 'GeoPoint')) {
+        return data
+      }
+      if (Array.isArray(data)) {
+        return data.map(sanitizeData)
+      }
+      const sanitized = {}
+      for (const key in data) {
+        if (data[key] !== undefined) {
+          sanitized[key] = sanitizeData(data[key])
+        }
+      }
+      return sanitized
+    }
+
+    for (const docSnap of docsToSync) {
+      const data = sanitizeData(docSnap.data())
       const docRef = doc(db1, 'products', docSnap.id)
       batch.set(docRef, data, { merge: true })
-      count++
-    })
+      chunkCount++
+      totalSynced++
 
-    await batch.commit()
+      if (chunkCount >= CHUNK_SIZE) {
+        await batch.commit()
+        batch = writeBatch(db1)
+        chunkCount = 0
+      }
+    }
 
-    return { success: true, message: 'Products synced successfully', count }
+    if (chunkCount > 0) {
+      await batch.commit()
+    }
+
+    return { success: true, message: 'Products synced successfully', count: totalSynced }
   } catch (error) {
     console.error('Sync error:', error)
     throw createError({
