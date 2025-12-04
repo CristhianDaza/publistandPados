@@ -27,28 +27,52 @@
         >
           {{ item.label }}
         </NuxtLink>
+        <ClientOnly>
+          <UButton
+            :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
+            color="gray"
+            variant="ghost"
+            aria-label="Theme"
+            class="ml-2 cursor-pointer"
+            @click="isDark = !isDark"
+          />
+        </ClientOnly>
       </nav>
-      <button
-        type="button"
-        class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full text-secondary transition-colors hover:bg-secondary/10 md:hidden"
-        @click="isOpen = !isOpen"
-        aria-label="Toggle menu"
-      >
-        <div class="relative h-4 w-5 overflow-hidden">
-          <span
-            class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
-            :class="isOpen ? 'top-1.5 rotate-45' : 'top-0'"
+      <div class="flex items-center gap-2 md:hidden">
+        <ClientOnly>
+          <UButton
+            :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
+            color="gray"
+            variant="ghost"
+            aria-label="Theme"
+            class="cursor-pointer"
+            @click="isDark = !isDark"
           />
-          <span
-            class="absolute left-0 top-1.5 h-0.5 w-full bg-current transition-all duration-300 ease-out"
-            :class="isOpen ? 'opacity-0 translate-x-full' : 'opacity-100'"
-          />
-          <span
-            class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
-            :class="isOpen ? 'top-1.5 -rotate-45' : 'top-3'"
-          />
-        </div>
-      </button>
+        </ClientOnly>
+
+        <button
+          type="button"
+          class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full text-secondary transition-colors hover:bg-secondary/10 cursor-pointer"
+          @click="isOpen = !isOpen"
+          aria-label="Toggle menu"
+        >
+          <div class="relative h-4 w-5 overflow-hidden">
+            <span
+              class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+              :class="isOpen ? 'top-1.5 rotate-45' : 'top-0'"
+            />
+            <span
+              class="absolute left-0 top-1.5 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+              :class="isOpen ? 'opacity-0 translate-x-full' : 'opacity-100'"
+            />
+            <span
+              class="absolute left-0 h-0.5 w-full bg-current transition-all duration-300 ease-out"
+              :class="isOpen ? 'top-1.5 -rotate-45' : 'top-3'"
+            />
+          </div>
+        </button>
+      </div>
+
       <ClientOnly>
         <Teleport to="body">
           <Transition
@@ -100,6 +124,16 @@ const { menuItems, fetchMenu, initializeMenu, loading } = useMenu()
 const isOpen = ref(false)
 const isScrolled = ref(false)
 const route = useRoute()
+const colorMode = useColorMode()
+
+const isDark = computed({
+  get () {
+    return colorMode.value === 'dark'
+  },
+  set () {
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  }
+})
 
 await fetchMenu()
 onMounted(() => {
