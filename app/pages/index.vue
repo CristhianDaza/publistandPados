@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-screen">
-    <div v-if="loading" class="h-[600px] flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-primary-500" />
+    <div v-if="loading" class="h-[600px] flex items-center justify-center bg-background">
+      <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-primary" />
     </div>
     
     <HomeCarousel v-else-if="carouselItems.length > 0" :items="carouselItems" />
     
-    <div v-else class="h-[600px] flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 text-center px-4">
+    <div v-else class="h-[600px] flex flex-col items-center justify-center bg-background text-center px-4">
       <h2 class="text-2xl font-bold mb-4">No hay items en el carrusel</h2>
     </div>
 
@@ -16,10 +16,10 @@
 
     <UContainer class="py-12">
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
+        <h1 class="text-4xl font-bold mb-4 text-primary">
           Bienvenido a PubliStand
         </h1>
-        <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+        <p class="text-secondary text-lg max-w-2xl mx-auto">
           Tu plataforma moderna para gestionar productos y publicaciones.
         </p>
       </div>
@@ -29,7 +29,7 @@
           <template #header>
             <h3 class="font-semibold">Sincronización de Productos</h3>
           </template>
-          <p class="text-sm text-gray-500 mb-4">
+          <p class="text-sm text-secondary mb-4">
             Sincroniza tus productos con la base de datos externa.
           </p>
           <template #footer>

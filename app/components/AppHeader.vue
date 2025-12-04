@@ -1,15 +1,15 @@
 <template>
   <header
-    class="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-800/50 backdrop-blur-xl bg-white/70 dark:bg-gray-950/70 transition-all duration-300 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-950/60"
+    class="sticky top-0 z-50 w-full border-b border-secondary/20 backdrop-blur-xl bg-background/70 transition-all duration-300 supports-[backdrop-filter]:bg-background/60"
     :class="{ 'shadow-sm': isScrolled }"
   >
     <UContainer class="h-16 flex items-center justify-between">
       <div class="flex items-center gap-2 z-50 relative">
         <NuxtLink to="/" class="group flex items-center gap-2" @click="isOpen = false">
-          <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/20 transition-transform duration-300 group-hover:scale-105">
+          <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
              <span class="font-bold text-lg">P</span>
           </div>
-          <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
+          <span class="text-xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
             Publistand
           </span>
         </NuxtLink>
@@ -20,17 +20,17 @@
           :key="item.id"
           :to="item.to"
           class="relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out
-                 text-gray-600 dark:text-gray-300
-                 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400
+                 text-secondary
+                 hover:bg-secondary/10 hover:text-primary
                  active:scale-95"
-          active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/10 font-semibold"
+          active-class="!text-primary bg-primary/10 font-semibold"
         >
           {{ item.label }}
         </NuxtLink>
       </nav>
       <button
         type="button"
-        class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden"
+        class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full text-secondary transition-colors hover:bg-secondary/10 md:hidden"
         @click="isOpen = !isOpen"
         aria-label="Toggle menu"
       >
@@ -61,15 +61,15 @@
           >
             <div
               v-if="isOpen"
-              class="fixed inset-0 z-40 flex flex-col bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl md:hidden pt-24 px-6"
+              class="fixed inset-0 z-40 flex flex-col bg-background/95 backdrop-blur-xl md:hidden pt-24 px-6"
             >
                <nav class="flex flex-col gap-6">
                   <NuxtLink
                     v-for="(item, index) in menuItems"
                     :key="item.id"
                     :to="item.to"
-                    class="text-2xl font-semibold text-gray-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-all duration-200 active:scale-95 origin-left"
-                    active-class="text-primary-600 dark:text-primary-400"
+                    class="text-2xl font-semibold text-text hover:text-primary transition-all duration-200 active:scale-95 origin-left"
+                    active-class="text-primary"
                     :style="{ transitionDelay: `${index * 50}ms` }"
                     @click="isOpen = false"
                   >

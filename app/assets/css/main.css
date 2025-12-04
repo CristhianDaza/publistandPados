@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: rgb(var(--theme-color-primary));
+  --color-primary-50: rgb(var(--theme-color-primary) / 0.05);
+  --color-primary-100: rgb(var(--theme-color-primary) / 0.1);
+  --color-primary-200: rgb(var(--theme-color-primary) / 0.2);
+  --color-primary-300: rgb(var(--theme-color-primary) / 0.3);
+  --color-primary-400: rgb(var(--theme-color-primary) / 0.6);
+  --color-primary-500: rgb(var(--theme-color-primary));
+  --color-primary-600: rgb(var(--theme-color-primary));
+  --color-primary-700: rgb(var(--theme-color-primary));
+  --color-primary-800: rgb(var(--theme-color-primary));
+  --color-primary-900: rgb(var(--theme-color-primary));
+  --color-primary-950: rgb(var(--theme-color-primary));
+
+  --color-secondary: rgb(var(--theme-color-secondary));
+  --color-background: rgb(var(--theme-color-background));
+  --color-text: rgb(var(--theme-color-text));
+}

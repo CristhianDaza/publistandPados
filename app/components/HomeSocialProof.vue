@@ -1,15 +1,15 @@
 <template>
-  <section class="py-12 relative overflow-hidden bg-gray-50/50 dark:bg-gray-900/20 border-y border-gray-100 dark:border-gray-800">
-    <div class="absolute inset-0 bg-primary-500/5 pointer-events-none"></div>
+  <section class="py-12 relative overflow-hidden bg-secondary/5 border-y border-secondary/20">
+    <div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
     
     <div class="container mx-auto px-4 mb-8 text-center relative z-10">
-      <p class="text-sm font-bold tracking-[0.2em] text-gray-400 dark:text-gray-500 uppercase">
+      <p class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">
         Marcas que confían en nosotros
       </p>
     </div>
 
     <div v-if="loading" class="flex justify-center py-8">
-       <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-primary-500" />
+       <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-primary" />
     </div>
 
     <div v-else class="relative flex overflow-x-hidden group py-4">

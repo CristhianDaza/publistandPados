@@ -1,35 +1,35 @@
 <template>
-  <section class="relative bg-white dark:bg-gray-900 overflow-hidden">
+  <section class="relative bg-background overflow-hidden">
     <!-- New Background: Subtle Stains/Blobs -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary-500/5 blur-3xl animate-pulse"></div>
-      <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-purple-500/5 blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-      <div class="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
+      <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-3xl animate-pulse"></div>
+      <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-secondary/10 blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
     </div>
     
     <UContainer class="py-32 relative z-10">
       <div class="text-center mb-32 relative z-10 animate-fade-in">
         <div class="inline-flex items-center gap-3 mb-8">
-          <div class="h-px w-12 bg-gradient-to-r from-transparent to-primary-500"></div>
-          <span class="py-2 px-4 rounded-full bg-gradient-to-r from-primary-500/10 via-primary-600/10 to-purple-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-sm">
+          <div class="h-px w-12 bg-gradient-to-r from-transparent to-primary"></div>
+          <span class="py-2 px-4 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-sm">
             Lifestyle & Business
           </span>
-          <div class="h-px w-12 bg-gradient-to-l from-transparent to-primary-500"></div>
+          <div class="h-px w-12 bg-gradient-to-l from-transparent to-primary"></div>
         </div>
         
         <h2 class="text-6xl md:text-8xl font-black mb-10 tracking-tight leading-[0.9] px-4">
-          <span class="inline-block text-gray-900 dark:text-white transform hover:scale-105 transition-transform duration-300">
+          <span class="inline-block text-text transform hover:scale-105 transition-transform duration-300">
             Inspiración
           </span>
           <br />
           <!-- Improved Text Visibility: Darker gradient start and end -->
-          <span class="inline-block bg-gradient-to-r from-primary-700 via-primary-600 to-purple-700 dark:from-primary-400 dark:via-primary-300 dark:to-purple-400 bg-clip-text text-transparent animate-gradient-x pb-2">
+          <span class="inline-block text-primary animate-gradient-x pb-2">
             que Transforma
           </span>
         </h2>
         
-        <p class="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto font-light leading-relaxed px-4">
-          Donde cada <span class="relative inline-block font-semibold text-primary-600 dark:text-primary-400">
+        <p class="text-2xl md:text-3xl text-secondary max-w-4xl mx-auto font-light leading-relaxed px-4">
+          Donde cada <span class="relative inline-block font-semibold text-primary">
             detalle cuenta
             <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 10C50 5 100 2 150 5C200 8 250 3 298 7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -40,8 +40,8 @@
 
       <div v-if="loading" class="flex justify-center py-24">
         <div class="relative">
-          <UIcon name="i-heroicons-arrow-path" class="w-16 h-16 animate-spin text-primary-500" />
-          <div class="absolute inset-0 blur-xl bg-primary-500/20 animate-pulse"></div>
+          <UIcon name="i-heroicons-arrow-path" class="w-16 h-16 animate-spin text-primary" />
+          <div class="absolute inset-0 blur-xl bg-primary/20 animate-pulse"></div>
         </div>
       </div>
 
@@ -79,7 +79,7 @@
             </div>
 
              <div v-if="item.buttons && item.buttons.length" class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 md:hidden">
-              <span class="inline-block px-3 py-1 rounded-full bg-primary-500/90 backdrop-blur-sm text-white text-xs font-bold tracking-wider uppercase mb-3">
+              <span class="inline-block px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-white text-xs font-bold tracking-wider uppercase mb-3">
                 {{ item.collection }}
               </span>
               <button class="flex items-center gap-2 text-white font-semibold text-lg group-hover:gap-4 transition-all">
@@ -96,26 +96,26 @@
             ]"
           >
             <div class="inline-flex items-center gap-3 mb-4">
-              <div class="w-12 h-1 bg-gradient-to-r from-primary-500 to-purple-500 rounded-full"></div>
-              <span class="text-primary-600 dark:text-primary-400 font-bold tracking-[0.15em] text-sm uppercase">
+              <div class="w-12 h-1 bg-primary rounded-full"></div>
+              <span class="text-primary font-bold tracking-[0.15em] text-sm uppercase">
                 {{ item.collection }}
               </span>
             </div>
 
             <h3 class="text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.1] tracking-tight">
-              <span class="inline-block text-gray-900 dark:text-white transform group-hover:translate-x-2 transition-transform duration-500">
+              <span class="inline-block text-text transform group-hover:translate-x-2 transition-transform duration-500">
                 {{ item.title.split(' ')[0] }}
               </span>
               <br v-if="item.title.split(' ').length > 1" />
               <span 
                 v-if="item.title.split(' ').length > 1"
-                class="inline-block bg-gradient-to-r from-primary-600 to-purple-600 dark:from-primary-400 dark:to-purple-400 bg-clip-text text-transparent transform group-hover:translate-x-2 transition-transform duration-700"
+                class="inline-block text-primary transform group-hover:translate-x-2 transition-transform duration-700"
               >
                 {{ item.title.split(' ').slice(1).join(' ') }}
               </span>
             </h3>
 
-            <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed font-light max-w-xl">
+            <p class="text-xl lg:text-2xl text-secondary leading-relaxed font-light max-w-xl">
               {{ item.description }}
             </p>
 
@@ -132,8 +132,8 @@
                   padding: { xl: 'px-8 py-4' },
                   font: 'font-bold',
                   variant: {
-                    solid: 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg hover:shadow-xl hover:shadow-primary-500/30',
-                    outline: 'border-2 border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                    solid: 'bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl hover:shadow-primary/30',
+                    outline: 'border-2 border-secondary/30 hover:border-primary text-secondary hover:bg-primary/5'
                   }
                 }"
                 class="transition-all duration-300 hover:-translate-y-1"
@@ -145,14 +145,14 @@
               </UButton>
             </div>
 
-            <div v-if="item.footer" class="flex items-center gap-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div v-if="item.footer" class="flex items-center gap-6 pt-8 border-t border-secondary/20">
               <div class="flex items-center gap-4">
-                 <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 ring-1 ring-primary-100 dark:ring-primary-800">
+                 <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">
                     <UIcon name="i-heroicons-star" class="w-6 h-6" />
                  </div>
                  <div>
-                    <p class="font-bold text-lg text-gray-900 dark:text-white leading-tight">{{ item.footer.highlight }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.footer.subtext }}</p>
+                    <p class="font-bold text-lg text-text leading-tight">{{ item.footer.highlight }}</p>
+                    <p class="text-sm text-secondary">{{ item.footer.subtext }}</p>
                  </div>
               </div>
             </div>
