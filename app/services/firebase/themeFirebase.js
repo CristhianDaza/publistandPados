@@ -61,10 +61,18 @@ export const seedTheme = async () => {
   const initialTheme = {
     name: 'Default Theme',
     colors: {
-      primary: '#3b82f6', // blue-500
-      secondary: '#64748b', // slate-500
-      background: '#ffffff',
-      text: '#0f172a'
+      light: {
+        primary: '#3b82f6',
+        secondary: '#64748b',
+        background: '#ffffff',
+        text: '#0f172a'
+      },
+      dark: {
+        primary: '#60a5fa',
+        secondary: '#94a3b8',
+        background: '#0f172a',
+        text: '#f8fafc'
+      }
     },
     isActive: true
   }

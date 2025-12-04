@@ -85,10 +85,22 @@ export const useTheme = () => {
   const applyTheme = (theme) => {
     if (!theme || !theme.colors) return
 
+    const colorMode = useColorMode()
     const root = document.documentElement
 
-    Object.entries(theme.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--color-${key}`, value)
+    const updateColors = () => {
+      const mode = colorMode.value === 'dark' ? 'dark' : 'light'
+      const colors = theme.colors[mode] || theme.colors.light || theme.colors
+
+      if (!colors) return
+
+      Object.entries(colors).forEach(([key, value]) => {
+        root.style.setProperty(`--color-${key}`, value)
+      })
+    }
+    updateColors()
+    watch(() => colorMode.value, () => {
+      updateColors()
     })
   }
 
