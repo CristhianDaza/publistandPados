@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, setDoc, writeBatch } from 'firebase/firestore'
+import { collection, getDocs, doc, setDoc, writeBatch, query, limit } from 'firebase/firestore'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -43,7 +43,12 @@ export default defineEventHandler(async (event) => {
     }
 
     for (const docSnap of docsToSync) {
-      const data = sanitizeData(docSnap.data())
+      let rawData = docSnap.data()
+      if (rawData.products && Array.isArray(rawData.products)) {
+        rawData.products = rawData.products.filter(p => p.api !== 'cataProm')
+      }
+
+      const data = sanitizeData(rawData)
       const docRef = doc(db1, 'products', docSnap.id)
       batch.set(docRef, data, { merge: true })
       chunkCount++
@@ -58,6 +63,16 @@ export default defineEventHandler(async (event) => {
 
     if (chunkCount > 0) {
       await batch.commit()
+    }
+
+    const sourceUpdateCol = collection(db2, 'lastedUpdatedProducts')
+    const sourceUpdateSnap = await getDocs(query(sourceUpdateCol, limit(1)))
+
+    if (!sourceUpdateSnap.empty) {
+      const sourceData = sourceUpdateSnap.docs[0].data()
+      const destUpdateCol = collection(db1, 'lastedUpdatedProducts')
+      const destDocRef = doc(destUpdateCol, 'status')
+      await setDoc(destDocRef, sourceData)
     }
 
     return { success: true, message: 'Products synced successfully', count: totalSynced }

@@ -27,7 +27,7 @@ export const getProducts = async () => {
     const data = docSnap.data()
     const arr = Array.isArray(data?.products) ? data.products : [data]
     for (const p of arr) {
-      if (p && p.id) {
+      if (p && p.id && p.api !== 'cataProm') {
         map.set(p.id, p)
       }
     }

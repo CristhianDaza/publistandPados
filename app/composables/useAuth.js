@@ -3,7 +3,8 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth'
-import { getFirebaseAuth } from '~/services/firebase/config'
+import { getFirebaseAuth, getFirebaseDb } from '~/services/firebase/config'
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
 
 export const useAuth = () => {
   const user = useState('auth_user', () => null)
@@ -16,8 +17,43 @@ export const useAuth = () => {
     const auth = getFirebaseAuth()
     loading.value = true
 
-    onAuthStateChanged(auth, (currentUser) => {
-      user.value = currentUser
+    onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const db = getFirebaseDb()
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid))
+          if (userDoc.exists()) {
+            const userData = userDoc.data()
+            user.value = {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              displayName: currentUser.displayName,
+              photoURL: currentUser.photoURL,
+              ...userData
+            }
+          } else {
+            const q = query(collection(db, 'users'), where('email', '==', currentUser.email))
+            const querySnapshot = await getDocs(q)
+            if (!querySnapshot.empty) {
+              const userData = querySnapshot.docs[0].data()
+              user.value = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                displayName: currentUser.displayName,
+                photoURL: currentUser.photoURL,
+                ...userData
+              }
+            } else {
+              user.value = currentUser
+            }
+          }
+        } catch (e) {
+          console.error('Error fetching user role:', e)
+          user.value = currentUser
+        }
+      } else {
+        user.value = null
+      }
       loading.value = false
     }, (err) => {
       console.error('Auth state change error:', err)
@@ -32,8 +68,16 @@ export const useAuth = () => {
     try {
       const auth = getFirebaseAuth()
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      user.value = userCredential.user
-      return userCredential.user
+
+      const db = getFirebaseDb()
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid))
+      let userData = {}
+      if (userDoc.exists()) {
+        userData = userDoc.data()
+      }
+
+      user.value = { ...userCredential.user, ...userData }
+      return user.value
     } catch (e) {
       error.value = e
       throw e

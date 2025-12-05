@@ -7,11 +7,14 @@ import {
 } from '~/services/firebase/productsFirebase'
 
 export const useProducts = () => {
-  const products = useState('products', () => [])
+  const products = useState('products', () => {
+    return []
+  })
   const loading = useState('products-loading', () => false)
   const error = useState('products-error', () => null)
 
-  const getProducts = async () => {
+  const getProducts = async (force = false) => {
+    if (!force && products.value.length > 0) return
     loading.value = true
     error.value = null
     try {
