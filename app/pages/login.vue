@@ -71,7 +71,7 @@ definePageMeta({
       <div class="bg-slate-800 backdrop-blur-xl rounded-3xl border border-white/10 p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset]">
         <div class="flex justify-center mb-6">
           <img
-            src="https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764891448/kwbjbjinhlpwvu20lgaj.png" 
+            src="https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png" 
             alt="Logo Publistand Pados" 
             class="max-h-[60px] w-auto object-contain drop-shadow-lg"
           />

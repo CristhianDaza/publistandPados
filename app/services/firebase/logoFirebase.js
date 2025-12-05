@@ -60,8 +60,8 @@ export const setActiveLogo = async (id) => {
 export const seedLogo = async () => {
   const initialLogo = {
     name: 'Default Logo',
-    url: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764890693/lpoopt2oeyberjy6udet.png',
-    urlDark: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764891448/kwbjbjinhlpwvu20lgaj.png',
+    url: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904472/vvz2obeairutfbpiszdo.png',
+    urlDark: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png',
     isActive: true
   }
 
