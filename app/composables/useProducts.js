@@ -5,21 +5,37 @@ import {
   updateProduct as updateProductService,
   deleteProduct as deleteProductService
 } from '~/services/firebase/productsFirebase'
+import { getFromIDB, saveToIDB } from '~/utils/idb'
 
 export const useProducts = () => {
-  const products = useState('products', () => {
-    return []
-  })
+  const products = useState('products', () => [])
   const loading = useState('products-loading', () => false)
   const error = useState('products-error', () => null)
 
   const getProducts = async (force = false) => {
     if (!force && products.value.length > 0) return
+
     loading.value = true
     error.value = null
+
     try {
+      if (process.client && !force) {
+        const cached = await getFromIDB('products')
+        if (cached && Array.isArray(cached) && cached.length > 0) {
+          console.log('Loaded products from IDB cache')
+          products.value = markRaw(cached)
+          loading.value = false
+          return
+        }
+      }
+
       const data = await fetchProducts()
-      products.value = data
+
+      if (process.client) {
+        await saveToIDB('products', data)
+      }
+
+      products.value = markRaw(data)
     } catch (e) {
       error.value = e.message
       console.error('Error fetching products:', e)
@@ -47,7 +63,8 @@ export const useProducts = () => {
     error.value = null
     try {
       const newProduct = await addProductService(product)
-      products.value.push(newProduct)
+      products.value = markRaw([...products.value, newProduct])
+      if (process.client) await saveToIDB('products', products.value)
       return newProduct
     } catch (e) {
       error.value = e.message
@@ -63,10 +80,8 @@ export const useProducts = () => {
     error.value = null
     try {
       const updated = await updateProductService(id, product)
-      const index = products.value.findIndex(p => p.id === id)
-      if (index !== -1) {
-        products.value[index] = updated
-      }
+      products.value = markRaw(products.value.map(p => p.id === id ? updated : p))
+      if (process.client) await saveToIDB('products', products.value)
       return updated
     } catch (e) {
       error.value = e.message
@@ -82,7 +97,8 @@ export const useProducts = () => {
     error.value = null
     try {
       await deleteProductService(id)
-      products.value = products.value.filter(p => p.id !== id)
+      products.value = markRaw(products.value.filter(p => p.id !== id))
+      if (process.client) await saveToIDB('products', products.value)
     } catch (e) {
       error.value = e.message
       console.error(`Error deleting product ${id}:`, e)
