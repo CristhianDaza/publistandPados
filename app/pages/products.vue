@@ -1,18 +1,6 @@
 <template>
   <UContainer class="py-12">
-    <h1 class="text-3xl font-bold">Productos</h1>
-    <p class="mt-4">Pagina de productos</p>
-    <div class="mt-8 flex gap-4">
-      <UButton @click="handleFetchProducts" :loading="loading">
-        Traer Productos
-      </UButton>
-      <UButton @click="syncProducts" :loading="syncLoading" color="gray">
-        Sincronizar APIs
-      </UButton>
-    </div>
-
-
-    <div class="mt-20 max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
         <span class="text-primary font-bold tracking-wider uppercase text-sm">Catálogo</span>
         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">Nuestras Categorías</h2>
