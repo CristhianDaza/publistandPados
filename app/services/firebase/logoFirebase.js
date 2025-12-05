@@ -60,7 +60,7 @@ export const setActiveLogo = async (id) => {
 export const seedLogo = async () => {
   const initialLogo = {
     name: 'Default Logo',
-    url: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904472/vvz2obeairutfbpiszdo.png',
+    url: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904665/vvz2obeairutfbpiszdo.png',
     urlDark: 'https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png',
     isActive: true
   }
@@ -69,7 +69,6 @@ export const seedLogo = async () => {
   if (logos.length === 0) {
     await createLogo(initialLogo)
   } else {
-    // Check if active logo needs update for dark mode url
     const activeLogo = logos.find(l => l.isActive)
     if (activeLogo && !activeLogo.urlDark) {
       await updateLogo(activeLogo.id, { urlDark: initialLogo.urlDark })

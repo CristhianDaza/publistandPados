@@ -6,12 +6,14 @@
     <UContainer class="h-16 flex items-center justify-between">
       <div class="flex items-center gap-2 z-50 relative">
         <NuxtLink to="/" class="group flex items-center gap-2" @click="isOpen = false">
-          <div v-if="logo && (logo.url || logo.urlDark)" class="relative flex h-10 w-auto items-center justify-center transition-transform duration-300 group-hover:scale-105">
-             <img :src="isDark && logo.urlDark ? logo.urlDark : logo.url" :alt="logo.name || 'Logo'" class="h-full w-auto object-contain" />
-          </div>
-          <div v-else class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
-             <span class="font-bold text-lg">P</span>
-          </div>
+          <ClientOnly>
+            <div v-if="logo && (logo.url || logo.urlDark)" class="relative flex h-10 w-auto items-center justify-center transition-transform duration-300 group-hover:scale-105">
+               <img :src="isDark && logo.urlDark ? logo.urlDark : logo.url" :alt="logo.name || 'Logo'" class="h-full w-auto object-contain" />
+            </div>
+            <div v-else class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
+               <span class="font-bold text-lg">P</span>
+            </div>
+          </ClientOnly>
           <span class="text-xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
             Publistand Pados
           </span>
