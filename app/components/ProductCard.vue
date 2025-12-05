@@ -1,46 +1,82 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group border border-gray-100 dark:border-gray-700 flex flex-col h-full">
+  <NuxtLink 
+    :to="`/products/${product.id}`"
+    class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full cursor-pointer"
+  >
+    <div class="absolute top-3 left-3 z-10 flex flex-col gap-2">
+      <span v-if="isNew" class="bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg backdrop-blur-sm bg-opacity-90">
+        NUEVO
+      </span>
+      <span v-if="hasDiscount" class="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg backdrop-blur-sm bg-opacity-90">
+        -{{ discountPercentage }}%
+      </span>
+    </div>
 
-    <div class="relative aspect-square overflow-hidden bg-white">
+    <div class="relative aspect-square overflow-hidden bg-white p-6">
       <img 
         :src="product.mainImage" 
         :alt="product.name"
-        class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+        class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply dark:mix-blend-normal"
       />
-    </div>
-
-    <div class="p-4 flex flex-col flex-grow">
-      <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 min-h-[3rem]" :title="product.name">
-        {{ product.name }}
-      </h3>
-
-      <div class="mb-3">
-        <p class="text-primary font-bold text-lg">
-          {{ formattedPrice }}
-          <span class="text-xs text-gray-500 dark:text-gray-400 font-normal ml-1">+ IVA</span>
-        </p>
-      </div>
-
-      <div class="mb-3 flex-grow">
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Colores disponibles:</p>
-        <div class="flex flex-wrap gap-2">
-          <div 
-            v-for="color in uniqueColors" 
-            :key="color.name" 
-            class="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-600 shadow-sm hover:scale-110 transition-transform hover:ring-2 hover:ring-primary hover:ring-offset-1 dark:hover:ring-offset-gray-800 ring-1 ring-inset ring-black/5 dark:ring-white/10"
-            :style="{ backgroundColor: color.hex }"
-          ></div>
-        </div>
-      </div>
-
-      <div class="pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
-        <span class="text-gray-500 dark:text-gray-400">Disponibles:</span>
-        <span class="font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-md">
-          {{ formattedQuantity }} und
+      
+      <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]">
+        <span class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+          Ver Detalles
         </span>
       </div>
     </div>
-  </div>
+
+    <div class="p-5 flex flex-col flex-grow relative">
+      <span v-if="product.category && product.category[0]" class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">
+        {{ product.category[0] }}
+      </span>
+
+      <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 min-h-[2.5rem] text-sm md:text-base group-hover:text-primary transition-colors">
+        {{ product.name }}
+      </h3>
+
+      <div class="mb-4">
+        <div class="flex items-baseline gap-2">
+          <p class="text-primary font-bold text-lg md:text-xl">
+            {{ formattedPrice }}
+          </p>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide bg-gray-100 dark:bg-gray-700/50 px-1.5 py-0.5 rounded">
+            + IVA
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-auto space-y-3">
+        <div v-if="uniqueColors.length > 0" class="flex items-center gap-2">
+          <div class="flex -space-x-1.5">
+            <div 
+              v-for="color in displayedColors" 
+              :key="color.name" 
+              class="w-5 h-5 rounded-full border border-white dark:border-gray-800 shadow-sm ring-1 ring-black/5 dark:ring-white/10"
+              :style="{ backgroundColor: color.hex }"
+              :title="color.name"
+            ></div>
+            <div v-if="remainingColorsCount > 0" class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 border border-white dark:border-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-600 dark:text-gray-300 ring-1 ring-black/5 dark:ring-white/10">
+              +{{ remainingColorsCount }}
+            </div>
+          </div>
+          <span class="text-xs text-gray-400 font-medium">{{ uniqueColors.length }} colores</span>
+        </div>
+
+        <div class="pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full" :class="hasStock ? 'bg-green-500' : 'bg-red-500'"></div>
+            <span :class="hasStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'" class="font-medium">
+              {{ hasStock ? 'Disponible' : 'Agotado' }}
+            </span>
+          </div>
+          <span class="font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md border border-gray-100 dark:border-gray-700">
+            {{ formattedQuantity }} und
+          </span>
+        </div>
+      </div>
+    </div>
+  </NuxtLink>
 </template>
 
 <script setup>
@@ -52,6 +88,18 @@ const props = defineProps({
     type: Object,
     required: true
   }
+})
+
+const isNew = computed(() => {
+  return props.product.labels?.some(l => l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo'))
+})
+
+const hasDiscount = computed(() => {
+  return props.product.discount !== null && props.product.discount > 0
+})
+
+const discountPercentage = computed(() => {
+  return props.product.discount
 })
 
 const formattedPrice = computed(() => {
@@ -77,15 +125,18 @@ const formattedPrice = computed(() => {
   }
 })
 
-const formattedQuantity = computed(() => {
-  if (!props.product.tableQuantity) return '0'
-  
-  const total = props.product.tableQuantity.reduce((acc, item) => {
+const totalStock = computed(() => {
+  if (!props.product.tableQuantity) return 0
+  return props.product.tableQuantity.reduce((acc, item) => {
     const qty = Number(item.quantity)
     return acc + (qty > 0 ? qty : 0)
   }, 0)
+})
 
-  return new Intl.NumberFormat('es-CO').format(total)
+const hasStock = computed(() => totalStock.value > 0)
+
+const formattedQuantity = computed(() => {
+  return new Intl.NumberFormat('es-CO').format(totalStock.value)
 })
 
 const uniqueColors = computed(() => {
@@ -104,4 +155,7 @@ const uniqueColors = computed(() => {
 
   return Array.from(colors.values())
 })
+
+const displayedColors = computed(() => uniqueColors.value.slice(0, 5))
+const remainingColorsCount = computed(() => Math.max(0, uniqueColors.value.length - 5))
 </script>
