@@ -1,13 +1,49 @@
 <template>
   <UContainer class="py-12">
     <div class="max-w-7xl mx-auto">
+      
       <div class="text-center mb-12">
         <span class="text-primary font-bold tracking-wider uppercase text-sm">Catálogo</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">Nuestras Categorías</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">
+          {{ selectedCategory ? selectedCategory : 'Nuestras Categorías' }}
+        </h2>
         <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div v-if="loading" class="flex justify-center py-20">
+        <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-primary" />
+      </div>
+      <div v-else-if="selectedCategory" class="animate-fade-in">
+        <div class="mb-8 flex items-center justify-between">
+          <UButton 
+            icon="i-heroicons-arrow-left" 
+            variant="ghost" 
+            color="gray" 
+            class="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+            @click="clearCategory"
+          >
+            Volver a Categorías
+          </UButton>
+          <span class="text-sm text-gray-500">{{ filteredProducts.length }} productos encontrados</span>
+        </div>
+
+        <div v-if="filteredProducts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <ProductCard 
+            v-for="product in filteredProducts" 
+            :key="product.id" 
+            :product="product" 
+          />
+        </div>
+
+        <div v-else class="text-center py-20 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+          <UIcon name="i-heroicons-face-frown" class="w-16 h-16 text-gray-400 mb-4 mx-auto" />
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No se encontraron productos</h3>
+          <p class="text-gray-500">Intenta con otra categoría o regresa al inicio.</p>
+          <UButton class="mt-6 cursor-pointer hover:scale-105 transition-transform" @click="clearCategory">Ver todas las categorías</UButton>
+        </div>
+      </div>
+
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
         <div 
           v-for="card in categoriasCards" 
           :key="card.titulo" 
@@ -27,7 +63,12 @@
             </h3>
             
             <ul class="space-y-3 flex-grow">
-              <li v-for="item in card.items" :key="item" class="flex items-start text-sm text-secondary group-hover:translate-x-1 transition-transform duration-300">
+              <li 
+                v-for="item in card.items" 
+                :key="item" 
+                @click="selectCategory(item)"
+                class="flex items-start text-sm text-secondary hover:text-primary cursor-pointer group-hover/item:translate-x-1 transition-all duration-300 hover:font-medium p-1 -ml-1 rounded-md hover:bg-primary/5"
+              >
                 <UIcon name="i-heroicons-check-circle" class="w-5 h-5 mr-3 text-primary/60 flex-shrink-0 mt-0.5" />
                 <span>{{ item }}</span>
               </li>
@@ -35,14 +76,21 @@
           </div>
         </div>
       </div>
+
     </div>
   </UContainer>
 </template>
 
 <script setup>
+const route = useRoute()
+const router = useRouter()
 const { getProducts, products, loading } = useProducts()
-const syncLoading = ref(false)
-const toast = useToast()
+
+onMounted(() => {
+  getProducts()
+})
+
+const selectedCategory = computed(() => route.query.category)
 
 const categoriasCards = [
   {
@@ -197,30 +245,24 @@ const categoriasCards = [
   }
 ];
 
-const handleFetchProducts = async () => {
-  await getProducts()
+const filteredProducts = computed(() => {
+  if (!selectedCategory.value) return []
   
-  if (products.value && products.value.length > 0) {
-    console.log('Products:', products.value)
-    const apis = [...new Set(products.value.map(p => p.api).filter(Boolean))]
-    console.log('Unique APIs:', apis)
+  const targetCategory = selectedCategory.value.toLowerCase()
 
-    const categories = [...new Set(products.value.flatMap(p => p.category || []))]
-    console.log('Unique Categories:', categories)
-  } else {
-    console.log('No products found or empty list.')
-  }
+  return products.value.filter(product => {
+    if (!product.category || !Array.isArray(product.category)) return false
+    
+    return product.category.some(cat => cat.toLowerCase() === targetCategory)
+  })
+})
+
+const selectCategory = (categoryItem) => {
+  router.push({ query: { ...route.query, category: categoryItem } })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const syncProducts = async () => {
-  syncLoading.value = true
-  try {
-    const res = await $fetch('/api/sync-products', { method: 'POST' })
-    toast.add({ title: 'Éxito', description: res.message })
-  } catch (error) {
-    toast.add({ title: 'Error', description: error.statusMessage || 'Error al sincronizar', color: 'red' })
-  } finally {
-    syncLoading.value = false
-  }
+const clearCategory = () => {
+  router.push({ query: { ...route.query, category: undefined } })
 }
 </script>
