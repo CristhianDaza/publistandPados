@@ -2,11 +2,11 @@
 const { fetchActiveTheme } = useTheme()
 const { initAuth, user, loading: authLoading } = useAuth()
 const { getProducts: fetchProducts } = useProducts()
+const { initApp } = useAppLoading()
 const isSyncing = ref(false)
 
 onMounted(async () => {
-  initAuth()
-  await fetchActiveTheme()
+  await initApp()
 })
 
 watch(authLoading, async (newLoading) => {
@@ -55,6 +55,7 @@ const checkAndSync = async () => {
 
 <template>
   <UApp>
+    <GlobalLoader />
     <SyncModal :is-open="isSyncing" />
     <NuxtLayout>
       <NuxtPage />

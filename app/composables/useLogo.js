@@ -2,10 +2,10 @@ import { ref } from 'vue'
 import { getLogos, getActiveLogo, createLogo, updateLogo, deleteLogo, setActiveLogo, seedLogo } from '../services/firebase/logoFirebase'
 
 export const useLogo = () => {
-  const logo = ref(null)
-  const logos = ref([])
-  const loading = ref(false)
-  const error = ref(null)
+  const logo = useState('logo_active', () => null)
+  const logos = useState('logos_list', () => [])
+  const loading = useState('logo_loading', () => false)
+  const error = useState('logo_error', () => null)
 
   const fetchActiveLogo = async () => {
     loading.value = true
