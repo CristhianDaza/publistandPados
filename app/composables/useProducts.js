@@ -1,6 +1,5 @@
 import {
   getProducts as fetchProducts,
-  getProductById as fetchProductById,
   createProduct as addProductService,
   updateProduct as updateProductService,
   deleteProduct as deleteProductService
@@ -22,7 +21,6 @@ export const useProducts = () => {
       if (process.client && !force) {
         const cached = await getFromIDB('products')
         if (cached && Array.isArray(cached) && cached.length > 0) {
-          console.log('Loaded products from IDB cache')
           products.value = markRaw(cached)
           loading.value = false
           return
@@ -48,7 +46,17 @@ export const useProducts = () => {
     loading.value = true
     error.value = null
     try {
-      return await fetchProductById(id)
+      if (products.value.length === 0) {
+        await getProducts()
+      }
+
+      const product = products.value.find(p => p.id === id)
+
+      if (!product) {
+        throw new Error('Product not found')
+      }
+
+      return product
     } catch (e) {
       error.value = e.message
       console.error(`Error fetching product ${id}:`, e)

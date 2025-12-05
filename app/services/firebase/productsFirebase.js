@@ -43,16 +43,7 @@ export const getProducts = async () => {
   return merged
 }
 
-export const getProductById = async (id) => {
-  const docRef = doc(getFirebaseDb(), collectionName, id)
-  const docSnap = await getDoc(docRef)
 
-  if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() }
-  } else {
-    throw new Error('Product not found')
-  }
-}
 
 export const createProduct = async (product) => {
   const docRef = await addDoc(collection(getFirebaseDb(), collectionName), product)
