@@ -68,7 +68,12 @@
     >
       <div
         v-if="showDropdown && canSearch && searchResults.length > 0"
-        class="absolute top-full left-0 right-0 mt-2 bg-background rounded-xl shadow-2xl border border-secondary/20 overflow-hidden z-[60] backdrop-blur-xl"
+        :class="[
+          'bg-background shadow-2xl border border-secondary/20 overflow-hidden z-[60] backdrop-blur-xl',
+          overlayMode 
+            ? 'fixed top-[4.5rem] left-4 right-4 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-xl border border-secondary/20' 
+            : 'absolute top-full left-0 right-0 mt-2 rounded-xl'
+        ]"
       >
         <div class="p-2 border-b border-secondary/20 flex justify-between items-center bg-secondary/5">
           <span class="text-xs text-secondary font-medium px-2">
@@ -138,6 +143,13 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+
+const props = defineProps({
+  overlayMode: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const router = useRouter()
 const { products, getProducts } = useProducts()
@@ -220,4 +232,11 @@ const clearSearch = () => {
   showDropdown.value = false
   searchInput.value?.focus()
 }
+const focusInput = () => {
+  searchInput.value?.focus()
+}
+
+defineExpose({
+  focusInput
+})
 </script>

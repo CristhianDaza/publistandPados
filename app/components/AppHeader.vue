@@ -3,7 +3,18 @@
     class="sticky top-0 z-50 w-full border-b border-secondary/20 backdrop-blur-xl bg-background/70 transition-all duration-300 supports-[backdrop-filter]:bg-background/60"
     :class="{ 'shadow-sm': isScrolled }"
   >
-    <UContainer class="h-16 flex items-center justify-between">
+    <UContainer class="h-16 flex items-center justify-between relative">
+      <div v-if="isSearchOpen" class="absolute inset-0 z-[60] flex items-center bg-background/95 backdrop-blur-xl px-4 gap-2 md:hidden animate-fade-in w-full h-full">
+        <ProductSearchInput ref="searchInputRef" class="flex-1" :class="{'opacity-100': isSearchOpen}" :overlay-mode="true" />
+        <UButton 
+          icon="i-heroicons-x-mark" 
+          color="gray" 
+          variant="ghost" 
+          aria-label="Close search"
+          class="shrink-0"
+          @click="isSearchOpen = false" 
+        />
+      </div>
       <div class="flex items-center gap-2 z-50 relative">
         <NuxtLink to="/" class="group flex items-center gap-2" @click="isOpen = false">
           <ClientOnly>
@@ -14,7 +25,7 @@
                <span class="font-bold text-lg">P</span>
             </div>
           </ClientOnly>
-          <span class="text-xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
+          <span class="text-xl font-bold tracking-tight text-text group-hover:text-primary transition-colors hidden sm:block">
             Publistandpados
           </span>
         </NuxtLink>
@@ -47,6 +58,16 @@
         </ClientOnly>
       </nav>
       <div class="flex items-center gap-2 md:hidden">
+        <ClientOnly>
+          <UButton
+            icon="i-heroicons-magnifying-glass"
+            color="gray"
+            variant="ghost"
+            aria-label="Search"
+            class="cursor-pointer"
+            @click="openSearch"
+          />
+        </ClientOnly>
         <ClientOnly>
           <UButton
             :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
@@ -108,9 +129,7 @@
                     {{ item.label }}
                   </NuxtLink>
                </nav>
-               <div class="mt-6">
-                 <ProductSearchInput @click="isOpen = false" />
-               </div>
+
                <div v-if="menuItems.length === 0 && !loading" class="mt-auto mb-10">
                   <UButton
                     block
@@ -177,7 +196,23 @@ watch(isOpen, (value) => {
   }
 })
 
+const isSearchOpen = ref(false)
+const searchInputRef = ref(null)
+
+const openSearch = async () => {
+  isSearchOpen.value = true
+  await nextTick()
+  searchInputRef.value?.focusInput()
+}
+
+watch(isSearchOpen, (value) => {
+  if (value) {
+    isOpen.value = false
+  }
+})
+
 watch(() => route.path, () => {
   isOpen.value = false
+  isSearchOpen.value = false
 })
 </script>
