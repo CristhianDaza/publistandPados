@@ -13,7 +13,7 @@
             </div>
           </ClientOnly>
             <span class="text-2xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
-              Publistand Pados
+              Publistandpados
             </span>
           </NuxtLink>
           <p class="text-secondary text-sm leading-relaxed max-w-xs">

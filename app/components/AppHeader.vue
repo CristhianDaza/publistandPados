@@ -15,7 +15,7 @@
             </div>
           </ClientOnly>
           <span class="text-xl font-bold tracking-tight text-text group-hover:text-primary transition-colors">
-            Publistand Pados
+            Publistandpados
           </span>
         </NuxtLink>
       </div>

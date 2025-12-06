@@ -72,7 +72,7 @@ definePageMeta({
         <div class="flex justify-center mb-6">
           <img
             src="https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png" 
-            alt="Logo Publistand Pados" 
+            alt="Logo Publistandpados" 
             class="max-h-[60px] w-auto object-contain drop-shadow-lg"
           />
         </div>
