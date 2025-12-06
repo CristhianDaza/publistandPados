@@ -19,6 +19,9 @@
           </span>
         </NuxtLink>
       </div>
+      <div class="hidden md:flex flex-1 max-w-md mx-6">
+        <ProductSearchInput class="w-full" />
+      </div>
       <nav class="hidden md:flex items-center gap-2">
         <NuxtLink
           v-for="item in menuItems"
@@ -105,6 +108,9 @@
                     {{ item.label }}
                   </NuxtLink>
                </nav>
+               <div class="mt-6">
+                 <ProductSearchInput @click="isOpen = false" />
+               </div>
                <div v-if="menuItems.length === 0 && !loading" class="mt-auto mb-10">
                   <UButton
                     block

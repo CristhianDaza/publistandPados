@@ -5,24 +5,27 @@
       <div class="text-center mb-12">
         <span class="text-primary font-bold tracking-wider uppercase text-sm">Catálogo</span>
         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">
-          {{ selectedCategory ? selectedCategory : 'Nuestras Categorías' }}
+          {{ pageTitle }}
         </h2>
+        <p v-if="searchQuery" class="text-gray-500 dark:text-gray-400 mb-2">
+          Resultados para: "{{ searchQuery }}"
+        </p>
         <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
       </div>
 
       <div v-if="loading" class="flex justify-center py-20">
         <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-primary" />
       </div>
-      <div v-else-if="selectedCategory" class="animate-fade-in">
+      <div v-else-if="selectedCategory || searchQuery" class="animate-fade-in">
         <div class="mb-8 flex items-center justify-between">
           <UButton 
             icon="i-heroicons-arrow-left" 
             variant="ghost" 
             color="gray" 
             class="hover:text-primary dark:hover:text-primary hover:bg-transparent dark:hover:bg-transparent cursor-pointer transition-colors"
-            @click="clearCategory"
+            @click="clearFilters"
           >
-            Volver a Categorías
+            {{ searchQuery ? 'Limpiar búsqueda' : 'Volver a Categorías' }}
           </UButton>
           <span class="text-sm text-gray-500">{{ filteredProducts.length }} productos encontrados</span>
         </div>
@@ -106,7 +109,7 @@
           <UIcon name="i-heroicons-face-frown" class="w-16 h-16 text-gray-400 mb-4 mx-auto" />
           <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No se encontraron productos</h3>
           <p class="text-gray-500">Intenta con otra categoría o regresa al inicio.</p>
-          <UButton class="mt-6 px-8 py-3 cursor-pointer hover:scale-105 transition-transform" @click="clearCategory">Ver todas las categorías</UButton>
+          <UButton class="mt-6 px-8 py-3 cursor-pointer hover:scale-105 transition-transform" @click="clearFilters">Ver todas las categorías</UButton>
         </div>
       </div>
 
@@ -158,6 +161,13 @@ onMounted(() => {
 })
 
 const selectedCategory = computed(() => route.query.category)
+const searchQuery = computed(() => route.query.search)
+
+const pageTitle = computed(() => {
+  if (searchQuery.value) return 'Resultados de Búsqueda'
+  if (selectedCategory.value) return selectedCategory.value
+  return 'Nuestras Categorías'
+})
 
 const categoriasCards = [
   {
@@ -313,6 +323,19 @@ const categoriasCards = [
 ];
 
 const filteredProducts = computed(() => {
+  // Filter by search query
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase().trim()
+    return products.value.filter(product => {
+      if (product.id?.toLowerCase().includes(query)) return true
+      if (product.name?.toLowerCase().includes(query)) return true
+      if (product.description?.toLowerCase().includes(query)) return true
+      if (product.category?.some(cat => cat.toLowerCase().includes(query))) return true
+      return false
+    })
+  }
+  
+  // Filter by category
   if (!selectedCategory.value) return []
   
   const targetCategory = selectedCategory.value.toLowerCase()
@@ -451,7 +474,7 @@ const selectCategory = (categoryItem) => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const clearCategory = () => {
-  router.push({ query: { category: undefined, page: undefined, limit: undefined } })
+const clearFilters = () => {
+  router.push({ query: { category: undefined, search: undefined, page: undefined, limit: undefined } })
 }
 </script>
