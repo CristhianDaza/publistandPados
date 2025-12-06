@@ -1,7 +1,7 @@
 <template>
   <NuxtLink 
     :to="`/products/${product.id}`"
-    class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full cursor-pointer"
+    class="group relative block w-full bg-secondary/5 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary/20 hover:-translate-y-2 flex flex-col h-full cursor-pointer"
   >
     <div class="absolute top-3 left-3 z-10 flex flex-col gap-2">
       <span v-if="isNew" class="bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg backdrop-blur-sm bg-opacity-90">
@@ -16,7 +16,7 @@
       <img 
         :src="product.mainImage" 
         :alt="product.name"
-        class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply dark:mix-blend-normal"
+        class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-700 ease-out"
       />
       
       <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]">
@@ -31,7 +31,7 @@
         {{ product.category[0] }}
       </span>
 
-      <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 min-h-[2.5rem] text-sm md:text-base group-hover:text-primary transition-colors">
+      <h3 class="font-bold text-secondary mb-2 line-clamp-2 min-h-[2.5rem] text-sm md:text-base group-hover:text-primary transition-colors">
         {{ product.name }}
       </h3>
 
@@ -40,7 +40,7 @@
           <p class="text-primary font-bold text-lg md:text-xl">
             {{ formattedPrice }}
           </p>
-          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide bg-gray-100 dark:bg-gray-700/50 px-1.5 py-0.5 rounded">
+          <span class="text-[10px] text-gray-500 dark:text-white font-bold uppercase tracking-wide bg-gray-100 dark:bg-secondary/20 px-1.5 py-0.5 rounded">
             + IVA
           </span>
         </div>
@@ -56,14 +56,14 @@
               :style="{ backgroundColor: color.hex }"
               :title="color.name"
             ></div>
-            <div v-if="remainingColorsCount > 0" class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 border border-white dark:border-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-600 dark:text-gray-300 ring-1 ring-black/5 dark:ring-white/10">
+            <div v-if="remainingColorsCount > 0" class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-800 border border-white dark:border-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-600 dark:text-gray-300 ring-1 ring-black/5 dark:ring-white/10">
               +{{ remainingColorsCount }}
             </div>
           </div>
           <span class="text-xs text-gray-400 font-medium">{{ uniqueColors.length }} colores</span>
         </div>
 
-        <div class="pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+        <div class="pt-3 border-t border-secondary/20 flex justify-between items-center text-xs">
           <div class="flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full" :class="hasStock ? 'bg-green-500' : 'bg-red-500'"></div>
             <span :class="hasStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'" class="font-medium">

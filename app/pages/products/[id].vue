@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 py-8 md:py-16 transition-all duration-500">
+  <div class="min-h-screen bg-white dark:bg-gray-900 py-8 md:py-16 transition-all duration-500">
     <Teleport to="body">
       <Transition name="lightbox">
         <div 
@@ -238,8 +238,8 @@
               </div>
             </div>
 
-            <div v-if="hasVariants" class="bg-white dark:bg-gray-800/50 rounded-3xl border border-gray-100 dark:border-gray-700/50 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
-              <div class="p-5 border-b border-gray-100 dark:border-gray-700/50 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800/80 dark:to-gray-800/50">
+            <div v-if="hasVariants" class="bg-white dark:bg-gray-800/50 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
+              <div class="p-5 border-b border-secondary/20 bg-secondary/5">
                 <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-3 text-lg">
                   <span class="p-2 bg-primary/10 rounded-lg">
                     <UIcon name="i-heroicons-swatch" class="text-primary text-xl" />
@@ -249,14 +249,14 @@
               </div>
               <div class="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin">
                 <table class="w-full text-sm">
-                  <thead class="text-xs text-gray-500 uppercase bg-gray-50/80 dark:bg-gray-800/80 sticky top-0 backdrop-blur-sm">
+                  <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
                     <tr>
                       <th class="px-5 py-4 text-left font-semibold">Color</th>
                       <th class="px-5 py-4 text-right font-semibold">Precio</th>
                       <th class="px-5 py-4 text-right font-semibold">Stock</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                  <tbody class="divide-y divide-secondary/10">
                     <tr 
                       v-for="(variant, idx) in product.tableQuantity" 
                       :key="idx"
@@ -303,7 +303,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div 
                   v-if="product.material" 
-                  class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/60 dark:to-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
                 >
                   <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="flex items-center gap-2 mb-2">
@@ -315,7 +315,7 @@
                 
                 <div 
                   v-if="product.size" 
-                  class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/60 dark:to-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
                 >
                   <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="flex items-center gap-2 mb-2">
@@ -327,7 +327,7 @@
                 
                 <div 
                   v-if="product.areaPrinting" 
-                  class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/60 dark:to-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
                 >
                   <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="flex items-center gap-2 mb-2">
@@ -339,7 +339,7 @@
                 
                 <div 
                   v-if="product.printing" 
-                  class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/60 dark:to-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
                 >
                   <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="flex items-center gap-2 mb-2">
@@ -351,7 +351,7 @@
                 
                 <div 
                   v-if="product.packaging" 
-                  class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/60 dark:to-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden col-span-1 sm:col-span-2"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden col-span-1 sm:col-span-2"
                 >
                   <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="flex items-center gap-2 mb-2">

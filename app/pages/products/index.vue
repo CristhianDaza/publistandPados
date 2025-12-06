@@ -31,9 +31,9 @@
         </div>
 
         <div v-if="filteredProducts.length > 0">
-          <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
+          <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-secondary/5 p-4 rounded-xl border border-secondary/20">
             <div class="flex items-center gap-3">
-              <span class="text-sm text-gray-500 font-medium">Mostrar:</span>
+              <span class="text-sm text-secondary font-medium">Mostrar:</span>
               <div class="relative">
                 <select
                   v-model="itemsPerPage"
@@ -51,8 +51,8 @@
             </div>
 
             <div class="flex items-center gap-4">
-               <span class="text-sm text-gray-500">
-                 <span class="hidden sm:inline">Página</span> <span class="font-bold text-gray-900 dark:text-white">{{ currentPage }}</span> de <span class="font-bold text-gray-900 dark:text-white">{{ totalPages }}</span>
+               <span class="text-sm text-secondary">
+                 <span class="hidden sm:inline">Página</span> <span class="font-bold text-secondary">{{ currentPage }}</span> de <span class="font-bold text-secondary">{{ totalPages }}</span>
                  <span class="hidden sm:inline mx-2">-</span>
                  <span class="text-xs sm:text-sm">Mostrando {{ startItem }} - {{ endItem }} de {{ totalProducts }}</span>
                </span>
