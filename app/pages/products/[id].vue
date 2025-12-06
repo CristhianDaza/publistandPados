@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900 py-8 md:py-16 transition-all duration-500">
+  <div class="min-h-screen bg-background py-8 md:py-16 transition-all duration-500">
     <Teleport to="body">
       <Transition name="lightbox">
         <div 
@@ -59,7 +59,7 @@
           Productos
         </NuxtLink>
         <UIcon name="i-heroicons-chevron-right" class="text-gray-400 text-xs" />
-        <span class="text-gray-900 dark:text-white font-medium truncate max-w-[200px]">
+        <span class="text-text font-medium truncate max-w-[200px]">
           {{ product?.name || 'Cargando...' }}
         </span>
       </nav>
@@ -76,7 +76,7 @@
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
           <UIcon name="i-heroicons-exclamation-triangle" class="text-4xl text-red-500" />
         </div>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Error al cargar el producto</h2>
+        <h2 class="text-2xl font-bold text-text mb-3">Error al cargar el producto</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">{{ error }}</p>
         <UButton to="/products" color="primary" size="lg" class="shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-shadow">
           <UIcon name="i-heroicons-arrow-left" class="mr-2" />
@@ -89,7 +89,7 @@
           
           <div class="lg:col-span-7 space-y-6">
             <div 
-              class="relative aspect-square bg-white dark:bg-gray-800/80 rounded-3xl overflow-hidden shadow-2xl shadow-black/5 dark:shadow-black/20 border border-gray-100/80 dark:border-gray-700/50 group cursor-zoom-in backdrop-blur-sm"
+              class="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl shadow-black/5 dark:shadow-black/20 border border-gray-100/80 dark:border-gray-700/50 group cursor-zoom-in backdrop-blur-sm"
               @click="openLightbox"
             >
               <div class="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/30 dark:from-gray-700/20 dark:to-transparent pointer-events-none z-10"></div>
@@ -130,7 +130,7 @@
                     ]"
                   >
                     <div 
-                      class="w-18 h-18 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white dark:bg-gray-800 shadow-md"
+                      class="w-18 h-18 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white shadow-md"
                       :class="[
                         selectedImage === img 
                           ? 'border-primary shadow-lg shadow-primary/25' 
@@ -197,12 +197,12 @@
                 </span>
               </div>
               
-              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight tracking-tight">
+              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-text leading-tight tracking-tight">
                 {{ product.name }}
               </h1>
               
               <div class="flex items-end gap-3 pt-2">
-                <span class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
+                <span class="text-4xl md:text-5xl font-bold text-text">
                   {{ priceDisplay }}
                 </span>
                 <span class="text-sm text-gray-500 dark:text-gray-400 font-medium pb-2 flex items-center gap-1">
@@ -214,7 +214,7 @@
 
             <div v-if="product.description" class="relative">
               <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/50 to-transparent rounded-full"></div>
-              <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed pl-2">
+              <p class="text-text text-lg leading-relaxed pl-2">
                 {{ product.description }}
               </p>
             </div>
@@ -238,9 +238,9 @@
               </div>
             </div>
 
-            <div v-if="hasVariants" class="bg-white dark:bg-gray-800/50 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
+            <div v-if="hasVariants" class="bg-secondary/5 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
               <div class="p-5 border-b border-secondary/20 bg-secondary/5">
-                <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-3 text-lg">
+                <h3 class="font-semibold text-text flex items-center gap-3 text-lg">
                   <span class="p-2 bg-primary/10 rounded-lg">
                     <UIcon name="i-heroicons-swatch" class="text-primary text-xl" />
                   </span>
@@ -268,13 +268,13 @@
                             class="w-6 h-6 rounded-full shadow-inner ring-2 ring-white dark:ring-gray-700 transition-transform group-hover:scale-110"
                             :style="{ backgroundColor: getColorHex(variant.colorName || variant.color) }"
                           ></span>
-                          <span class="font-medium text-gray-900 dark:text-white">
+                          <span class="font-medium text-text">
                             {{ variant.colorName || variant.color }}
                           </span>
                         </div>
                       </td>
                       <td class="px-5 py-4 text-right">
-                        <span class="font-mono text-gray-700 dark:text-gray-300 font-medium">
+                        <span class="font-mono text-text font-medium">
                           {{ formatCurrency(variant.price) }}
                         </span>
                       </td>
@@ -296,7 +296,7 @@
             </div>
 
             <div class="space-y-4">
-              <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-lg">
+              <h3 class="font-semibold text-text flex items-center gap-2 text-lg">
                 <UIcon name="i-heroicons-information-circle" class="text-primary" />
                 Especificaciones
               </h3>
@@ -310,7 +310,7 @@
                     <UIcon name="i-heroicons-cube" class="text-primary/70" />
                     <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Material</span>
                   </div>
-                  <span class="font-semibold text-gray-900 dark:text-white text-lg">{{ product.material }}</span>
+                  <span class="font-semibold text-text text-lg">{{ product.material }}</span>
                 </div>
                 
                 <div 
@@ -322,7 +322,7 @@
                     <UIcon name="i-heroicons-arrows-pointing-out" class="text-primary/70" />
                     <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Medidas</span>
                   </div>
-                  <span class="font-semibold text-gray-900 dark:text-white text-lg">{{ product.size }}</span>
+                  <span class="font-semibold text-text text-lg">{{ product.size }}</span>
                 </div>
                 
                 <div 
@@ -334,7 +334,7 @@
                     <UIcon name="i-heroicons-photo" class="text-primary/70" />
                     <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Área de Impresión</span>
                   </div>
-                  <span class="font-semibold text-gray-900 dark:text-white text-lg">{{ product.areaPrinting }}</span>
+                  <span class="font-semibold text-text text-lg">{{ product.areaPrinting }}</span>
                 </div>
                 
                 <div 
@@ -346,7 +346,7 @@
                     <UIcon name="i-heroicons-paint-brush" class="text-primary/70" />
                     <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Técnica de Marca</span>
                   </div>
-                  <span class="font-semibold text-gray-900 dark:text-white text-lg">{{ product.printing }}</span>
+                  <span class="font-semibold text-text text-lg">{{ product.printing }}</span>
                 </div>
                 
                 <div 
@@ -358,7 +358,7 @@
                     <UIcon name="i-heroicons-gift" class="text-primary/70" />
                     <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Empaque</span>
                   </div>
-                  <span class="font-medium text-gray-900 dark:text-white leading-relaxed">{{ product.packaging }}</span>
+                  <span class="font-medium text-text leading-relaxed">{{ product.packaging }}</span>
                 </div>
               </div>
             </div>
@@ -370,7 +370,7 @@
                   variant="outline" 
                   color="gray" 
                   size="xl"
-                  class="flex-1 justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all"
                 >
                   <UIcon name="i-heroicons-arrow-left" class="mr-2" />
                   Volver al Catálogo
