@@ -1,6 +1,6 @@
 <template>
   <footer class="border-t border-secondary/20 bg-background/50 backdrop-blur-sm mt-auto">
-    <UContainer class="py-12 md:py-16 max-w-6xl mx-auto">
+    <UContainer class="pt-12 pb-8 md:pt-16 md:pb-8 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         <div class="space-y-4">
           <NuxtLink to="/" class="flex items-center gap-2 group">
@@ -90,11 +90,26 @@
           &copy; {{ new Date().getFullYear() }} PubliStand. Todos los derechos reservados.
         </p>
         <div class="flex gap-6 text-sm text-secondary">
-          <NuxtLink to="/privacidad" class="hover:text-primary transition-colors">Privacidad</NuxtLink>
-          <NuxtLink to="/terminos" class="hover:text-primary transition-colors">Términos</NuxtLink>
+          <!-- <NuxtLink to="/privacidad" class="hover:text-primary transition-colors">Privacidad</NuxtLink> -->
+          <!-- <NuxtLink to="/terminos" class="hover:text-primary transition-colors">Términos</NuxtLink> -->
         </div>
       </div>
     </UContainer>
+    <div class="border-t border-gray-200 bg-gray-50 py-4 text-center text-sm text-gray-500">
+      <p>
+        Designed & Developed by
+        <a
+          href="https://cris-dev.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-300 underline underline-offset-2 decoration-gray-400 hover:decoration-indigo-600"
+        >
+          cris-dev.com
+        </a>
+        <span> | Made with </span>
+        <span class="ml-1 text-blue-500 animate-pulse">💙</span>
+      </p>
+    </div>
   </footer>
 </template>
 
