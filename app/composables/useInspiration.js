@@ -2,9 +2,9 @@ import { ref } from 'vue'
 import { getInspiration, createInspirationItem, seedInspiration } from '~/services/firebase/inspirationFirebase'
 
 export const useInspiration = () => {
-  const inspirationItems = ref([])
-  const loading = ref(false)
-  const error = ref(null)
+  const inspirationItems = useState('inspiration_items', () => [])
+  const loading = useState('inspiration_loading', () => false)
+  const error = useState('inspiration_error', () => null)
 
   const fetchInspiration = async () => {
     loading.value = true

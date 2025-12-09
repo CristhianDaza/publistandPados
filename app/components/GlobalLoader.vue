@@ -11,20 +11,21 @@ const { logo } = useLogo()
     >
       <div class="relative flex flex-col items-center">
         <div class="mb-8 relative">
-          <div v-if="logo?.url" class="w-32 h-32 relative">
-             <img 
-              :src="logo.url" 
-              alt="Logo" 
-              class="w-full h-full object-contain dark:hidden animate-pulse"
-            />
-            <img 
-              :src="logo.urlDark || logo.url" 
-              alt="Logo" 
-              class="w-full h-full object-contain hidden dark:block animate-pulse"
-            />
-          </div>
-          <div v-else class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse flex items-center justify-center">
-            <UIcon name="i-heroicons-sparkles" class="w-12 h-12 text-gray-400" />
+          <div class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse flex items-center justify-center">
+            <ClientOnly>
+              <template #default>
+                <img 
+                  v-if="logo?.url"
+                  :src="logo.url" 
+                  alt="Logo" 
+                  class="w-full h-full object-contain"
+                />
+                <UIcon v-else name="i-heroicons-sparkles" class="w-12 h-12 text-gray-400" />
+              </template>
+              <template #fallback>
+                <UIcon name="i-heroicons-sparkles" class="w-12 h-12 text-gray-400" />
+              </template>
+            </ClientOnly>
           </div>
           <div class="absolute -inset-4 rounded-full border-4 border-primary-500/30 border-t-primary-600 animate-spin"></div>
         </div>

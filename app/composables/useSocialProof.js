@@ -1,9 +1,9 @@
 import { getSocialProof, createSocialProofItem, updateSocialProofItem, deleteSocialProofItem } from '~/services/firebase/socialProofFirebase'
 
 export const useSocialProof = () => {
-  const socialProofItems = ref([])
-  const loading = ref(false)
-  const error = ref(null)
+  const socialProofItems = useState('social_proof_items', () => [])
+  const loading = useState('social_proof_loading', () => false)
+  const error = useState('social_proof_error', () => null)
 
   const fetchSocialProof = async () => {
     loading.value = true

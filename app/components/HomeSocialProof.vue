@@ -56,7 +56,7 @@ const displayItems = computed(() => {
   
   return socialProofItems.value.map((item, index) => ({
     ...item,
-    uniqueKey: `${item.id || index}-${Math.random()}`
+    uniqueKey: item.id || `item-${index}`
   }))
 })
 </script>
