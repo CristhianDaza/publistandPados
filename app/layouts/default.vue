@@ -7,6 +7,7 @@
     </main>
 
     <AppFooter />
+    <WhatsAppButton />
     <ScrollToTop />
   </div>
 </template>
