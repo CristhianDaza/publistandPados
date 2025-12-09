@@ -380,6 +380,18 @@
           </div>
         </div>
       </div>
+      <div v-if="similarProducts.length > 0" class="mt-16 md:mt-24 border-t border-gray-100 dark:border-gray-800 pt-16">
+        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8">
+          Más Productos
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ProductCard 
+            v-for="prod in similarProducts" 
+            :key="prod.id" 
+            :product="prod"
+          />
+        </div>
+      </div>
     </UContainer>
   </div>
 </template>
@@ -387,7 +399,7 @@
 <script setup>
 const route = useRoute()
 import { getColorHex } from '~/utils/colorMap'
-const { getProductById, loading, error } = useProducts()
+const { getProductById, products, loading, error } = useProducts()
 
 const product = ref(null)
 const selectedImage = ref('')
@@ -445,6 +457,38 @@ const isNew = computed(() => {
   return product.value?.labels?.some(l => 
     l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo')
   )
+})
+
+const similarProducts = computed(() => {
+  if (!product.value || !products.value.length) return []
+
+  const currentId = product.value.id
+  const currentCategories = product.value.category || []
+  const currentNameWords = product.value.name 
+    ? product.value.name.toLowerCase().split(' ').filter(w => w.length > 3) 
+    : []
+
+  let candidates = products.value.filter(p => p.id !== currentId)
+
+  let matches = candidates.filter(p => {
+    if (!p.category) return false
+    return p.category.some(c => currentCategories.includes(c))
+  })
+
+  if (matches.length < 4) {
+     const nameMatches = candidates.filter(p => {
+        if (matches.find(m => m.id === p.id)) return false
+        
+        if (!p.name) return false
+        const nameLower = p.name.toLowerCase()
+        return currentNameWords.some(word => nameLower.includes(word))
+     })
+     matches = [...matches, ...nameMatches]
+  }
+
+  return matches
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 4)
 })
 
 const priceDisplay = computed(() => {
