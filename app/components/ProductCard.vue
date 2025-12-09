@@ -35,7 +35,7 @@
         {{ product.name }}
       </h3>
 
-      <div class="mb-4">
+      <div v-if="user" class="mb-4">
         <div class="flex items-baseline gap-2">
           <p class="text-primary font-bold text-lg md:text-xl">
             {{ formattedPrice }}
@@ -82,6 +82,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getColorHex } from '~/utils/colorMap'
+const { user } = useAuth()
 
 const props = defineProps({
   product: {

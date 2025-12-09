@@ -201,7 +201,7 @@
                 {{ product.name }}
               </h1>
               
-              <div class="flex items-end gap-3 pt-2">
+              <div v-if="user" class="flex items-end gap-3 pt-2">
                 <span class="text-4xl md:text-5xl font-bold text-text">
                   {{ priceDisplay }}
                 </span>
@@ -252,7 +252,7 @@
                   <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
                     <tr>
                       <th class="px-5 py-4 text-left font-semibold">Color</th>
-                      <th class="px-5 py-4 text-right font-semibold">Precio</th>
+                      <th v-if="user" class="px-5 py-4 text-right font-semibold">Precio</th>
                       <th class="px-5 py-4 text-right font-semibold">Stock</th>
                     </tr>
                   </thead>
@@ -273,7 +273,7 @@
                           </span>
                         </div>
                       </td>
-                      <td class="px-5 py-4 text-right">
+                      <td v-if="user" class="px-5 py-4 text-right">
                         <span class="font-mono text-text font-medium">
                           {{ formatCurrency(variant.price) }}
                         </span>
@@ -425,6 +425,7 @@ const route = useRoute()
 import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products, loading, error } = useProducts()
 const { footerConfig } = useFooter()
+const { user } = useAuth()
 
 const quoteUrl = computed(() => {
   const phone = footerConfig.value?.contact?.phone
