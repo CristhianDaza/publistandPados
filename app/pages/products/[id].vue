@@ -365,15 +365,15 @@
 
             <div class="pt-6 border-t border-gray-100 dark:border-gray-700/50">
               <div class="flex flex-col sm:flex-row gap-4">
-                 <UButton 
-                  to="/products" 
+                <UButton 
+                  @click="goBack"
                   variant="outline" 
                   color="gray" 
                   size="xl"
-                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all"
+                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all cursor-pointer"
                 >
                   <UIcon name="i-heroicons-arrow-left" class="mr-2" />
-                  Volver al Catálogo
+                  Volver
                 </UButton>
                 <UButton 
                   v-if="quoteUrl && quoteUrl !== '#'"
@@ -422,9 +422,18 @@
 
 <script setup>
 const route = useRoute()
+const router = useRouter()
 import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products, loading, error } = useProducts()
 const { footerConfig } = useFooter()
+
+const goBack = () => {
+  if (window.history.state?.back) {
+    router.back()
+  } else {
+    router.push('/products')
+  }
+}
 const { user } = useAuth()
 
 const quoteUrl = computed(() => {
