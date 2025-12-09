@@ -381,6 +381,7 @@
                   target="_blank"
                   size="xl"
                   class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0"
+                  @click="handleQuoteRequest"
                 >
                   <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
                   Solicitar Cotización
@@ -426,6 +427,7 @@ const router = useRouter()
 import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products, loading, error } = useProducts()
 const { footerConfig } = useFooter()
+const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 
 const goBack = () => {
   if (window.history.state?.back) {
@@ -641,6 +643,16 @@ const handleKeydown = (e) => {
   }
 }
 
+const handleQuoteRequest = () => {
+  if (product.value) {
+    trackQuoteRequest(product.value)
+    trackWhatsAppClick('product', {
+      id: product.value.id,
+      name: product.value.name
+    })
+  }
+}
+
 onMounted(async () => {
   window.addEventListener('keydown', handleKeydown)
   
@@ -651,6 +663,7 @@ onMounted(async () => {
       selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
       currentImageIndex.value = 0
       addToRecent(data.id)
+      trackProductView(data)
       
       if (process.client) {
         recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
@@ -674,6 +687,7 @@ watch(() => route.params.id, async (newId) => {
         selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
         currentImageIndex.value = 0
         addToRecent(data.id)
+        trackProductView(data)
       }
     } catch (e) {
       console.error('Failed to reload product', e)

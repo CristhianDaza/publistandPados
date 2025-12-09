@@ -153,6 +153,7 @@ const props = defineProps({
 
 const router = useRouter()
 const { products, getProducts } = useProducts()
+const { trackSearch } = useAnalytics()
 
 const searchContainer = ref(null)
 const searchInput = ref(null)
@@ -211,6 +212,8 @@ const handleSearch = () => {
   
   const query = searchQuery.value
   const results = searchResults.value
+
+  trackSearch(query, results.length)
   
   searchQuery.value = ''
   

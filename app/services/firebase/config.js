@@ -1,12 +1,12 @@
-import { initializeApp } from 'firebase/app'
+import { initializeApp, getApps, getApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
+import { getAnalytics, isSupported } from 'firebase/analytics'
 
 let db = null
+let analytics = null
 
-export const getFirebaseDb = () => {
-  if (db) return db
-
+const getFirebaseApp = () => {
   const config = useRuntimeConfig()
 
   const firebaseConfig = {
@@ -15,15 +15,40 @@ export const getFirebaseDb = () => {
     projectId: config.public.firebaseProjectId,
     storageBucket: config.public.firebaseStorageBucket,
     messagingSenderId: config.public.firebaseMessagingSenderId,
-    appId: config.public.firebaseAppId
+    appId: config.public.firebaseAppId,
+    measurementId: config.public.firebaseMeasurementId
   }
 
-  const app = initializeApp(firebaseConfig)
+  return getApps().length ? getApp() : initializeApp(firebaseConfig)
+}
+
+export const getFirebaseDb = () => {
+  if (db) return db
+
+  const app = getFirebaseApp()
   db = getFirestore(app)
   return db
 }
 
 export const getFirebaseAuth = () => {
-  const app = getFirebaseDb().app
+  const app = getFirebaseApp()
   return getAuth(app)
 }
+
+export const getFirebaseAnalytics = async () => {
+  if (!process.client) return null
+  if (analytics) return analytics
+
+  try {
+    const supported = await isSupported()
+    if (supported) {
+      const app = getFirebaseApp()
+      analytics = getAnalytics(app)
+      return analytics
+    }
+  } catch (e) {
+    console.warn('Firebase Analytics not supported:', e)
+  }
+  return null
+}
+

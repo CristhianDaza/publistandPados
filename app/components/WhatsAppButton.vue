@@ -17,6 +17,7 @@
           rel="noopener noreferrer"
           class="relative z-10 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40 transition-all duration-300 hover:scale-110 hover:bg-[#20bd5a] hover:shadow-[#25D366]/60 focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
           aria-label="Contact on WhatsApp"
+          @click="handleWhatsAppClick"
         >
           <UIcon name="i-simple-icons-whatsapp" class="h-8 w-8" />
         </a>
@@ -42,6 +43,7 @@
 
 <script setup>
 const { footerConfig } = useFooter()
+const { trackWhatsAppClick } = useAnalytics()
 
 const whatsappUrl = computed(() => {
   const phone = footerConfig.value?.contact?.phone
@@ -49,4 +51,9 @@ const whatsappUrl = computed(() => {
   const cleanPhone = phone.replace(/\D/g, '')
   return `https://wa.me/${cleanPhone}`
 })
+
+const handleWhatsAppClick = () => {
+  trackWhatsAppClick('global')
+}
 </script>
+
