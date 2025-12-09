@@ -19,8 +19,14 @@
 
 <script setup>
 const { carouselItems, loading, fetchCarousel } = useCarousel()
+const { setPageSeo } = useSeo()
 const syncLoading = ref(false)
 const toast = useToast()
+
+setPageSeo({
+  title: 'Artículos Promocionales y Publicitarios',
+  description: 'Descubre nuestro amplio catálogo de artículos promocionales personalizados. Bolígrafos, tazas, textiles y más para tu marca.'
+})
 
 onMounted(() => {
   fetchCarousel()

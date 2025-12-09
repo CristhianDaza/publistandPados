@@ -155,6 +155,7 @@
 const route = useRoute()
 const router = useRouter()
 const { getProducts, products, loading } = useProducts()
+const { setPageSeo } = useSeo()
 
 onMounted(() => {
   getProducts()
@@ -167,6 +168,29 @@ const pageTitle = computed(() => {
   if (searchQuery.value) return 'Resultados de Búsqueda'
   if (selectedCategory.value) return selectedCategory.value
   return 'Nuestras Categorías'
+})
+
+const seoTitle = computed(() => {
+  if (searchQuery.value) return `Búsqueda: ${searchQuery.value}`
+  if (selectedCategory.value) return `${selectedCategory.value} - Catálogo`
+  return 'Catálogo de Productos'
+})
+
+const seoDescription = computed(() => {
+  if (searchQuery.value) {
+    return `Resultados de búsqueda para "${searchQuery.value}" en artículos promocionales.`
+  }
+  if (selectedCategory.value) {
+    return `Explora nuestra colección de ${selectedCategory.value}. Artículos promocionales de alta calidad.`
+  }
+  return 'Explora nuestro catálogo completo de artículos promocionales. Bolígrafos, mugs, tecnología, bolsos y más.'
+})
+
+watchEffect(() => {
+  setPageSeo({
+    title: seoTitle.value,
+    description: seoDescription.value
+  })
 })
 
 const categoriasCards = [

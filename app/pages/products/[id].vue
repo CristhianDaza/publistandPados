@@ -428,6 +428,7 @@ import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products, loading, error } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
+const { setProductSeo } = useSeo()
 
 const goBack = () => {
   if (window.history.state?.back) {
@@ -664,6 +665,7 @@ onMounted(async () => {
       currentImageIndex.value = 0
       addToRecent(data.id)
       trackProductView(data)
+      setProductSeo(data)
       
       if (process.client) {
         recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
@@ -688,6 +690,7 @@ watch(() => route.params.id, async (newId) => {
         currentImageIndex.value = 0
         addToRecent(data.id)
         trackProductView(data)
+        setProductSeo(data)
       }
     } catch (e) {
       console.error('Failed to reload product', e)

@@ -26,5 +26,27 @@ export default defineNuxtConfig({
       appId: process.env.NUXT_FIREBASE2_APP_ID,
       sourceCollection: process.env.NUXT_FIREBASE2_SOURCE_COLLECTION
     }
+  },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'es'
+      },
+      titleTemplate: '%s | Publistandpados',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Publistand Pados' },
+        { property: 'og:locale', content: 'es_CO' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@publistandpados' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
   }
 })
