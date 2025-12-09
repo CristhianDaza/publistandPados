@@ -87,7 +87,7 @@
       <div v-else-if="product" class="animate-fade-in">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
           
-          <div class="lg:col-span-7 space-y-6">
+          <div class="lg:col-span-7 self-start lg:sticky lg:top-24 space-y-4">
             <div 
               class="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl shadow-black/5 dark:shadow-black/20 border border-gray-100/80 dark:border-gray-700/50 group cursor-zoom-in backdrop-blur-sm"
               @click="openLightbox"
@@ -115,14 +115,14 @@
               </div>
             </div>
 
-            <div v-if="allImages.length > 1" class="relative mt-4">
-              <div class="px-2 py-3 -mx-2 overflow-visible">
-                <div class="flex gap-4 overflow-x-auto pb-3 pt-1 scrollbar-hide scroll-smooth">
+            <div v-if="allImages.length > 1" class="relative mt-2 group/thumbs-container">
+              <div class="px-2 overflow-visible">
+                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-hide scroll-smooth snap-x snap-mandatory" ref="thumbnailsContainer">
                   <button
                     v-for="(img, index) in allImages"
                     :key="index"
                     @click="selectImage(img, index)"
-                    class="relative flex-shrink-0 transition-all duration-300 group/thumb"
+                    class="relative flex-shrink-0 transition-all duration-300 group/thumb cursor-pointer snap-start"
                     :class="[
                       selectedImage === img 
                         ? 'scale-105' 
@@ -130,18 +130,18 @@
                     ]"
                   >
                     <div 
-                      class="w-18 h-18 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white shadow-md"
-                      :class="[
-                        selectedImage === img 
-                          ? 'border-primary shadow-lg shadow-primary/25' 
-                          : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-lg'
-                      ]"
-                    >
-                      <img 
-                        :src="img" 
-                        :alt="`Vista ${index + 1}`"
-                        class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover/thumb:scale-105" 
-                      />
+                      class="w-16 h-16 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white shadow-md" 
+                      :class="[ 
+                        selectedImage === img  
+                          ? 'border-primary shadow-lg shadow-primary/25'  
+                          : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-lg' 
+                      ]" 
+                    > 
+                      <img  
+                        :src="img"  
+                        :alt="`Vista ${index + 1}`" 
+                        class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover/thumb:scale-105"  
+                      /> 
                     </div>
                     <div 
                       v-if="selectedImage === img"
@@ -151,16 +151,16 @@
                 </div>
               </div>
               
-              <div v-if="allImages.length > 5" class="hidden md:flex absolute top-1/2 -translate-y-1/2 left-0 right-0 justify-between pointer-events-none px-0">
+              <div v-if="allImages.length > 4" class="hidden md:flex absolute top-1/2 -translate-y-1/2 left-0 right-0 justify-between pointer-events-none px-0 opacity-0 group-hover/thumbs-container:opacity-100 transition-opacity duration-300">
                 <button 
                   @click="scrollThumbnails(-1)"
-                  class="pointer-events-auto w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -ml-4"
+                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -ml-4"
                 >
                   <UIcon name="i-heroicons-chevron-left" class="text-sm" />
                 </button>
                 <button 
                   @click="scrollThumbnails(1)"
-                  class="pointer-events-auto w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -mr-4"
+                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -mr-4"
                 >
                   <UIcon name="i-heroicons-chevron-right" class="text-sm" />
                 </button>
