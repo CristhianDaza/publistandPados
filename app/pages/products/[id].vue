@@ -366,6 +366,17 @@
             <div class="pt-6 border-t border-gray-100 dark:border-gray-700/50">
               <div class="flex flex-col sm:flex-row gap-4">
                 <UButton 
+                  v-if="quoteUrl && quoteUrl !== '#'"
+                  :to="quoteUrl"
+                  target="_blank"
+                  size="xl"
+                  class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0"
+                >
+                  <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
+                  Solicitar Cotización
+                </UButton>
+                
+                <UButton 
                   to="/products" 
                   variant="outline" 
                   color="gray" 
@@ -400,6 +411,16 @@
 const route = useRoute()
 import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products, loading, error } = useProducts()
+const { footerConfig } = useFooter()
+
+const quoteUrl = computed(() => {
+  const phone = footerConfig.value?.contact?.phone
+  if (!phone || !product.value) return '#'
+  
+  const cleanPhone = phone.replace(/\D/g, '')
+  const text = `Hola, estoy interesado en el producto ${product.value.name} (ID: ${product.value.id}). Me gustaría recibir una cotización.`
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
+})
 
 const product = ref(null)
 const selectedImage = ref('')
