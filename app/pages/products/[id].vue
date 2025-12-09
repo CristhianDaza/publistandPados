@@ -365,6 +365,16 @@
 
             <div class="pt-6 border-t border-gray-100 dark:border-gray-700/50">
               <div class="flex flex-col sm:flex-row gap-4">
+                 <UButton 
+                  to="/products" 
+                  variant="outline" 
+                  color="gray" 
+                  size="xl"
+                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all"
+                >
+                  <UIcon name="i-heroicons-arrow-left" class="mr-2" />
+                  Volver al Catálogo
+                </UButton>
                 <UButton 
                   v-if="quoteUrl && quoteUrl !== '#'"
                   :to="quoteUrl"
@@ -374,17 +384,6 @@
                 >
                   <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
                   Solicitar Cotización
-                </UButton>
-                
-                <UButton 
-                  to="/products" 
-                  variant="outline" 
-                  color="gray" 
-                  size="xl"
-                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all"
-                >
-                  <UIcon name="i-heroicons-arrow-left" class="mr-2" />
-                  Volver al Catálogo
                 </UButton>
               </div>
             </div>
