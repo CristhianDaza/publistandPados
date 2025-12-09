@@ -149,7 +149,7 @@ const uniqueColors = computed(() => {
     if (item.colorName && !colors.has(item.colorName)) {
       colors.set(item.colorName, {
         name: item.colorName,
-        hex: getColorHex(item.colorName)
+        hex: getColorHex(item.color)
       })
     }
   })

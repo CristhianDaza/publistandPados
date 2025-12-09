@@ -247,7 +247,7 @@
                   Disponibilidad por Color
                 </h3>
               </div>
-              <div class="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin">
+              <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
                     <tr>
@@ -266,10 +266,10 @@
                         <div class="flex items-center gap-3">
                           <span 
                             class="w-6 h-6 rounded-full shadow-inner ring-2 ring-white dark:ring-gray-700 transition-transform group-hover:scale-110"
-                            :style="{ backgroundColor: getColorHex(variant.colorName || variant.color) }"
+                            :style="{ backgroundColor: getColorHex(variant.color) }"
                           ></span>
                           <span class="font-medium text-text">
-                            {{ variant.colorName || variant.color }}
+                            {{ variant.colorName }}
                           </span>
                         </div>
                       </td>
