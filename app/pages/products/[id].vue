@@ -403,6 +403,20 @@
           />
         </div>
       </div>
+
+      <div v-if="recentlyViewedProducts.length > 0" class="mt-16 border-t border-gray-100 dark:border-gray-800 pt-16 mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8 flex items-center gap-2">
+          <UIcon name="i-heroicons-clock" class="text-primary" />
+          Vistos Recientemente
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ProductCard 
+            v-for="prod in recentlyViewedProducts" 
+            :key="prod.id" 
+            :product="prod"
+          />
+        </div>
+      </div>
     </UContainer>
   </div>
 </template>
@@ -512,6 +526,40 @@ const similarProducts = computed(() => {
     .slice(0, 4)
 })
 
+// Recently Viewed Logic
+const recentProductIds = ref([])
+
+const recentlyViewedProducts = computed(() => {
+  if (!recentProductIds.value.length || !products.value.length) return []
+  
+  // Filter products that match stored IDs, excluding current product
+  return recentProductIds.value
+    .filter(id => id !== product.value?.id)
+    .map(id => products.value.find(p => p.id === id))
+    .filter(Boolean)
+    .slice(0, 4)
+})
+
+const addToRecent = (id) => {
+  if (!process.client || !id) return
+  
+  try {
+    const key = 'recently_viewed_products'
+    let stored = JSON.parse(localStorage.getItem(key) || '[]')
+    
+    stored = stored.filter(i => i !== id)
+    
+    stored.unshift(id)
+  
+    stored = stored.slice(0, 8)
+    
+    localStorage.setItem(key, JSON.stringify(stored))
+    recentProductIds.value = stored
+  } catch (e) {
+    console.error('Error saving recent products:', e)
+  }
+}
+
 const priceDisplay = computed(() => {
   if (!hasVariants.value) return 'Consultar'
   
@@ -593,6 +641,11 @@ onMounted(async () => {
       product.value = data
       selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
       currentImageIndex.value = 0
+      addToRecent(data.id)
+      
+      if (process.client) {
+        recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
+      }
     }
   } catch (e) {
     console.error('Failed to load product', e)
@@ -611,6 +664,7 @@ watch(() => route.params.id, async (newId) => {
         product.value = data
         selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
         currentImageIndex.value = 0
+        addToRecent(data.id)
       }
     } catch (e) {
       console.error('Failed to reload product', e)
