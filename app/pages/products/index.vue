@@ -152,6 +152,8 @@
 </template>
 
 <script setup>
+import { filterProducts } from '~/utils/search'
+
 const route = useRoute()
 const router = useRouter()
 const { getProducts, products, loading } = useProducts()
@@ -347,16 +349,8 @@ const categoriasCards = [
 ];
 
 const filteredProducts = computed(() => {
-  // Filter by search query
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase().trim()
-    return products.value.filter(product => {
-      if (product.id?.toLowerCase().includes(query)) return true
-      if (product.name?.toLowerCase().includes(query)) return true
-      if (product.description?.toLowerCase().includes(query)) return true
-      if (product.category?.some(cat => cat.toLowerCase().includes(query))) return true
-      return false
-    })
+    return filterProducts(products.value, searchQuery.value)
   }
   
   // Filter by category

@@ -143,6 +143,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { filterProducts } from '~/utils/search'
 
 const props = defineProps({
   overlayMode: {
@@ -180,18 +181,7 @@ const handleClickOutside = (event) => {
 const canSearch = computed(() => searchQuery.value.length >= 3)
 
 const searchResults = computed(() => {
-  if (!canSearch.value) return []
-  
-  const query = searchQuery.value.toLowerCase().trim()
-  
-  return products.value.filter(product => {
-    if (product.id?.toLowerCase().includes(query)) return true
-    if (product.name?.toLowerCase().includes(query)) return true
-    if (product.description?.toLowerCase().includes(query)) return true
-    if (product.category?.some(cat => cat.toLowerCase().includes(query))) return true
-    
-    return false
-  })
+  return filterProducts(products.value, searchQuery.value)
 })
 
 const displayedResults = computed(() => searchResults.value.slice(0, 5))
@@ -216,6 +206,7 @@ const handleSearch = () => {
   trackSearch(query, results.length)
   
   searchQuery.value = ''
+  searchInput.value?.blur()
   
   if (results.length === 1) {
     router.push(`/products/${results[0].id}`)
@@ -227,6 +218,7 @@ const handleSearch = () => {
 const goToProduct = (product) => {
   showDropdown.value = false
   searchQuery.value = ''
+  searchInput.value?.blur()
   router.push(`/products/${product.id}`)
 }
 
