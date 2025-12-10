@@ -4,7 +4,7 @@ export const useSeo = () => {
 
   const SITE_NAME = 'Publistandpados'
   const DEFAULT_DESCRIPTION = 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.'
-  const DEFAULT_IMAGE = '/images/og-default.jpg'
+  const DEFAULT_IMAGE = 'https://res.cloudinary.com/djcbrawhb/image/upload/v1765342632/publistandPAdos_hrykep.png'
 
   const setPageSeo = ({ title, description, image, noIndex = false }) => {
     const pageTitle = title || SITE_NAME

@@ -423,7 +423,7 @@
 const route = useRoute()
 const router = useRouter()
 import { getColorHex } from '~/utils/colorMap'
-const { getProductById, products, loading, error } = useProducts()
+const { getProductById, products } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
@@ -438,6 +438,14 @@ const goBack = () => {
 }
 const { user } = useAuth()
 
+const { data: product, status, error: asyncError } = await useAsyncData(
+  `product-${route.params.id}`,
+  () => getProductById(route.params.id)
+)
+
+const loading = computed(() => status.value === 'pending')
+const error = computed(() => asyncError.value?.message || null)
+
 const quoteUrl = computed(() => {
   const phone = footerConfig.value?.contact?.phone
   if (!phone || !product.value) return '#'
@@ -447,7 +455,6 @@ const quoteUrl = computed(() => {
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
 })
 
-const product = ref(null)
 const selectedImage = ref('')
 const showLightbox = ref(false)
 const currentImageIndex = ref(0)
@@ -537,13 +544,10 @@ const similarProducts = computed(() => {
     .slice(0, 4)
 })
 
-// Recently Viewed Logic
 const recentProductIds = ref([])
 
 const recentlyViewedProducts = computed(() => {
   if (!recentProductIds.value.length || !products.value.length) return []
-  
-  // Filter products that match stored IDs, excluding current product
   return recentProductIds.value
     .filter(id => id !== product.value?.id)
     .map(id => products.value.find(p => p.id === id))
@@ -578,7 +582,7 @@ const priceDisplay = computed(() => {
     .map(v => parseFloat(v.price))
     .filter(p => !isNaN(p) && p > 0)
     
-  if (prices.length === 0) return 'Consultar'
+    if (prices.length === 0) return 'Consultar'
   
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
@@ -660,25 +664,31 @@ const handleQuoteRequest = () => {
   }
 }
 
-onMounted(async () => {
+watch(product, (newData) => {
+  if (newData) {
+    setProductSeo(newData)
+    
+    if (!selectedImage.value && allImages.value.length > 0) {
+      selectedImage.value = newData.mainImage || allImages.value[0]
+      currentImageIndex.value = 0
+    }
+  }
+}, { immediate: true })
+
+onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   
-  try {
-    const data = await getProductById(route.params.id)
-    if (data) {
-      product.value = data
-      selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
-      currentImageIndex.value = 0
-      addToRecent(data.id)
-      trackProductView(data)
-      setProductSeo(data)
+  if (process.client) {
+    try {
+      recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
       
-      if (process.client) {
-        recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
+      if (product.value) {
+        addToRecent(product.value.id)
+        trackProductView(product.value)
       }
+    } catch (e) {
+      console.error('Error in onMounted:', e)
     }
-  } catch (e) {
-    console.error('Failed to load product', e)
   }
 })
 
@@ -686,22 +696,9 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
 
-watch(() => route.params.id, async (newId) => {
-  if (newId) {
-    try {
-      const data = await getProductById(newId)
-      if (data) {
-        product.value = data
-        selectedImage.value = data.mainImage || (allImages.value.length > 0 ? allImages.value[0] : '')
-        currentImageIndex.value = 0
-        addToRecent(data.id)
-        trackProductView(data)
-        setProductSeo(data)
-      }
-    } catch (e) {
-      console.error('Failed to reload product', e)
-    }
-  }
+watch(() => route.params.id, () => {
+  selectedImage.value = ''
+  currentImageIndex.value = 0
 })
 </script>
 
