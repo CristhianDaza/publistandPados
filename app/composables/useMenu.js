@@ -28,8 +28,8 @@ export const useMenu = () => {
         items: items
       }
     } catch (e) {
-      error.value = e
       console.error('Error fetching menu:', e)
+      error.value = e.message || 'Error al cargar el menú'
     } finally {
       loading.value = false
     }
