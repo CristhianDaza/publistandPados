@@ -76,14 +76,14 @@
             {{ footerConfig.cta.text }}
           </p>
           <UButton
-            :to="footerConfig.cta.buttonLink"
             block
             size="lg"
             color="primary"
             variant="solid"
             :label="footerConfig.cta.buttonText"
-            class="font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 rounded-xl"
+            class="cursor-pointer font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 rounded-xl"
             :ui="{ rounded: 'rounded-xl' }"
+            @click="openModal('Hola, quisiera iniciar un proyecto con ustedes.')"
           />
         </div>
       </div>
