@@ -1,8 +1,8 @@
-import { collection, getDocs, doc, setDoc, writeBatch, query, limit } from 'firebase/firestore'
+import { collection, getDocs, query, limit } from 'firebase/firestore'
 
 export default defineEventHandler(async (event) => {
   try {
-    const db1 = useFirebase1()
+    const { adminDb } = useFirebaseAdmin()
     const db2 = useFirebase2()
     const config = useRuntimeConfig()
 
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     const CHUNK_SIZE = 50
     let chunkCount = 0
     let totalSynced = 0
-    let batch = writeBatch(db1)
+    let batch = adminDb.batch()
 
     const sanitizeData = (data) => {
       if (data === null || typeof data !== 'object') return data
@@ -49,14 +49,14 @@ export default defineEventHandler(async (event) => {
       }
 
       const data = sanitizeData(rawData)
-      const docRef = doc(db1, 'products', docSnap.id)
+      const docRef = adminDb.collection('products').doc(docSnap.id)
       batch.set(docRef, data, { merge: true })
       chunkCount++
       totalSynced++
 
       if (chunkCount >= CHUNK_SIZE) {
         await batch.commit()
-        batch = writeBatch(db1)
+        batch = adminDb.batch()
         chunkCount = 0
       }
     }
@@ -70,14 +70,20 @@ export default defineEventHandler(async (event) => {
 
     if (!sourceUpdateSnap.empty) {
       const sourceData = sourceUpdateSnap.docs[0].data()
-      const destUpdateCol = collection(db1, 'lastedUpdatedProducts')
-      const destDocRef = doc(destUpdateCol, 'status')
-      await setDoc(destDocRef, sourceData)
+      const destDocRef = adminDb.collection('lastedUpdatedProducts').doc('status')
+      await destDocRef.set(sourceData)
     }
 
     return { success: true, message: 'Products synced successfully', count: totalSynced }
   } catch (error) {
     console.error('Sync error:', error)
+    if (error.code === 'app/invalid-credential') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Server configuration error: Missing or invalid service-account.json',
+        message: 'Missing or invalid service-account.json'
+      })
+    }
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to sync products',
