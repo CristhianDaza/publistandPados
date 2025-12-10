@@ -12,7 +12,6 @@ import { getFirebaseDb } from './config'
 const collectionName = 'products'
 
 export const getProducts = async () => {
-  console.log('Fetching aggregated products from Firebase (no cache)')
   const snapshot = await getDocs(collection(getFirebaseDb(), collectionName))
 
   const docs = snapshot.docs.slice().sort((a, b) => {
@@ -39,7 +38,6 @@ export const getProducts = async () => {
     return nameA.localeCompare(nameB)
   })
 
-  console.log(`Aggregated ${merged.length} unique products from ${docs.length} chunk docs`)
   return merged
 }
 

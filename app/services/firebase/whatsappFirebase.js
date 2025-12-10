@@ -14,7 +14,6 @@ const COLLECTION_NAME = 'whatsapp_contacts'
 
 export const getWhatsAppContacts = async () => {
   const db = getFirebaseDb()
-  console.log('getWhatsAppContacts called')
 
   if (!db) {
     console.error('Database instance is missing in getWhatsAppContacts')
@@ -23,12 +22,10 @@ export const getWhatsAppContacts = async () => {
   try {
     const q = query(collection(db, COLLECTION_NAME), orderBy('order', 'asc'))
     const querySnapshot = await getDocs(q)
-    console.log('getWhatsAppContacts snapshot size:', querySnapshot.size)
     const results = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }))
-    console.log('getWhatsAppContacts results:', results)
     return results
   } catch (e) {
     console.error('Error getting whatsapp contacts:', e)
