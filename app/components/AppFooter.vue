@@ -90,7 +90,7 @@
 
       <div class="mt-12 pt-8 border-t border-secondary/10 flex flex-col md:flex-row justify-between items-center gap-4">
         <p class="text-secondary text-sm text-center md:text-left">
-          &copy; {{ new Date().getFullYear() }} PubliStand. Todos los derechos reservados.
+          &copy; {{ new Date().getFullYear() }} Publistandpados. Todos los derechos reservados.
         </p>
         <div class="flex gap-6 text-sm text-secondary">
           <!-- <NuxtLink to="/privacidad" class="hover:text-primary transition-colors">Privacidad</NuxtLink> -->
