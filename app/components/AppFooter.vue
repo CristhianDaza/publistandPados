@@ -23,13 +23,14 @@
             <UButton
               v-for="social in socialLinks"
               :key="social.id"
-              :to="social.to"
+              :to="handleSocialLink(social) ? undefined : social.to"
               target="_blank"
               color="gray"
               variant="ghost"
               :icon="social.icon"
               size="lg"
               class="hover:text-primary hover:bg-primary/10 transition-colors"
+              @click="handleSocialClick($event, social)"
             />
           </div>
         </div>
@@ -58,7 +59,9 @@
             </li>
             <li v-if="footerConfig.contact.phone" class="flex items-center gap-3 text-sm text-secondary">
               <UIcon name="i-heroicons-phone" class="w-5 h-5 text-primary shrink-0" />
-              <span>{{ footerConfig.contact.phone }}</span>
+              <button @click="openModal()" class="hover:text-primary transition-colors text-left">
+                {{ footerConfig.contact.phone }}
+              </button>
             </li>
             <li v-if="footerConfig.contact.email" class="flex items-center gap-3 text-sm text-secondary">
               <UIcon name="i-heroicons-envelope" class="w-5 h-5 text-primary shrink-0" />
@@ -117,6 +120,7 @@
 const { menuItems, fetchMenu } = useMenu()
 const { socialLinks, footerConfig, fetchFooterData } = useFooter()
 const { logo, initializeLogo } = useLogo()
+const { openModal } = useWhatsApp()
 const colorMode = useColorMode()
 
 const isDark = computed(() => colorMode.value === 'dark')
@@ -126,4 +130,15 @@ await Promise.all([
   fetchFooterData(),
   initializeLogo()
 ])
+
+const handleSocialLink = (social) => {
+  return social.icon?.toLowerCase().includes('whatsapp') || social.to?.includes('wa.me') || social.to?.includes('whatsapp')
+}
+
+const handleSocialClick = (e, social) => {
+  if (handleSocialLink(social)) {
+    e.preventDefault()
+    openModal()
+  }
+}
 </script>

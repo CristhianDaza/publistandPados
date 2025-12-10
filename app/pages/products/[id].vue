@@ -376,11 +376,9 @@
                   Volver
                 </UButton>
                 <UButton 
-                  v-if="quoteUrl && quoteUrl !== '#'"
-                  :to="quoteUrl"
-                  target="_blank"
+                  v-if="quoteUrl"
                   size="xl"
-                  class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0"
+                  class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0 cursor-pointer"
                   @click="handleQuoteRequest"
                 >
                   <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
@@ -429,6 +427,7 @@ const { getProductById, products, loading, error } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
+const { openModal } = useWhatsApp()
 
 const goBack = () => {
   if (window.history.state?.back) {
@@ -631,7 +630,6 @@ const scrollThumbnails = (direction) => {
   }
 }
 
-// Keyboard navigation for lightbox
 const handleKeydown = (e) => {
   if (!showLightbox.value) return
   
@@ -651,6 +649,9 @@ const handleQuoteRequest = () => {
       id: product.value.id,
       name: product.value.name
     })
+    
+    const text = `Hola, estoy interesado en el producto ${product.value.name} (ID: ${product.value.id}). Me gustaría recibir una cotización.`
+    openModal(text)
   }
 }
 
