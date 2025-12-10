@@ -226,7 +226,7 @@
                   <span class="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Stock Total</span>
                 </div>
                 <span class="text-2xl font-bold text-green-700 dark:text-green-300">{{ formattedTotalStock }}</span>
-                <span class="text-sm text-green-600 dark:text-green-400 ml-1">unidades</span>
+                <span class="text-sm text-green-600 dark:text-green-400 ml-1">{{ totalStock === 1 ? 'und' : 'unds' }}</span>
               </div>
               <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary/10 dark:to-primary/5 p-4 rounded-2xl border border-primary-100 dark:border-primary/20">
                 <div class="flex items-center gap-2 mb-1">
@@ -286,7 +286,7 @@
                             : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 dark:from-red-900/40 dark:to-rose-900/30 dark:text-red-300'"
                         >
                           <span class="w-1.5 h-1.5 rounded-full" :class="variant.quantity > 0 ? 'bg-green-500' : 'bg-red-500'"></span>
-                          {{ variant.quantity }} un.
+                          {{ formatNumber(variant.quantity) }} {{ variant.quantity == 1 ? 'und' : 'unds' }}
                         </span>
                       </td>
                     </tr>
@@ -589,6 +589,11 @@ const priceDisplay = computed(() => {
   
   return `De ${formatCurrency(minPrice)} a ${formatCurrency(maxPrice)}`
 })
+
+const formatNumber = (value) => {
+  if (!value && value !== 0) return '0'
+  return new Intl.NumberFormat('es-CO').format(value)
+}
 
 const formatCurrency = (value) => {
   if (!value || isNaN(value)) return 'Consultar'
