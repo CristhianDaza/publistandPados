@@ -35,7 +35,7 @@ export const useFooter = () => {
         footerConfig.value = config
       }
     } catch (e) {
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
       console.error('Error fetching footer data:', e)
     } finally {
       loading.value = false

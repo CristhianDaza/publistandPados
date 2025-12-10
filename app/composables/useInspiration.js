@@ -20,7 +20,7 @@ export const useInspiration = () => {
       }
     } catch (e) {
       console.error('Error fetching inspiration:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
     } finally {
       loading.value = false
     }

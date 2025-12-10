@@ -13,7 +13,8 @@ export const useLogo = () => {
       logo.value = await getActiveLogo()
     } catch (e) {
       console.error('Error fetching active logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -25,7 +26,8 @@ export const useLogo = () => {
       logos.value = await getLogos()
     } catch (e) {
       console.error('Error fetching logos:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -38,7 +40,8 @@ export const useLogo = () => {
       await fetchActiveLogo()
     } catch (e) {
       console.error('Error initializing logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -51,7 +54,8 @@ export const useLogo = () => {
       await fetchLogos()
     } catch (e) {
       console.error('Error adding logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -67,7 +71,8 @@ export const useLogo = () => {
       }
     } catch (e) {
       console.error('Error updating logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -84,7 +89,8 @@ export const useLogo = () => {
       }
     } catch (e) {
       console.error('Error deleting logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
@@ -98,7 +104,8 @@ export const useLogo = () => {
       await fetchActiveLogo()
     } catch (e) {
       console.error('Error setting active logo:', e)
-      error.value = e
+      error.value = e.message || 'An unknown error occurred'
+
     } finally {
       loading.value = false
     }
