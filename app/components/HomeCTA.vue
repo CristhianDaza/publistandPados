@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useHomeCTA } from '~/composables/useHomeCTA'
 
 const { ctaConfig, loading, fetchCTA } = useHomeCTA()
+const { openModal } = useWhatsApp()
 
 onMounted(() => {
   fetchCTA()
@@ -60,13 +61,12 @@ onMounted(() => {
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
             <UButton
               v-if="ctaConfig.primaryButton"
-              :to="ctaConfig.primaryButton.link"
-              target="_blank"
               size="xl"
-              class="font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1"
+              class="font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
               :ui="{ rounded: 'rounded-full', padding: { xl: 'px-8 py-4' } }"
               color="primary"
               icon="i-logos-whatsapp-icon"
+              @click="openModal()"
             >
               {{ ctaConfig.primaryButton.text }}
             </UButton>
