@@ -45,7 +45,7 @@ definePageMeta({
           </button>
         </div>
       </div>
-      
+
       <div class="bg-slate-800 rounded-2xl shadow-xl p-6 border border-white/10">
         <p class="text-slate-300">
           Bienvenido al panel de administración. Aquí podrás gestionar el contenido de tu sitio.
