@@ -12,6 +12,12 @@ const handleLogout = async () => {
   }
 }
 
+const goBackToWebsite = () => {
+  const adminReturnUrl = useCookie('admin_return_url')
+  const returnUrl = adminReturnUrl.value || '/'
+  router.push(returnUrl)
+}
+
 const links = [
   { label: 'Dashboard', path: '/admin', icon: 'i-heroicons-home' },
   { label: 'Carousel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
@@ -29,9 +35,18 @@ const links = [
 
 <template>
   <aside class="w-64 bg-slate-900 border-r border-slate-800 text-slate-300 flex flex-col h-screen fixed left-0 top-0 z-50">
-    <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-      <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold">P</div>
-      <h1 class="text-xl font-bold text-white tracking-tight">Admin</h1>
+    <div class="p-6 border-b border-slate-800 flex flex-col gap-4">
+      <button
+        class="cursor-pointer flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors w-full p-2 rounded-lg hover:bg-slate-800/50"
+        @click="goBackToWebsite"
+      >
+        <UIcon name="i-heroicons-arrow-left" class="w-4 h-4" />
+        <span>Volver a la Web</span>
+      </button>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold">P</div>
+        <h1 class="text-xl font-bold text-white tracking-tight">Admin</h1>
+      </div>
     </div>
 
     <nav class="flex-1 overflow-y-auto py-4">

@@ -5,6 +5,10 @@ definePageMeta({
   layout: 'admin'
 })
 
+useHead({
+  title: 'Call to Action'
+})
+
 const loading = ref(true)
 const config = ref(null)
 

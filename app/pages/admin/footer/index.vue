@@ -6,6 +6,10 @@ definePageMeta({
   layout: 'admin'
 })
 
+useHead({
+  title: 'Footer'
+})
+
 const loading = ref(true)
 const config = ref(null)
 const socialLinks = ref([])

@@ -6,6 +6,10 @@ definePageMeta({
   layout: 'admin'
 })
 
+useHead({
+  title: 'WhatsApp'
+})
+
 const loading = ref(true)
 const items = ref([])
 

@@ -6,6 +6,10 @@ definePageMeta({
   layout: 'admin'
 })
 
+useHead({
+  title: 'Logos'
+})
+
 const loading = ref(true)
 const items = ref([])
 

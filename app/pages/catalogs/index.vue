@@ -7,11 +7,11 @@ onMounted(async () => {
     await fetchCatalogs()
 })
 
-useHead({
+const { setPageSeo } = useSeo()
+
+setPageSeo({
   title: 'Catálogos Virtuales',
-  meta: [
-    { name: 'description', content: 'Explora nuestros catálogos virtuales y descubre nuestros productos.' }
-  ]
+  description: 'Explora nuestros catálogos virtuales y descubre nuestros productos.'
 })
 </script>
 
