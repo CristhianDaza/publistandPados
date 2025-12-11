@@ -5,7 +5,19 @@ export const useSocialProof = () => {
   const loading = useState('social_proof_loading', () => false)
   const error = useState('social_proof_error', () => null)
 
+  const socialProofCache = useCookie('social_proof_cache', {
+    maxAge: 60 * 60 * 24 * 365,
+    default: () => null
+  })
+
   const fetchSocialProof = async () => {
+    const today = new Date().toDateString()
+
+    if (socialProofCache.value && socialProofCache.value.date === today && socialProofCache.value.items?.length) {
+      socialProofItems.value = socialProofCache.value.items
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
@@ -15,6 +27,11 @@ export const useSocialProof = () => {
         if (socialProofItems.value.length === 0) {
           socialProofItems.value = initialItems
         }
+      }
+     
+      socialProofCache.value = {
+        date: today,
+        items: socialProofItems.value
       }
     } catch (e) {
       error.value = e.message
@@ -28,6 +45,7 @@ export const useSocialProof = () => {
     loading.value = true
     try {
       const id = await createSocialProofItem(item)
+      socialProofCache.value = null
       await fetchSocialProof()
       return id
     } catch (e) {
@@ -42,6 +60,7 @@ export const useSocialProof = () => {
     loading.value = true
     try {
       await updateSocialProofItem(id, item)
+      socialProofCache.value = null
       await fetchSocialProof()
     } catch (e) {
       error.value = e.message
@@ -55,6 +74,7 @@ export const useSocialProof = () => {
     loading.value = true
     try {
       await deleteSocialProofItem(id)
+      socialProofCache.value = null
       await fetchSocialProof()
     } catch (e) {
       error.value = e.message

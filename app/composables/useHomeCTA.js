@@ -7,7 +7,19 @@ export const useHomeCTA = () => {
   const loading = ref(false)
   const error = ref(null)
 
+  const ctaCache = useCookie('cta_cache', {
+    maxAge: 60 * 60 * 24 * 365,
+    default: () => null
+  })
+
   const fetchCTA = async () => {
+    const today = new Date().toDateString()
+
+    if (ctaCache.value && ctaCache.value.date === today && ctaCache.value.config) {
+      ctaConfig.value = ctaCache.value.config
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
@@ -31,6 +43,10 @@ export const useHomeCTA = () => {
       }
 
       ctaConfig.value = config
+      ctaCache.value = {
+        date: today,
+        config: config
+      }
     } catch (e) {
       console.error('Error fetching CTA config:', e)
       error.value = e
@@ -43,7 +59,9 @@ export const useHomeCTA = () => {
     loading.value = true
     try {
       await updateCTAConfig(newConfig)
+      ctaCache.value = null
       ctaConfig.value = { ...ctaConfig.value, ...newConfig }
+      await fetchCTA()
     } catch (e) {
       console.error('Error updating CTA config:', e)
       error.value = e

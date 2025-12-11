@@ -5,7 +5,19 @@ export const useInspiration = () => {
   const loading = useState('inspiration_loading', () => false)
   const error = useState('inspiration_error', () => null)
 
+  const inspirationCache = useCookie('inspiration_cache', {
+    maxAge: 60 * 60 * 24 * 365,
+    default: () => null
+  })
+
   const fetchInspiration = async () => {
+    const today = new Date().toDateString()
+
+    if (inspirationCache.value && inspirationCache.value.date === today && inspirationCache.value.items?.length) {
+      inspirationItems.value = inspirationCache.value.items
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
@@ -14,8 +26,16 @@ export const useInspiration = () => {
         const initialItems = []
         await seedInspiration(initialItems)
         inspirationItems.value = initialItems
+        inspirationCache.value = {
+          date: today,
+          items: initialItems
+        }
       } else {
         inspirationItems.value = items
+        inspirationCache.value = {
+          date: today,
+          items: items
+        }
       }
     } catch (e) {
       console.error('Error fetching inspiration:', e)
@@ -28,6 +48,7 @@ export const useInspiration = () => {
   const addItem = async (item) => {
     try {
       const id = await createInspirationItem(item)
+      inspirationCache.value = null
       inspirationItems.value.push({ id, ...item })
       return id
     } catch (e) {

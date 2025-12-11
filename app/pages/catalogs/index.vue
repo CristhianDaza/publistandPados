@@ -1,18 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getCatalogs } from '~/services/firebase/catalogsFirebase'
+import { onMounted } from 'vue'
 
-const catalogs = ref([])
-const loading = ref(true)
+const { catalogs, loading, fetchCatalogs } = useCatalogs()
 
 onMounted(async () => {
-  try {
-    catalogs.value = await getCatalogs()
-  } catch (error) {
-    console.error('Error fetching catalogs:', error)
-  } finally {
-    loading.value = false
-  }
+    await fetchCatalogs()
 })
 
 useHead({
