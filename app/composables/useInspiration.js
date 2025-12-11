@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { getInspiration, createInspirationItem, seedInspiration } from '~/services/firebase/inspirationFirebase'
 
 export const useInspiration = () => {

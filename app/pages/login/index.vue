@@ -2,7 +2,7 @@
 const { login } = useAuth()
 const router = useRouter()
 const toast = useToast()
-const { logo, initializeLogo } = useLogo()
+const { initializeLogo } = useLogo()
 
 const email = ref('')
 const password = ref('')
@@ -28,7 +28,7 @@ const handleLogin = async () => {
   try {
     await login(email.value, password.value)
     toast.add({ title: 'Bienvenido', description: 'Has iniciado sesión correctamente', color: 'green' })
-    router.push('/admin')
+    await router.push('/admin')
   } catch (e) {
     console.error(e)
     if (e.code === 'auth/invalid-credential' || e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
@@ -51,16 +51,16 @@ definePageMeta({
 <template>
   <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-900 via-primary-500/10 to-slate-900">
     <div class="absolute inset-0 overflow-hidden z-0">
-      <div class="absolute w-[600px] h-[600px] rounded-full blur-[80px] opacity-60 -top-[200px] -right-[200px] bg-[radial-gradient(circle,rgb(var(--theme-color-primary)/0.4)_0%,transparent_70%)] animate-float"></div>
-      <div class="absolute w-[500px] h-[500px] rounded-full blur-[80px] opacity-60 -bottom-[150px] -left-[150px] bg-[radial-gradient(circle,rgb(var(--theme-color-secondary)/0.3)_0%,transparent_70%)] animate-float-delayed"></div>
-      <div class="absolute w-[400px] h-[400px] rounded-full blur-[80px] opacity-60 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgb(var(--theme-color-primary)/0.2)_0%,transparent_70%)] animate-float-slow"></div>
+      <div class="absolute w-[600px] h-[600px] rounded-full blur-[80px] opacity-60 -top-[200px] -right-[200px] bg-[radial-gradient(circle,rgb(var(--theme-color-primary)/0.4)_0%,transparent_70%)] animate-float"/>
+      <div class="absolute w-[500px] h-[500px] rounded-full blur-[80px] opacity-60 -bottom-[150px] -left-[150px] bg-[radial-gradient(circle,rgb(var(--theme-color-secondary)/0.3)_0%,transparent_70%)] animate-float-delayed"/>
+      <div class="absolute w-[400px] h-[400px] rounded-full blur-[80px] opacity-60 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgb(var(--theme-color-primary)/0.2)_0%,transparent_70%)] animate-float-slow"/>
     </div>
 
     <div class="relative z-10 w-full max-w-[420px] animate-slide-up">
-      <button 
+      <button
         class="flex items-center gap-2 bg-transparent border-none text-white/70 text-sm cursor-pointer py-2 mb-4 transition-all duration-200 hover:text-white group"
-        @click="router.push('/')" 
         type="button"
+        @click="router.push('/')"
       >
         <svg class="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -71,10 +71,10 @@ definePageMeta({
       <div class="bg-slate-800 backdrop-blur-xl rounded-3xl border border-white/10 p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset]">
         <div class="flex justify-center mb-6">
           <img
-            src="https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png" 
-            alt="Logo Publistandpados" 
+            src="https://res.cloudinary.com/dcdfhi8qz/image/upload/v1764904108/a2w9wriie5tvoxbhz67h.png"
+            alt="Logo Publistandpados"
             class="max-h-[60px] w-auto object-contain drop-shadow-lg"
-          />
+          >
         </div>
 
         <div class="text-center mb-8">
@@ -83,14 +83,14 @@ definePageMeta({
         </div>
 
         <form class="flex flex-col gap-5" @submit.prevent="handleLogin">
-          <div 
+          <div
             class="relative flex items-center bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-            :class="{ 
-              'border-primary-500 shadow-[0_0_0_3px_rgba(var(--theme-color-primary),0.15)] bg-white/[0.08]': isEmailFocused 
+            :class="{
+              'border-primary-500 shadow-[0_0_0_3px_rgba(var(--theme-color-primary),0.15)] bg-white/[0.08]': isEmailFocused
             }"
           >
             <div class="flex items-center justify-center w-12 h-12 shrink-0">
-              <svg 
+              <svg
                 class="w-5 h-5 transition-colors duration-300"
                 :class="isEmailFocused || email ? 'text-primary-500' : 'text-white/40'"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -109,17 +109,17 @@ definePageMeta({
               placeholder="Correo electrónico"
               @focus="isEmailFocused = true"
               @blur="isEmailFocused = false"
-            />
+            >
           </div>
 
-          <div 
+          <div
             class="relative flex items-center bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-            :class="{ 
-              'border-primary-500 shadow-[0_0_0_3px_rgba(var(--theme-color-primary),0.15)] bg-white/[0.08]': isPasswordFocused 
+            :class="{
+              'border-primary-500 shadow-[0_0_0_3px_rgba(var(--theme-color-primary),0.15)] bg-white/[0.08]': isPasswordFocused
             }"
           >
             <div class="flex items-center justify-center w-12 h-12 shrink-0">
-              <svg 
+              <svg
                 class="w-5 h-5 transition-colors duration-300"
                 :class="isPasswordFocused || password ? 'text-primary-500' : 'text-white/40'"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -138,12 +138,12 @@ definePageMeta({
               placeholder="Contraseña"
               @focus="isPasswordFocused = true"
               @blur="isPasswordFocused = false"
-            />
-            <button 
-              type="button" 
+            >
+            <button
+              type="button"
               class="flex items-center justify-center w-11 h-11 bg-transparent border-none cursor-pointer p-0 mr-1 rounded-lg transition-all duration-200 hover:bg-white/10"
-              @click="showPassword = !showPassword"
               tabindex="-1"
+              @click="showPassword = !showPassword"
             >
               <svg v-if="showPassword" class="w-5 h-5 text-white/40 hover:text-white/80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
@@ -156,8 +156,8 @@ definePageMeta({
           </div>
 
           <Transition name="shake">
-            <div 
-              v-if="error" 
+            <div
+              v-if="error"
               class="flex items-center gap-2 py-3.5 px-4 bg-red-500/15 border border-red-500/30 rounded-xl text-red-300 text-sm"
             >
               <svg class="w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

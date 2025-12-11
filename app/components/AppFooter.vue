@@ -1,3 +1,30 @@
+<script setup>
+const { menuItems, fetchMenu } = useMenu()
+const { socialLinks, footerConfig, fetchFooterData } = useFooter()
+const { logo, initializeLogo } = useLogo()
+const { openModal } = useWhatsApp()
+const colorMode = useColorMode()
+
+const isDark = computed(() => colorMode.value === 'dark')
+
+await Promise.all([
+  fetchMenu(),
+  fetchFooterData(),
+  initializeLogo()
+])
+
+const handleSocialLink = (social) => {
+  return social.icon?.toLowerCase().includes('whatsapp') || social.to?.includes('wa.me') || social.to?.includes('whatsapp')
+}
+
+const handleSocialClick = (e, social) => {
+  if (handleSocialLink(social)) {
+    e.preventDefault()
+    openModal()
+  }
+}
+</script>
+
 <template>
   <footer class="border-t border-secondary/20 bg-background/50 backdrop-blur-sm mt-auto">
     <UContainer class="pt-12 pb-8 md:pt-16 md:pb-8 max-w-6xl mx-auto">
@@ -6,7 +33,7 @@
           <NuxtLink to="/" class="flex items-center gap-2 group">
           <ClientOnly>
             <div v-if="logo && (logo.url || logo.urlDark)" class="relative flex h-10 w-auto items-center justify-center transition-transform duration-300 group-hover:scale-105">
-               <img :src="isDark && logo.urlDark ? logo.urlDark : logo.url" :alt="logo.name || 'Logo'" class="h-full w-auto object-contain" />
+               <img :src="isDark && logo.urlDark ? logo.urlDark : logo.url" :alt="logo.name || 'Logo'" class="h-full w-auto object-contain" >
             </div>
             <div v-else class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
                <span class="font-bold text-lg">P</span>
@@ -39,11 +66,11 @@
           <h3 class="font-semibold text-text mb-4 text-lg">Enlaces Rápidos</h3>
           <ul class="space-y-3">
             <li v-for="item in menuItems" :key="item.id">
-              <NuxtLink 
+              <NuxtLink
                 :to="item.to"
                 class="text-secondary hover:text-primary transition-colors text-sm flex items-center gap-2 group"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors"/>
                 {{ item.label }}
               </NuxtLink>
             </li>
@@ -52,14 +79,14 @@
 
         <div>
           <h3 class="font-semibold text-text mb-4 text-lg">Contacto</h3>
-          <ul class="space-y-4" v-if="footerConfig?.contact">
+          <ul v-if="footerConfig?.contact" class="space-y-4">
             <li v-if="footerConfig.contact.address" class="flex items-start gap-3 text-sm text-secondary">
               <UIcon name="i-heroicons-map-pin" class="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <span class="whitespace-pre-line">{{ footerConfig.contact.address }}</span>
             </li>
             <li v-if="footerConfig.contact.phone" class="flex items-center gap-3 text-sm text-secondary">
               <UIcon name="i-heroicons-phone" class="w-5 h-5 text-primary shrink-0" />
-              <button @click="openModal()" class="hover:text-primary transition-colors text-left">
+              <button class="hover:text-primary transition-colors text-left" @click="openModal()">
                 {{ footerConfig.contact.phone }}
               </button>
             </li>
@@ -115,30 +142,3 @@
     </div>
   </footer>
 </template>
-
-<script setup>
-const { menuItems, fetchMenu } = useMenu()
-const { socialLinks, footerConfig, fetchFooterData } = useFooter()
-const { logo, initializeLogo } = useLogo()
-const { openModal } = useWhatsApp()
-const colorMode = useColorMode()
-
-const isDark = computed(() => colorMode.value === 'dark')
-
-await Promise.all([
-  fetchMenu(),
-  fetchFooterData(),
-  initializeLogo()
-])
-
-const handleSocialLink = (social) => {
-  return social.icon?.toLowerCase().includes('whatsapp') || social.to?.includes('wa.me') || social.to?.includes('whatsapp')
-}
-
-const handleSocialClick = (e, social) => {
-  if (handleSocialLink(social)) {
-    e.preventDefault()
-    openModal()
-  }
-}
-</script>

@@ -36,7 +36,7 @@ export const getFirebaseAuth = () => {
 }
 
 export const getFirebaseAnalytics = async () => {
-  if (!process.client) return null
+  if (!import.meta.client) return null
   if (analytics) return analytics
 
   try {

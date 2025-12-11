@@ -16,7 +16,7 @@ export const getCTAConfig = async () => {
 
 export const updateCTAConfig = async (config) => {
   const docRef = doc(getFirebaseDb(), COLLECTION_NAME, DOC_ID)
-  await setDoc(docRef, config, { merge: true })
+  await updateDoc(docRef, config, { merge: true })
 }
 
 export const createCTAConfig = async (config) => {

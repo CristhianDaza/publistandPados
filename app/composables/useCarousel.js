@@ -1,4 +1,4 @@
-import { getCarousel, createCarouselItem, updateCarouselItem, deleteCarouselItem, seedCarousel } from '~/services/firebase/carouselFirebase'
+import { getCarousel, createCarouselItem, updateCarouselItem, deleteCarouselItem } from '~/services/firebase/carouselFirebase'
 
 export const useCarousel = () => {
   const carouselItems = useState('carousel_items', () => [])

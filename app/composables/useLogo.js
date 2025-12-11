@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { getLogos, getActiveLogo, createLogo, updateLogo, deleteLogo, setActiveLogo, seedLogo } from '../services/firebase/logoFirebase'
 
 export const useLogo = () => {

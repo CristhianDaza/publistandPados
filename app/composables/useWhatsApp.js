@@ -7,8 +7,6 @@ import {
 
 export const useWhatsApp = () => {
 
-
-  // State
   const contacts = useState('whatsapp_contacts_list', () => [])
   const loading = useState('whatsapp_loading', () => false)
   const isModalOpen = useState('whatsapp_modal_open', () => false)

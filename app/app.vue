@@ -1,6 +1,5 @@
 <script setup>
-const { fetchActiveTheme } = useTheme()
-const { initAuth, user, loading: authLoading } = useAuth()
+const { user, loading: authLoading } = useAuth()
 const { getProducts: fetchProducts } = useProducts()
 const { initApp } = useAppLoading()
 const isSyncing = ref(false)
@@ -48,6 +47,7 @@ const checkAndSync = async () => {
       await fetchProducts()
     }
   } catch (error) {
+    console.error('Error checking sync status:', error)
     await fetchProducts()
   }
 }

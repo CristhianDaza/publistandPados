@@ -1,13 +1,5 @@
-import {
-  collection,
-  getDocs,
-  getDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc
-} from 'firebase/firestore'
-import { getFirebaseDb } from './config'
+import {addDoc, collection, deleteDoc, doc, getDocs, updateDoc} from 'firebase/firestore'
+import {getFirebaseDb} from './config'
 
 const collectionName = 'products'
 
@@ -32,13 +24,11 @@ export const getProducts = async () => {
     }
   }
 
-  const merged = Array.from(map.values()).sort((a, b) => {
+  return Array.from(map.values()).sort((a, b) => {
     const nameA = a.name || ''
     const nameB = b.name || ''
     return nameA.localeCompare(nameB)
   })
-
-  return merged
 }
 
 

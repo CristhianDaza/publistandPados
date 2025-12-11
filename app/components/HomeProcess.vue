@@ -1,9 +1,38 @@
+<script setup>
+const { title, steps, guarantee } = useProcess()
+
+const stepRefs = ref([])
+const microCopyRef = ref(null)
+
+onMounted(() => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('opacity-0', 'translate-y-8', 'translate-y-4')
+        observer.unobserve(entry.target)
+      }
+    })
+  }, {
+    threshold: 0.1,
+    rootMargin: '50px'
+  })
+
+  stepRefs.value.forEach((el) => {
+    if (el) observer.observe(el)
+  })
+
+  if (microCopyRef.value) {
+    observer.observe(microCopyRef.value)
+  }
+})
+</script>
+
 <template>
   <section class="py-24 relative bg-background overflow-hidden">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-3xl animate-pulse"></div>
-      <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-      <div class="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-secondary/10 blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
+      <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-3xl animate-pulse"/>
+      <div class="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-3xl animate-pulse" style="animation-delay: 2s;"/>
+      <div class="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-secondary/10 blur-3xl animate-pulse" style="animation-delay: 4s;"/>
     </div>
 
     <UContainer>
@@ -36,7 +65,7 @@
             <h3 class="text-xl font-bold mb-3 text-text">
               {{ step.title }}
             </h3>
-            
+
             <p class="text-secondary leading-relaxed">
               {{ step.description }}
             </p>
@@ -44,7 +73,7 @@
         </div>
       </div>
 
-      <div 
+      <div
         ref="microCopyRef"
         class="mt-16 text-center opacity-0 translate-y-4 transition-all duration-700 ease-out delay-700"
       >
@@ -56,39 +85,10 @@
   </section>
 </template>
 
-<script setup>
-const { title, steps, guarantee } = useProcess()
-
-const stepRefs = ref([])
-const microCopyRef = ref(null)
-
-onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.remove('opacity-0', 'translate-y-8', 'translate-y-4')
-        observer.unobserve(entry.target)
-      }
-    })
-  }, {
-    threshold: 0.1,
-    rootMargin: '50px'
-  })
-
-  stepRefs.value.forEach((el) => {
-    if (el) observer.observe(el)
-  })
-
-  if (microCopyRef.value) {
-    observer.observe(microCopyRef.value)
-  }
-})
-</script>
-
 <style scoped>
 @keyframes gradient-x {
   0%, 100% {
-    background-position: 0% 50%;
+    background-position: 0 50%;
   }
   50% {
     background-position: 100% 50%;

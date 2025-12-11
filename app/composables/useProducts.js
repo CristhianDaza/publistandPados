@@ -18,7 +18,7 @@ export const useProducts = () => {
     error.value = null
 
     try {
-      if (process.client && !force) {
+      if (import.meta.client && !force) {
         const cached = await getFromIDB('products')
         if (cached && Array.isArray(cached) && cached.length > 0) {
           products.value = markRaw(cached)
@@ -29,7 +29,7 @@ export const useProducts = () => {
 
       const data = await fetchProducts()
 
-      if (process.client) {
+      if (import.meta.client) {
         await saveToIDB('products', data)
       }
 
@@ -72,7 +72,7 @@ export const useProducts = () => {
     try {
       const newProduct = await addProductService(product)
       products.value = markRaw([...products.value, newProduct])
-      if (process.client) await saveToIDB('products', products.value)
+      if (import.meta.client) await saveToIDB('products', products.value)
       return newProduct
     } catch (e) {
       error.value = e.message
@@ -89,7 +89,7 @@ export const useProducts = () => {
     try {
       const updated = await updateProductService(id, product)
       products.value = markRaw(products.value.map(p => p.id === id ? updated : p))
-      if (process.client) await saveToIDB('products', products.value)
+      if (import.meta.client) await saveToIDB('products', products.value)
       return updated
     } catch (e) {
       error.value = e.message
@@ -106,7 +106,7 @@ export const useProducts = () => {
     try {
       await deleteProductService(id)
       products.value = markRaw(products.value.filter(p => p.id !== id))
-      if (process.client) await saveToIDB('products', products.value)
+      if (import.meta.client) await saveToIDB('products', products.value)
     } catch (e) {
       error.value = e.message
       console.error(`Error deleting product ${id}:`, e)

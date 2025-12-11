@@ -44,8 +44,7 @@ export const filterProducts = (products, searchQuery) => {
       if (normalizedId.includes(query)) return true
       if (normalizedName.includes(query)) return true
       if (normalizedDescription.includes(query)) return true
-      if (normalizedCategories.some(cat => cat.includes(query))) return true
-      return false
+      return normalizedCategories.some(cat => cat.includes(query));
     })
   })
 }

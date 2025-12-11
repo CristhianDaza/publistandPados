@@ -12,7 +12,7 @@ export const useAuth = () => {
   const error = useState('auth_error', () => null)
 
   const initAuth = () => {
-    if (process.server) return
+    if (import.meta.server) return
 
     const auth = getFirebaseAuth()
     loading.value = true

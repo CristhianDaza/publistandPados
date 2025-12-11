@@ -1,428 +1,7 @@
-<template>
-  <div class="min-h-screen bg-background py-8 md:py-16 transition-all duration-500">
-    <Teleport to="body">
-      <Transition name="lightbox">
-        <div 
-          v-if="showLightbox" 
-          class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl cursor-zoom-out"
-          @click="showLightbox = false"
-        >
-          <button 
-            class="absolute top-6 right-6 text-white/80 hover:text-white transition-colors z-10 p-2 rounded-full hover:bg-white/10"
-            @click.stop="showLightbox = false"
-          >
-            <UIcon name="i-heroicons-x-mark" class="text-3xl" />
-          </button>
-
-          <button 
-            v-if="allImages.length > 1"
-            class="absolute left-4 md:left-8 text-white/70 hover:text-white transition-all z-10 p-3 rounded-full hover:bg-white/10 hover:scale-110"
-            @click.stop="navigateLightbox(-1)"
-          >
-            <UIcon name="i-heroicons-chevron-left" class="text-4xl" />
-          </button>
-          <button 
-            v-if="allImages.length > 1"
-            class="absolute right-4 md:right-8 text-white/70 hover:text-white transition-all z-10 p-3 rounded-full hover:bg-white/10 hover:scale-110"
-            @click.stop="navigateLightbox(1)"
-          >
-            <UIcon name="i-heroicons-chevron-right" class="text-4xl" />
-          </button>
-          
-          <img 
-            :src="selectedImage" 
-            :alt="product?.name"
-            class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl animate-lightbox-enter"
-            @click.stop
-          />
-          
-          <div v-if="allImages.length > 1" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/90 px-4 py-2 rounded-full text-sm font-medium">
-            {{ currentImageIndex + 1 }} / {{ allImages.length }}
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
-
-    <UContainer class="max-w-7xl">
-      <nav class="mb-8 flex items-center gap-2 text-sm">
-        <NuxtLink 
-          to="/" 
-          class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
-        >
-          Inicio
-        </NuxtLink>
-        <UIcon name="i-heroicons-chevron-right" class="text-gray-400 text-xs" />
-        <NuxtLink 
-          to="/products" 
-          class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
-        >
-          Productos
-        </NuxtLink>
-        <UIcon name="i-heroicons-chevron-right" class="text-gray-400 text-xs" />
-        <span class="text-text font-medium truncate max-w-[200px]">
-          {{ product?.name || 'Cargando...' }}
-        </span>
-      </nav>
-
-      <div v-if="loading" class="flex flex-col justify-center items-center h-[60vh] gap-6">
-        <div class="relative">
-          <div class="w-20 h-20 border-4 border-primary/20 rounded-full"></div>
-          <div class="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
-        </div>
-        <p class="text-gray-500 dark:text-gray-400 animate-pulse">Cargando producto...</p>
-      </div>
-
-      <div v-else-if="error" class="text-center py-16 px-4">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
-          <UIcon name="i-heroicons-exclamation-triangle" class="text-4xl text-red-500" />
-        </div>
-        <h2 class="text-2xl font-bold text-text mb-3">Error al cargar el producto</h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">{{ error }}</p>
-        <UButton to="/products" color="primary" size="lg" class="shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-shadow">
-          <UIcon name="i-heroicons-arrow-left" class="mr-2" />
-          Regresar al catálogo
-        </UButton>
-      </div>
-
-      <div v-else-if="product" class="animate-fade-in">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
-          
-          <div class="lg:col-span-7 self-start lg:sticky lg:top-24 space-y-4">
-            <div 
-              class="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl shadow-black/5 dark:shadow-black/20 border border-gray-100/80 dark:border-gray-700/50 group cursor-zoom-in backdrop-blur-sm"
-              @click="openLightbox"
-            >
-              <div class="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/30 dark:from-gray-700/20 dark:to-transparent pointer-events-none z-10"></div>
-              
-              <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
-                <span v-if="isNew" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg shadow-blue-500/30">
-                  ✨ NUEVO
-                </span>
-                <span v-if="totalStock > 100" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg shadow-green-500/30">
-                  ⚡ ALTA DISPONIBILIDAD
-                </span>
-              </div>
-              
-              <img 
-                :src="selectedImage" 
-                :alt="product.name"
-                class="w-full h-full object-contain p-8 md:p-12 transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-1"
-              />
-              
-              <div class="absolute bottom-6 right-6 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center gap-2 shadow-lg">
-                <UIcon name="i-heroicons-magnifying-glass-plus" class="text-lg" />
-                <span class="text-sm font-medium">Click para ampliar</span>
-              </div>
-            </div>
-
-            <div v-if="allImages.length > 1" class="relative mt-2 group/thumbs-container">
-              <div class="px-2 overflow-visible">
-                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-hide scroll-smooth snap-x snap-mandatory" ref="thumbnailsContainer">
-                  <button
-                    v-for="(img, index) in allImages"
-                    :key="index"
-                    @click="selectImage(img, index)"
-                    class="relative flex-shrink-0 transition-all duration-300 group/thumb cursor-pointer snap-start"
-                    :class="[
-                      selectedImage === img 
-                        ? 'scale-105' 
-                        : 'hover:scale-105'
-                    ]"
-                  >
-                    <div 
-                      class="w-16 h-16 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white shadow-md" 
-                      :class="[ 
-                        selectedImage === img  
-                          ? 'border-primary shadow-lg shadow-primary/25'  
-                          : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-lg' 
-                      ]" 
-                    > 
-                      <img  
-                        :src="img"  
-                        :alt="`Vista ${index + 1}`" 
-                        class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover/thumb:scale-105"  
-                      /> 
-                    </div>
-                    <div 
-                      v-if="selectedImage === img"
-                      class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full shadow-sm"
-                    ></div>
-                  </button>
-                </div>
-              </div>
-              
-              <div v-if="allImages.length > 4" class="hidden md:flex absolute top-1/2 -translate-y-1/2 left-0 right-0 justify-between pointer-events-none px-0 opacity-0 group-hover/thumbs-container:opacity-100 transition-opacity duration-300">
-                <button 
-                  @click="scrollThumbnails(-1)"
-                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -ml-4"
-                >
-                  <UIcon name="i-heroicons-chevron-left" class="text-sm" />
-                </button>
-                <button 
-                  @click="scrollThumbnails(1)"
-                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -mr-4"
-                >
-                  <UIcon name="i-heroicons-chevron-right" class="text-sm" />
-                </button>
-              </div>
-              
-              <div v-if="allImages.length > 1" class="flex justify-center mt-2 gap-1.5">
-                <button 
-                  v-for="(_, i) in allImages" 
-                  :key="i"
-                  @click="selectImage(allImages[i], i)"
-                  class="w-2 h-2 rounded-full transition-all duration-300"
-                  :class="currentImageIndex === i ? 'bg-primary w-6' : 'bg-gray-300 dark:bg-gray-600 hover:bg-primary/50'"
-                ></button>
-              </div>
-            </div>
-          </div>
-
-          <div class="lg:col-span-5 space-y-8">
-            <div class="space-y-4">
-              <div class="flex flex-wrap items-center gap-2">
-                <span 
-                  v-if="product.id" 
-                  class="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-xs font-mono"
-                >
-                  <UIcon name="i-heroicons-hashtag" class="text-gray-400" />
-                  {{ product.id }}
-                </span>
-                <span 
-                  v-for="cat in product.category" 
-                  :key="cat" 
-                  class="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium"
-                >
-                  {{ cat }}
-                </span>
-              </div>
-              
-              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-text leading-tight tracking-tight">
-                {{ product.name }}
-              </h1>
-              
-              <div v-if="user" class="flex items-end gap-3 pt-2">
-                <span class="text-4xl md:text-5xl font-bold text-text">
-                  {{ priceDisplay }}
-                </span>
-                <span class="text-sm text-gray-500 dark:text-gray-400 font-medium pb-2 flex items-center gap-1">
-                  <UIcon name="i-heroicons-plus-small" class="text-xs" />
-                  IVA
-                </span>
-              </div>
-            </div>
-
-            <div v-if="product.description" class="relative">
-              <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/50 to-transparent rounded-full"></div>
-              <p class="text-text text-lg leading-relaxed pl-2">
-                {{ product.description }}
-              </p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 p-4 rounded-2xl border border-green-100 dark:border-green-800/30">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span class="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Stock Total</span>
-                </div>
-                <span class="text-2xl font-bold text-green-700 dark:text-green-300">{{ formattedTotalStock }}</span>
-                <span class="text-sm text-green-600 dark:text-green-400 ml-1">{{ totalStock === 1 ? 'und' : 'unds' }}</span>
-              </div>
-              <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary/10 dark:to-primary/5 p-4 rounded-2xl border border-primary-100 dark:border-primary/20">
-                <div class="flex items-center gap-2 mb-1">
-                  <UIcon name="i-heroicons-swatch" class="text-primary text-sm" />
-                  <span class="text-xs font-medium text-primary uppercase tracking-wider">Colores</span>
-                </div>
-                <span class="text-2xl font-bold text-primary">{{ uniqueColorsCount }}</span>
-                <span class="text-sm text-primary/70 ml-1">disponibles</span>
-              </div>
-            </div>
-
-            <div v-if="hasVariants" class="bg-secondary/5 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
-              <div class="p-5 border-b border-secondary/20 bg-secondary/5">
-                <h3 class="font-semibold text-text flex items-center gap-3 text-lg">
-                  <span class="p-2 bg-primary/10 rounded-lg">
-                    <UIcon name="i-heroicons-swatch" class="text-primary text-xl" />
-                  </span>
-                  Disponibilidad por Color
-                </h3>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
-                    <tr>
-                      <th class="px-5 py-4 text-left font-semibold">Color</th>
-                      <th v-if="user" class="px-5 py-4 text-right font-semibold">Precio</th>
-                      <th class="px-5 py-4 text-right font-semibold">Stock</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-secondary/10">
-                    <tr 
-                      v-for="(variant, idx) in product.tableQuantity" 
-                      :key="idx"
-                      class="hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-colors group"
-                    >
-                      <td class="px-5 py-4">
-                        <div class="flex items-center gap-3">
-                          <span 
-                            class="w-6 h-6 rounded-full shadow-inner ring-2 ring-white dark:ring-gray-700 transition-transform group-hover:scale-110"
-                            :style="{ backgroundColor: getColorHex(variant.color) }"
-                          ></span>
-                          <span class="font-medium text-text">
-                            {{ variant.colorName }}
-                          </span>
-                        </div>
-                      </td>
-                      <td v-if="user" class="px-5 py-4 text-right">
-                        <span class="font-mono text-text font-medium">
-                          {{ formatCurrency(variant.price) }}
-                        </span>
-                      </td>
-                      <td class="px-5 py-4 text-right">
-                        <span 
-                          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all"
-                          :class="variant.quantity > 0 
-                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-900/40 dark:to-emerald-900/30 dark:text-green-300' 
-                            : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 dark:from-red-900/40 dark:to-rose-900/30 dark:text-red-300'"
-                        >
-                          <span class="w-1.5 h-1.5 rounded-full" :class="variant.quantity > 0 ? 'bg-green-500' : 'bg-red-500'"></span>
-                          {{ formatNumber(variant.quantity) }} {{ variant.quantity == 1 ? 'und' : 'unds' }}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="space-y-4">
-              <h3 class="font-semibold text-text flex items-center gap-2 text-lg">
-                <UIcon name="i-heroicons-information-circle" class="text-primary" />
-                Especificaciones
-              </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div 
-                  v-if="product.material" 
-                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
-                >
-                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <UIcon name="i-heroicons-cube" class="text-primary/70" />
-                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Material</span>
-                  </div>
-                  <span class="font-semibold text-text text-lg">{{ product.material }}</span>
-                </div>
-                
-                <div 
-                  v-if="product.size" 
-                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
-                >
-                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <UIcon name="i-heroicons-arrows-pointing-out" class="text-primary/70" />
-                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Medidas</span>
-                  </div>
-                  <span class="font-semibold text-text text-lg">{{ product.size }}</span>
-                </div>
-                
-                <div 
-                  v-if="product.areaPrinting" 
-                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
-                >
-                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <UIcon name="i-heroicons-photo" class="text-primary/70" />
-                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Área de Impresión</span>
-                  </div>
-                  <span class="font-semibold text-text text-lg">{{ product.areaPrinting }}</span>
-                </div>
-                
-                <div 
-                  v-if="product.printing" 
-                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
-                >
-                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <UIcon name="i-heroicons-paint-brush" class="text-primary/70" />
-                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Técnica de Marca</span>
-                  </div>
-                  <span class="font-semibold text-text text-lg">{{ product.printing }}</span>
-                </div>
-                
-                <div 
-                  v-if="product.packaging" 
-                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden col-span-1 sm:col-span-2"
-                >
-                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <UIcon name="i-heroicons-gift" class="text-primary/70" />
-                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Empaque</span>
-                  </div>
-                  <span class="font-medium text-text leading-relaxed">{{ product.packaging }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-6 border-t border-gray-100 dark:border-gray-700/50">
-              <div class="flex flex-col sm:flex-row gap-4">
-                <UButton 
-                  @click="goBack"
-                  variant="outline" 
-                  color="gray" 
-                  size="xl"
-                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all cursor-pointer"
-                >
-                  <UIcon name="i-heroicons-arrow-left" class="mr-2" />
-                  Volver
-                </UButton>
-                <UButton 
-                  v-if="quoteUrl"
-                  size="xl"
-                  class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0 cursor-pointer"
-                  @click="handleQuoteRequest"
-                >
-                  <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
-                  Solicitar Cotización
-                </UButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="similarProducts.length > 0" class="mt-16 md:mt-24 border-t border-gray-100 dark:border-gray-800 pt-16">
-        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8">
-          Más Productos
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <ProductCard 
-            v-for="prod in similarProducts" 
-            :key="prod.id" 
-            :product="prod"
-          />
-        </div>
-      </div>
-
-      <div v-if="recentlyViewedProducts.length > 0" class="mt-16 border-t border-gray-100 dark:border-gray-800 pt-16 mb-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8 flex items-center gap-2">
-          <UIcon name="i-heroicons-clock" class="text-primary" />
-          Vistos Recientemente
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <ProductCard 
-            v-for="prod in recentlyViewedProducts" 
-            :key="prod.id" 
-            :product="prod"
-          />
-        </div>
-      </div>
-    </UContainer>
-  </div>
-</template>
-
 <script setup>
+import { getColorHex } from '~/utils/colorMap'
 const route = useRoute()
 const router = useRouter()
-import { getColorHex } from '~/utils/colorMap'
 const { getProductById, products } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
@@ -439,8 +18,8 @@ const goBack = () => {
 const { user } = useAuth()
 
 const { data: product, status, error: asyncError } = await useAsyncData(
-  `product-${route.params.id}`,
-  () => getProductById(route.params.id)
+    `product-${route.params.id}`,
+    () => getProductById(route.params.id)
 )
 
 const loading = computed(() => status.value === 'pending')
@@ -449,7 +28,7 @@ const error = computed(() => asyncError.value?.message || null)
 const quoteUrl = computed(() => {
   const phone = footerConfig.value?.contact?.phone
   if (!phone || !product.value) return '#'
-  
+
   const cleanPhone = phone.replace(/\D/g, '')
   const text = `Hola, estoy interesado en el producto ${product.value.name} (ID: ${product.value.id}). Me gustaría recibir una cotización.`
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
@@ -461,9 +40,9 @@ const currentImageIndex = ref(0)
 
 const allImages = computed(() => {
   if (!product.value) return []
-  
+
   const images = []
-  
+
   if (product.value.mainImage) {
     images.push(product.value.mainImage)
   }
@@ -476,7 +55,7 @@ const allImages = computed(() => {
       }
     })
   }
-  
+
   return [...new Set(images.filter(Boolean))]
 })
 
@@ -507,8 +86,8 @@ const uniqueColorsCount = computed(() => {
 })
 
 const isNew = computed(() => {
-  return product.value?.labels?.some(l => 
-    l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo')
+  return product.value?.labels?.some(l =>
+      l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo')
   )
 })
 
@@ -517,11 +96,11 @@ const similarProducts = computed(() => {
 
   const currentId = product.value.id
   const currentCategories = product.value.category || []
-  const currentNameWords = product.value.name 
-    ? product.value.name.toLowerCase().split(' ').filter(w => w.length > 3) 
-    : []
+  const currentNameWords = product.value.name
+      ? product.value.name.toLowerCase().split(' ').filter(w => w.length > 3)
+      : []
 
-  let candidates = products.value.filter(p => p.id !== currentId)
+  const candidates = products.value.filter(p => p.id !== currentId)
 
   let matches = candidates.filter(p => {
     if (!p.category) return false
@@ -529,19 +108,19 @@ const similarProducts = computed(() => {
   })
 
   if (matches.length < 4) {
-     const nameMatches = candidates.filter(p => {
-        if (matches.find(m => m.id === p.id)) return false
-        
-        if (!p.name) return false
-        const nameLower = p.name.toLowerCase()
-        return currentNameWords.some(word => nameLower.includes(word))
-     })
-     matches = [...matches, ...nameMatches]
+    const nameMatches = candidates.filter(p => {
+      if (matches.find(m => m.id === p.id)) return false
+
+      if (!p.name) return false
+      const nameLower = p.name.toLowerCase()
+      return currentNameWords.some(word => nameLower.includes(word))
+    })
+    matches = [...matches, ...nameMatches]
   }
 
   return matches
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 4)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 4)
 })
 
 const recentProductIds = ref([])
@@ -549,25 +128,25 @@ const recentProductIds = ref([])
 const recentlyViewedProducts = computed(() => {
   if (!recentProductIds.value.length || !products.value.length) return []
   return recentProductIds.value
-    .filter(id => id !== product.value?.id)
-    .map(id => products.value.find(p => p.id === id))
-    .filter(Boolean)
-    .slice(0, 4)
+      .filter(id => id !== product.value?.id)
+      .map(id => products.value.find(p => p.id === id))
+      .filter(Boolean)
+      .slice(0, 4)
 })
 
 const addToRecent = (id) => {
-  if (!process.client || !id) return
-  
+  if (!import.meta.client || !id) return
+
   try {
     const key = 'recently_viewed_products'
     let stored = JSON.parse(localStorage.getItem(key) || '[]')
-    
+
     stored = stored.filter(i => i !== id)
-    
+
     stored.unshift(id)
-  
+
     stored = stored.slice(0, 8)
-    
+
     localStorage.setItem(key, JSON.stringify(stored))
     recentProductIds.value = stored
   } catch (e) {
@@ -577,20 +156,20 @@ const addToRecent = (id) => {
 
 const priceDisplay = computed(() => {
   if (!hasVariants.value) return 'Consultar'
-  
+
   const prices = product.value.tableQuantity
-    .map(v => parseFloat(v.price))
-    .filter(p => !isNaN(p) && p > 0)
-    
-    if (prices.length === 0) return 'Consultar'
-  
+      .map(v => parseFloat(v.price))
+      .filter(p => !isNaN(p) && p > 0)
+
+  if (prices.length === 0) return 'Consultar'
+
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
-  
+
   if (minPrice === maxPrice) {
     return formatCurrency(minPrice)
   }
-  
+
   return `De ${formatCurrency(minPrice)} a ${formatCurrency(maxPrice)}`
 })
 
@@ -641,7 +220,7 @@ const scrollThumbnails = (direction) => {
 
 const handleKeydown = (e) => {
   if (!showLightbox.value) return
-  
+
   if (e.key === 'Escape') {
     showLightbox.value = false
   } else if (e.key === 'ArrowLeft') {
@@ -658,7 +237,7 @@ const handleQuoteRequest = () => {
       id: product.value.id,
       name: product.value.name
     })
-    
+
     const text = `Hola, estoy interesado en el producto ${product.value.name} (ID: ${product.value.id}). Me gustaría recibir una cotización.`
     openModal(text)
   }
@@ -667,7 +246,7 @@ const handleQuoteRequest = () => {
 watch(product, (newData) => {
   if (newData) {
     setProductSeo(newData)
-    
+
     if (!selectedImage.value && allImages.value.length > 0) {
       selectedImage.value = newData.mainImage || allImages.value[0]
       currentImageIndex.value = 0
@@ -677,11 +256,11 @@ watch(product, (newData) => {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
-  
-  if (process.client) {
+
+  if (import.meta.client) {
     try {
       recentProductIds.value = JSON.parse(localStorage.getItem('recently_viewed_products') || '[]')
-      
+
       if (product.value) {
         addToRecent(product.value.id)
         trackProductView(product.value)
@@ -701,6 +280,427 @@ watch(() => route.params.id, () => {
   currentImageIndex.value = 0
 })
 </script>
+
+<template>
+  <div class="min-h-screen bg-background py-8 md:py-16 transition-all duration-500">
+    <Teleport to="body">
+      <Transition name="lightbox">
+        <div
+          v-if="showLightbox"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl cursor-zoom-out"
+          @click="showLightbox = false"
+        >
+          <button
+            class="absolute top-6 right-6 text-white/80 hover:text-white transition-colors z-10 p-2 rounded-full hover:bg-white/10"
+            @click.stop="showLightbox = false"
+          >
+            <UIcon name="i-heroicons-x-mark" class="text-3xl" />
+          </button>
+
+          <button
+            v-if="allImages.length > 1"
+            class="absolute left-4 md:left-8 text-white/70 hover:text-white transition-all z-10 p-3 rounded-full hover:bg-white/10 hover:scale-110"
+            @click.stop="navigateLightbox(-1)"
+          >
+            <UIcon name="i-heroicons-chevron-left" class="text-4xl" />
+          </button>
+          <button
+            v-if="allImages.length > 1"
+            class="absolute right-4 md:right-8 text-white/70 hover:text-white transition-all z-10 p-3 rounded-full hover:bg-white/10 hover:scale-110"
+            @click.stop="navigateLightbox(1)"
+          >
+            <UIcon name="i-heroicons-chevron-right" class="text-4xl" />
+          </button>
+
+          <img
+            :src="selectedImage"
+            :alt="product?.name"
+            class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl animate-lightbox-enter"
+            @click.stop
+          >
+
+          <div v-if="allImages.length > 1" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/90 px-4 py-2 rounded-full text-sm font-medium">
+            {{ currentImageIndex + 1 }} / {{ allImages.length }}
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <UContainer class="max-w-7xl">
+      <nav class="mb-8 flex items-center gap-2 text-sm">
+        <NuxtLink
+          to="/"
+          class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+        >
+          Inicio
+        </NuxtLink>
+        <UIcon name="i-heroicons-chevron-right" class="text-gray-400 text-xs" />
+        <NuxtLink
+          to="/products"
+          class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+        >
+          Productos
+        </NuxtLink>
+        <UIcon name="i-heroicons-chevron-right" class="text-gray-400 text-xs" />
+        <span class="text-text font-medium truncate max-w-[200px]">
+          {{ product?.name || 'Cargando...' }}
+        </span>
+      </nav>
+
+      <div v-if="loading" class="flex flex-col justify-center items-center h-[60vh] gap-6">
+        <div class="relative">
+          <div class="w-20 h-20 border-4 border-primary/20 rounded-full"/>
+          <div class="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-primary rounded-full animate-spin"/>
+        </div>
+        <p class="text-gray-500 dark:text-gray-400 animate-pulse">Cargando producto...</p>
+      </div>
+
+      <div v-else-if="error" class="text-center py-16 px-4">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
+          <UIcon name="i-heroicons-exclamation-triangle" class="text-4xl text-red-500" />
+        </div>
+        <h2 class="text-2xl font-bold text-text mb-3">Error al cargar el producto</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">{{ error }}</p>
+        <UButton to="/products" color="primary" size="lg" class="shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-shadow">
+          <UIcon name="i-heroicons-arrow-left" class="mr-2" />
+          Regresar al catálogo
+        </UButton>
+      </div>
+
+      <div v-else-if="product" class="animate-fade-in">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+
+          <div class="lg:col-span-7 self-start lg:sticky lg:top-24 space-y-4">
+            <div
+              class="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl shadow-black/5 dark:shadow-black/20 border border-gray-100/80 dark:border-gray-700/50 group cursor-zoom-in backdrop-blur-sm"
+              @click="openLightbox"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/30 dark:from-gray-700/20 dark:to-transparent pointer-events-none z-10"/>
+
+              <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                <span v-if="isNew" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg shadow-blue-500/30">
+                  ✨ NUEVO
+                </span>
+                <span v-if="totalStock > 100" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg shadow-green-500/30">
+                  ⚡ ALTA DISPONIBILIDAD
+                </span>
+              </div>
+
+              <img
+                :src="selectedImage"
+                :alt="product.name"
+                class="w-full h-full object-contain p-8 md:p-12 transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-1"
+              >
+
+              <div class="absolute bottom-6 right-6 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center gap-2 shadow-lg">
+                <UIcon name="i-heroicons-magnifying-glass-plus" class="text-lg" />
+                <span class="text-sm font-medium">Click para ampliar</span>
+              </div>
+            </div>
+
+            <div v-if="allImages.length > 1" class="relative mt-2 group/thumbs-container">
+              <div class="px-2 overflow-visible">
+                <div ref="thumbnailsContainer" class="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-hide scroll-smooth snap-x snap-mandatory">
+                  <button
+                    v-for="(img, index) in allImages"
+                    :key="index"
+                    class="relative flex-shrink-0 transition-all duration-300 group/thumb cursor-pointer snap-start"
+                    :class="[
+                      selectedImage === img
+                        ? 'scale-105'
+                        : 'hover:scale-105'
+                    ]"
+                    @click="selectImage(img, index)"
+                  >
+                    <div
+                      class="w-16 h-16 md:w-22 md:h-22 rounded-xl overflow-hidden border-2 transition-all duration-300 bg-white shadow-md"
+                      :class="[
+                        selectedImage === img
+                          ? 'border-primary shadow-lg shadow-primary/25'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-lg'
+                      ]"
+                    >
+                      <img
+                        :src="img"
+                        :alt="`Vista ${index + 1}`"
+                        class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover/thumb:scale-105"
+                      >
+                    </div>
+                    <div
+                      v-if="selectedImage === img"
+                      class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full shadow-sm"
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="allImages.length > 4" class="hidden md:flex absolute top-1/2 -translate-y-1/2 left-0 right-0 justify-between pointer-events-none px-0 opacity-0 group-hover/thumbs-container:opacity-100 transition-opacity duration-300">
+                <button
+                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -ml-4"
+                  @click="scrollThumbnails(-1)"
+                >
+                  <UIcon name="i-heroicons-chevron-left" class="text-sm" />
+                </button>
+                <button
+                  class="pointer-events-auto cursor-pointer w-8 h-8 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary transition-colors -mr-4"
+                  @click="scrollThumbnails(1)"
+                >
+                  <UIcon name="i-heroicons-chevron-right" class="text-sm" />
+                </button>
+              </div>
+
+              <div v-if="allImages.length > 1" class="flex justify-center mt-2 gap-1.5">
+                <button
+                  v-for="(_, i) in allImages"
+                  :key="i"
+                  class="w-2 h-2 rounded-full transition-all duration-300"
+                  :class="currentImageIndex === i ? 'bg-primary w-6' : 'bg-gray-300 dark:bg-gray-600 hover:bg-primary/50'"
+                  @click="selectImage(allImages[i], i)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-8">
+            <div class="space-y-4">
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="product.id"
+                  class="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-xs font-mono"
+                >
+                  <UIcon name="i-heroicons-hashtag" class="text-gray-400" />
+                  {{ product.id }}
+                </span>
+                <span
+                  v-for="cat in product.category"
+                  :key="cat"
+                  class="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium"
+                >
+                  {{ cat }}
+                </span>
+              </div>
+
+              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-text leading-tight tracking-tight">
+                {{ product.name }}
+              </h1>
+
+              <div v-if="user" class="flex items-end gap-3 pt-2">
+                <span class="text-4xl md:text-5xl font-bold text-text">
+                  {{ priceDisplay }}
+                </span>
+                <span class="text-sm text-gray-500 dark:text-gray-400 font-medium pb-2 flex items-center gap-1">
+                  <UIcon name="i-heroicons-plus-small" class="text-xs" />
+                  IVA
+                </span>
+              </div>
+            </div>
+
+            <div v-if="product.description" class="relative">
+              <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/50 to-transparent rounded-full"/>
+              <p class="text-text text-lg leading-relaxed pl-2">
+                {{ product.description }}
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 p-4 rounded-2xl border border-green-100 dark:border-green-800/30">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
+                  <span class="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Stock Total</span>
+                </div>
+                <span class="text-2xl font-bold text-green-700 dark:text-green-300">{{ formattedTotalStock }}</span>
+                <span class="text-sm text-green-600 dark:text-green-400 ml-1">{{ totalStock === 1 ? 'und' : 'unds' }}</span>
+              </div>
+              <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary/10 dark:to-primary/5 p-4 rounded-2xl border border-primary-100 dark:border-primary/20">
+                <div class="flex items-center gap-2 mb-1">
+                  <UIcon name="i-heroicons-swatch" class="text-primary text-sm" />
+                  <span class="text-xs font-medium text-primary uppercase tracking-wider">Colores</span>
+                </div>
+                <span class="text-2xl font-bold text-primary">{{ uniqueColorsCount }}</span>
+                <span class="text-sm text-primary/70 ml-1">disponibles</span>
+              </div>
+            </div>
+
+            <div v-if="hasVariants" class="bg-secondary/5 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
+              <div class="p-5 border-b border-secondary/20 bg-secondary/5">
+                <h3 class="font-semibold text-text flex items-center gap-3 text-lg">
+                  <span class="p-2 bg-primary/10 rounded-lg">
+                    <UIcon name="i-heroicons-swatch" class="text-primary text-xl" />
+                  </span>
+                  Disponibilidad por Color
+                </h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
+                    <tr>
+                      <th class="px-5 py-4 text-left font-semibold">Color</th>
+                      <th v-if="user" class="px-5 py-4 text-right font-semibold">Precio</th>
+                      <th class="px-5 py-4 text-right font-semibold">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-secondary/10">
+                    <tr
+                      v-for="(variant, idx) in product.tableQuantity"
+                      :key="idx"
+                      class="hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-colors group"
+                    >
+                      <td class="px-5 py-4">
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-6 h-6 rounded-full shadow-inner ring-2 ring-white dark:ring-gray-700 transition-transform group-hover:scale-110"
+                            :style="{ backgroundColor: getColorHex(variant.color) }"
+                          />
+                          <span class="font-medium text-text">
+                            {{ variant.colorName }}
+                          </span>
+                        </div>
+                      </td>
+                      <td v-if="user" class="px-5 py-4 text-right">
+                        <span class="font-mono text-text font-medium">
+                          {{ formatCurrency(variant.price) }}
+                        </span>
+                      </td>
+                      <td class="px-5 py-4 text-right">
+                        <span
+                          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all"
+                          :class="variant.quantity > 0
+                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-900/40 dark:to-emerald-900/30 dark:text-green-300'
+                            : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 dark:from-red-900/40 dark:to-rose-900/30 dark:text-red-300'"
+                        >
+                          <span class="w-1.5 h-1.5 rounded-full" :class="variant.quantity > 0 ? 'bg-green-500' : 'bg-red-500'"/>
+                          {{ formatNumber(variant.quantity) }} {{ variant.quantity === 1 ? 'und' : 'unds' }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="font-semibold text-text flex items-center gap-2 text-lg">
+                <UIcon name="i-heroicons-information-circle" class="text-primary" />
+                Especificaciones
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  v-if="product.material"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
+                >
+                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div class="flex items-center gap-2 mb-2">
+                    <UIcon name="i-heroicons-cube" class="text-primary/70" />
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Material</span>
+                  </div>
+                  <span class="font-semibold text-text text-lg">{{ product.material }}</span>
+                </div>
+
+                <div
+                  v-if="product.size"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
+                >
+                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div class="flex items-center gap-2 mb-2">
+                    <UIcon name="i-heroicons-arrows-pointing-out" class="text-primary/70" />
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Medidas</span>
+                  </div>
+                  <span class="font-semibold text-text text-lg">{{ product.size }}</span>
+                </div>
+
+                <div
+                  v-if="product.areaPrinting"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
+                >
+                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div class="flex items-center gap-2 mb-2">
+                    <UIcon name="i-heroicons-photo" class="text-primary/70" />
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Área de Impresión</span>
+                  </div>
+                  <span class="font-semibold text-text text-lg">{{ product.areaPrinting }}</span>
+                </div>
+
+                <div
+                  v-if="product.printing"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden"
+                >
+                  <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div class="flex items-center gap-2 mb-2">
+                    <UIcon name="i-heroicons-paint-brush" class="text-primary/70" />
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Técnica de Marca</span>
+                  </div>
+                  <span class="font-semibold text-text text-lg">{{ product.printing }}</span>
+                </div>
+
+                <div
+                  v-if="product.packaging"
+                  class="group relative bg-secondary/5 p-5 rounded-2xl border border-secondary/20 hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/5 transition-all duration-300 overflow-hidden col-span-1 sm:col-span-2"
+                >
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div class="flex items-center gap-2 mb-2">
+                    <UIcon name="i-heroicons-gift" class="text-primary/70" />
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">Empaque</span>
+                  </div>
+                  <span class="font-medium text-text leading-relaxed">{{ product.packaging }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-6 border-t border-gray-100 dark:border-gray-700/50">
+              <div class="flex flex-col sm:flex-row gap-4">
+                <UButton
+                  variant="outline"
+                  color="gray"
+                  size="xl"
+                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all cursor-pointer"
+                  @click="goBack"
+                >
+                  <UIcon name="i-heroicons-arrow-left" class="mr-2" />
+                  Volver
+                </UButton>
+                <UButton
+                  v-if="quoteUrl"
+                  size="xl"
+                  class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0 cursor-pointer"
+                  @click="handleQuoteRequest"
+                >
+                  <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
+                  Solicitar Cotización
+                </UButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="similarProducts.length > 0" class="mt-16 md:mt-24 border-t border-gray-100 dark:border-gray-800 pt-16">
+        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8">
+          Más Productos
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ProductCard
+            v-for="prod in similarProducts"
+            :key="prod.id"
+            :product="prod"
+          />
+        </div>
+      </div>
+
+      <div v-if="recentlyViewedProducts.length > 0" class="mt-16 border-t border-gray-100 dark:border-gray-800 pt-16 mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-text mb-8 flex items-center gap-2">
+          <UIcon name="i-heroicons-clock" class="text-primary" />
+          Vistos Recientemente
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ProductCard
+            v-for="prod in recentlyViewedProducts"
+            :key="prod.id"
+            :product="prod"
+          />
+        </div>
+      </div>
+    </UContainer>
+  </div>
+</template>
 
 <style scoped>
 .scrollbar-hide::-webkit-scrollbar {
@@ -727,13 +727,13 @@ watch(() => route.params.id, () => {
 }
 
 @keyframes fade-in {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

@@ -1,14 +1,5 @@
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy
-} from 'firebase/firestore'
-import { getFirebaseDb } from './config'
+import {addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, updateDoc} from 'firebase/firestore'
+import {getFirebaseDb} from './config'
 
 const COLLECTION_NAME = 'whatsapp_contacts'
 
@@ -22,11 +13,10 @@ export const getWhatsAppContacts = async () => {
   try {
     const q = query(collection(db, COLLECTION_NAME), orderBy('order', 'asc'))
     const querySnapshot = await getDocs(q)
-    const results = querySnapshot.docs.map(doc => ({
+    return querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }))
-    return results
   } catch (e) {
     console.error('Error getting whatsapp contacts:', e)
     return []

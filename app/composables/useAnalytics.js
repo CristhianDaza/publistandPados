@@ -5,9 +5,9 @@ export const useAnalytics = () => {
   const { user } = useAuth()
 
   const shouldTrack = () => {
-    if (!process.client) return false
-    if (user.value) return false
-    return true
+    if (!import.meta.client) return false
+    return !user.value;
+    
   }
 
   const trackProductView = async (product) => {
@@ -108,4 +108,3 @@ export const useAnalytics = () => {
     shouldTrack
   }
 }
-

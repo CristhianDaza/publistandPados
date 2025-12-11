@@ -1,8 +1,19 @@
+<script setup>
+import { onMounted } from 'vue'
+import { useHomeCTA } from '~/composables/useHomeCTA'
+
+const { ctaConfig, loading, fetchCTA } = useHomeCTA()
+
+onMounted(() => {
+  fetchCTA()
+})
+</script>
+
 <template>
   <section class="relative py-24 md:py-32 overflow-hidden bg-background">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-0 left-0 w-[30%] h-[30%] rounded-full bg-secondary/5 blur-3xl animate-pulse delay-1000"></div>
+      <div class="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl animate-pulse"/>
+      <div class="absolute bottom-0 left-0 w-[30%] h-[30%] rounded-full bg-secondary/5 blur-3xl animate-pulse delay-1000"/>
     </div>
 
     <UContainer class="relative z-10">
@@ -11,20 +22,20 @@
       </div>
 
       <div v-else-if="ctaConfig" class="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
-        
+
         <div class="flex-1 text-center lg:text-left space-y-8">
-          
+
           <div class="inline-flex items-center gap-3 justify-center lg:justify-start">
-            <div class="h-px w-8 bg-primary/50"></div>
+            <div class="h-px w-8 bg-primary/50"/>
             <span class="text-primary font-bold tracking-[0.2em] text-xs uppercase">
               {{ ctaConfig.tagline }}
             </span>
-            <div class="h-px w-8 bg-primary/50"></div>
+            <div class="h-px w-8 bg-primary/50"/>
           </div>
 
           <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-text leading-tight tracking-tight">
             {{ ctaConfig.title }}
-            <br />
+            <br >
             <span class="text-primary relative inline-block">
               {{ ctaConfig.subtitle }}
               <svg class="absolute -bottom-2 left-0 w-full h-3 text-primary/20" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,13 +95,13 @@
 
         <div class="flex-1 relative w-full max-w-md lg:max-w-xl">
           <div class="relative group">
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-[2rem] transform rotate-3 group-hover:rotate-6 transition-transform duration-500"></div>
+            <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-[2rem] transform rotate-3 group-hover:rotate-6 transition-transform duration-500"/>
             <div class="relative rounded-[2rem] overflow-hidden shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform duration-500 bg-white dark:bg-gray-900">
                <img
                 :src="ctaConfig.image"
                 :alt="ctaConfig.title"
                 class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
-              />
+              >
               <div class="absolute bottom-6 right-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 animate-bounce-slow">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg shadow-green-500/30">
@@ -110,17 +121,6 @@
     </UContainer>
   </section>
 </template>
-
-<script setup>
-import { onMounted } from 'vue'
-import { useHomeCTA } from '~/composables/useHomeCTA'
-
-const { ctaConfig, loading, fetchCTA } = useHomeCTA()
-
-onMounted(() => {
-  fetchCTA()
-})
-</script>
 
 <style scoped>
 .animate-bounce-slow {

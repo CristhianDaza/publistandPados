@@ -1,6 +1,5 @@
 export const useSeo = () => {
   const route = useRoute()
-  const config = useRuntimeConfig()
 
   const SITE_NAME = 'Publistandpados'
   const DEFAULT_DESCRIPTION = 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.'

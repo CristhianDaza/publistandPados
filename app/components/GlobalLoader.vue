@@ -14,12 +14,12 @@ const { logo } = useLogo()
           <div class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse flex items-center justify-center">
             <ClientOnly>
               <template #default>
-                <img 
+                <img
                   v-if="logo?.url"
-                  :src="logo.url" 
-                  alt="Logo" 
+                  :src="logo.url"
+                  alt="Logo"
                   class="w-full h-full object-contain"
-                />
+                >
                 <UIcon v-else name="i-heroicons-sparkles" class="w-12 h-12 text-gray-400" />
               </template>
               <template #fallback>
@@ -27,13 +27,13 @@ const { logo } = useLogo()
               </template>
             </ClientOnly>
           </div>
-          <div class="absolute -inset-4 rounded-full border-4 border-primary-500/30 border-t-primary-600 animate-spin"></div>
+          <div class="absolute -inset-4 rounded-full border-4 border-primary-500/30 border-t-primary-600 animate-spin"/>
         </div>
         <h2 class="text-xl font-medium text-gray-900 dark:text-white animate-pulse">
           {{ loadingMessage }}
         </h2>
         <div class="mt-8 w-48 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-          <div class="h-full bg-primary-500 animate-progress"></div>
+          <div class="h-full bg-primary-500 animate-progress"/>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@ const { logo } = useLogo()
 }
 
 @keyframes progress {
-  0% { width: 0%; transform: translateX(-100%); }
+  0% { width: 0; transform: translateX(-100%); }
   50% { width: 50%; }
   100% { width: 100%; transform: translateX(100%); }
 }
