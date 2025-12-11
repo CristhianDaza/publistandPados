@@ -1,7 +1,7 @@
 <script setup>
 const route = useRoute()
 const router = useRouter()
-const { logout } = useAuth()
+const { logout, user } = useAuth()
 
 const handleLogout = async () => {
   try {
@@ -29,6 +29,7 @@ const links = [
   { label: 'Menú', path: '/admin/menu', icon: 'i-heroicons-list-bullet' },
   { label: 'Redes Sociales', path: '/admin/social-proof', icon: 'i-heroicons-chat-bubble-left-right' },
   { label: 'Tema', path: '/admin/theme', icon: 'i-heroicons-swatch' },
+  { label: 'Usuarios', path: '/admin/users', icon: 'i-heroicons-users' },
   { label: 'WhatsApp', path: '/admin/whatsapp', icon: 'i-heroicons-chat-bubble-oval-left' },
 ]
 </script>
@@ -75,8 +76,8 @@ const links = [
           <UIcon name="i-heroicons-user" class="w-5 h-5 text-slate-300" />
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-white truncate">Administrador</p>
-          <p class="text-xs text-slate-500 truncate">admin@publistand.com</p>
+          <p class="text-sm font-medium text-white truncate">{{ user?.name || user?.displayName || 'Administrador' }}</p>
+          <p class="text-xs text-slate-500 truncate">{{ user?.email }}</p>
         </div>
         <button
           class="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
