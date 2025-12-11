@@ -52,13 +52,10 @@ const categoriasCards = [
       "Bolígrafos ecológicos",
       "Boligrafos en aluminio",
       "Bolígrafos con resaltador",
-      "Metalicos con Stylus",
-      "plasticos con stylus",
-      "Memorias - boligrafos",
+      "Bolígrafo USB",
       "Resaltadores",
       "Lápices, colores y crayolas",
-      "Portaminas",
-      "Estuches bolígrafos"
+      "Portaminas"
     ]
   },
   {
@@ -67,17 +64,13 @@ const categoriasCards = [
     items: [
       "Mugs y vasos metálicos",
       "Mugs de cerámica",
-      "Mug - produccion nacional",
-      "Mug Sublimación",
       "Mug ceramica",
-      "Mug plasticos",
       "Vasos plásticos y ecológicos",
-      "Vasos y copas",
       "Botellas en acero",
       "Botellas en aluminio",
       "Botellas deportivas plásticas",
       "Termos",
-      "Aislamiento Térmico (Vacuum)"
+      "Vacuum"
     ]
   },
   {
@@ -85,11 +78,12 @@ const categoriasCards = [
     icono: "i-heroicons-cloud",
     items: [
       "Paraguas",
-      "Paraguas - mini 21 pulgadas",
+      "Paraguas 21\"",
       "Paraguas Mini",
       "Paraguas Fashion",
       "Paraguas Golf",
-      "Paraguas - normales 23 a 30 pulgadas",
+      "Paraguas 23\"",
+      "Paraguas 30\"",
       "Impermeables"
     ]
   },
@@ -99,16 +93,11 @@ const categoriasCards = [
     items: [
       "Audífonos",
       "Altavoz",
-      "Speaker y parlantes",
       "Pilas power bank",
       "Cables y adaptadores de carga",
-      "Memorias - metalicas",
-      "Memorias - plasticas",
       "Usb",
-      "Tecnologia - USB memorias",
-      "Mouse-pad",
-      "Accesorios para móviles",
-      "Saldos - Tecnologia"
+      "Mouse pad",
+      "Accesorios para móviles"
     ]
   },
   {
@@ -117,11 +106,9 @@ const categoriasCards = [
     items: [
       "Morrales",
       "Maletines",
-      "Maletines - ejecutivos",
       "Maletines deportivos",
-      "Maletines - trolley",
-      "Maletines - neveras",
-      "Neveras loncheras",
+      "Trolley",
+      "Neveras",
       "Canguros",
       "Manos libres",
       "Tula, morral",
@@ -137,12 +124,11 @@ const categoriasCards = [
       "Libretas ecológicas",
       "Libretas plásticas",
       "Memos y adhesivos",
-      "Stickies y sets",
       "Calculadoras",
       "Cintas métricas",
       "Identificadores - oficina",
-      "Oficina - tarjeteros",
-      "Oficina - portadocumentos y portafolios",
+      "Tarjeteros",
+      "Portafolios",
       "Accesorios de escritorio"
     ]
   },
@@ -151,7 +137,6 @@ const categoriasCards = [
     icono: "i-heroicons-wrench-screwdriver",
     items: [
       "Herramientas",
-      "Herramientas - multiusos",
       "Linternas",
       "Llaveros",
       "Llaveros metálicos",
@@ -159,7 +144,6 @@ const categoriasCards = [
       "Set de BBQ",
       "Bar",
       "Relojes",
-      "Reloj - pared",
       "Accesorios de hogar"
     ]
   },
@@ -173,7 +157,6 @@ const categoriasCards = [
       "Gafas",
       "Deportes",
       "Fútbol",
-      "Golf",
       "Bicicleta",
       "Tiempo Libre",
       "Gorras"
@@ -188,9 +171,7 @@ const categoriasCards = [
       "Paja de trigo",
       "Elaborado de café",
       "Aluminio reciclado",
-      "Cartón reciclado",
-      "EcoNature",
-      "Marca Ecopromo"
+      "Cartón reciclado"
     ]
   }
 ];
@@ -204,11 +185,18 @@ const filteredProducts = computed(() => {
 
   const targetCategory = selectedCategory.value.toLowerCase()
 
-  return products.value.filter(product => {
+  const categoryMatches = products.value.filter(product => {
     if (!product.category || !Array.isArray(product.category)) return false
-
     return product.category.some(cat => cat.toLowerCase() === targetCategory)
   })
+
+  const searchMatches = filterProducts(products.value, selectedCategory.value)
+
+  const combined = new Map()
+  categoryMatches.forEach(p => combined.set(p.id, p))
+  searchMatches.forEach(p => combined.set(p.id, p))
+
+  return Array.from(combined.values())
 })
 
 const currentPage = ref(1)
