@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui'],
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap'],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
@@ -26,6 +26,16 @@ export default defineNuxtConfig({
       appId: process.env.NUXT_FIREBASE2_APP_ID,
       sourceCollection: process.env.NUXT_FIREBASE2_SOURCE_COLLECTION
     }
+  },
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: 'Publistandpados',
+  },
+  robots: {
+    disallow: ['/admin', '/admin/**'],
+  },
+  sitemap: {
+    exclude: ['/admin/**'],
   },
   app: {
     head: {
