@@ -47,7 +47,7 @@ useHead({
         <article
           v-for="catalog in catalogs"
           :key="catalog.id"
-          class="group bg-secondary/5 rounded-2xl border border-secondary/20 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+          class="group relative bg-secondary/5 rounded-2xl border border-secondary/20 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
         >
           <div class="aspect-w-3 aspect-h-4 bg-secondary/10 relative overflow-hidden">
             <img
@@ -61,7 +61,7 @@ useHead({
                 :href="catalog.link"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors shadow-lg"
+                class="relative z-20 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors shadow-lg"
               >
                 Ver Catálogo
                 <svg class="ml-2 -mr-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
