@@ -7,7 +7,7 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Footer'
+  title: 'Pie de Página'
 })
 
 const loading = ref(true)
@@ -15,9 +15,9 @@ const config = ref(null)
 const socialLinks = ref([])
 
 const socialColumns = [
-  { key: 'name', label: 'Network', type: 'text' },
+  { key: 'name', label: 'Red', type: 'text' },
   { key: 'to', label: 'URL', type: 'link' },
-  { key: 'icon', label: 'Icon Code', type: 'text' }
+  { key: 'icon', label: 'Código de Ícono', type: 'text' }
 ]
 
 onMounted(async () => {
@@ -40,8 +40,8 @@ onMounted(async () => {
   <div>
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-white mb-2">Footer</h1>
-        <p class="text-slate-400">Manage footer configuration and social links.</p>
+        <h1 class="text-3xl font-bold text-white mb-2">Pie de Página</h1>
+        <p class="text-slate-400">Gestiona la configuración del pie de página y enlaces sociales.</p>
       </div>
     </div>
 
@@ -54,19 +54,19 @@ onMounted(async () => {
         <div class="flex items-center justify-between mb-4">
            <h2 class="text-xl font-semibold text-white flex items-center gap-2">
             <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5 text-blue-500" />
-            General Information
+            Información General
           </h2>
-          <button class="text-sm text-blue-400 hover:text-white transition-colors cursor-pointer">Edit Info</button>
+          <button class="text-sm text-blue-400 hover:text-white transition-colors cursor-pointer">Editar Info</button>
         </div>
 
         <div v-if="config" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-wider">Contact Details</h3>
+            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-wider">Detalles de Contacto</h3>
             <div class="space-y-4">
               <div class="flex items-start gap-3">
                  <UIcon name="i-heroicons-map-pin" class="w-5 h-5 text-slate-500 mt-0.5" />
                  <div>
-                   <label class="text-xs text-slate-500 block">Address</label>
+                   <label class="text-xs text-slate-500 block">Dirección</label>
                    <p class="text-slate-300 whitespace-pre-line">{{ config.contact?.address }}</p>
                  </div>
               </div>
@@ -88,23 +88,23 @@ onMounted(async () => {
           </div>
 
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-wider">Footer CTA</h3>
+            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-wider">Llamada a la Acción del Pie de Página</h3>
             <div class="space-y-4">
                <div>
-                 <label class="text-xs text-slate-500 block mb-1">Title</label>
+                 <label class="text-xs text-slate-500 block mb-1">Título</label>
                  <p class="text-lg font-medium text-white">{{ config.cta?.title }}</p>
                </div>
                <div>
-                 <label class="text-xs text-slate-500 block mb-1">Text</label>
+                 <label class="text-xs text-slate-500 block mb-1">Texto</label>
                  <p class="text-slate-400 text-sm">{{ config.cta?.text }}</p>
                </div>
                <div class="flex gap-4">
                   <div>
-                     <label class="text-xs text-slate-500 block mb-1">Button Text</label>
+                     <label class="text-xs text-slate-500 block mb-1">Texto del Botón</label>
                      <span class="inline-block px-2 py-1 bg-slate-800 rounded text-xs text-slate-300 border border-slate-700">{{ config.cta?.buttonText }}</span>
                   </div>
                    <div>
-                     <label class="text-xs text-slate-500 block mb-1">Button Link</label>
+                     <label class="text-xs text-slate-500 block mb-1">Enlace del Botón</label>
                      <span class="text-blue-400 text-sm">{{ config.cta?.buttonLink }}</span>
                   </div>
                </div>
@@ -119,7 +119,7 @@ onMounted(async () => {
             Social Links
           </h2>
           <button class="px-3 py-1.5 bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg text-sm font-medium transition-colors cursor-pointer border border-blue-500/20">
-            Add Link
+            Agregar Enlace
           </button>
         </div>
 

@@ -7,16 +7,16 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Menu'
+  title: 'Menú'
 })
 
 const loading = ref(true)
 const items = ref([])
 
 const columns = [
-  { key: 'title', label: 'Title', type: 'text' },
-  { key: 'link', label: 'Link', type: 'text' },
-  { key: 'order', label: 'Order', type: 'text' }
+  { key: 'title', label: 'Título', type: 'text' },
+  { key: 'link', label: 'Enlace', type: 'text' },
+  { key: 'order', label: 'Orden', type: 'text' }
 ]
 
 onMounted(async () => {
@@ -34,12 +34,12 @@ onMounted(async () => {
   <div>
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-white mb-2">Menu</h1>
-        <p class="text-slate-400">Manage navigation menu items.</p>
+        <h1 class="text-3xl font-bold text-white mb-2">Menú</h1>
+        <p class="text-slate-400">Gestiona los elementos del menú de navegación.</p>
       </div>
       <button class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-lg shadow-blue-500/20">
         <UIcon name="i-heroicons-plus" class="w-5 h-5" />
-        <span>Add New</span>
+        <span>Agregar Nuevo</span>
       </button>
     </div>
 

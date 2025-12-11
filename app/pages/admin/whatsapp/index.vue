@@ -15,11 +15,11 @@ const items = ref([])
 
 const columns = [
   { key: 'image', label: 'Avatar', type: 'image' },
-  { key: 'name', label: 'Name', type: 'text' },
-  { key: 'role', label: 'Role', type: 'text' },
-  { key: 'number', label: 'Number', type: 'text' },
-  { key: 'active', label: 'Status', type: 'boolean' },
-  { key: 'order', label: 'Order', type: 'text' }
+  { key: 'name', label: 'Nombre', type: 'text' },
+  { key: 'role', label: 'Rol', type: 'text' },
+  { key: 'number', label: 'Número', type: 'text' },
+  { key: 'active', label: 'Estado', type: 'boolean' },
+  { key: 'order', label: 'Orden', type: 'text' }
 ]
 
 onMounted(async () => {
@@ -37,12 +37,12 @@ onMounted(async () => {
   <div>
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-white mb-2">WhatsApp Contacts</h1>
-        <p class="text-slate-400">Manage support agents and contact numbers.</p>
+        <h1 class="text-3xl font-bold text-white mb-2">Contactos de WhatsApp</h1>
+        <p class="text-slate-400">Gestiona agentes de soporte y números de contacto.</p>
       </div>
       <button class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-lg shadow-blue-500/20">
         <UIcon name="i-heroicons-plus" class="w-5 h-5" />
-        <span>Add New</span>
+        <span>Agregar Nuevo</span>
       </button>
     </div>
 

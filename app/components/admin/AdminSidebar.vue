@@ -19,16 +19,16 @@ const goBackToWebsite = () => {
 }
 
 const links = [
-  { label: 'Dashboard', path: '/admin', icon: 'i-heroicons-home' },
-  { label: 'Carousel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
-  { label: 'Catalogs', path: '/admin/catalogs', icon: 'i-heroicons-book-open' },
-  { label: 'Call to Action', path: '/admin/cta', icon: 'i-heroicons-megaphone' },
-  { label: 'Footer', path: '/admin/footer', icon: 'i-heroicons-bars-3-bottom-left' },
-  { label: 'Inspiration', path: '/admin/inspiration', icon: 'i-heroicons-light-bulb' },
+  { label: 'Panel', path: '/admin', icon: 'i-heroicons-home' },
+  { label: 'Carrusel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
+  { label: 'Catálogos', path: '/admin/catalogs', icon: 'i-heroicons-book-open' },
+  { label: 'Llamada a la Acción', path: '/admin/cta', icon: 'i-heroicons-megaphone' },
+  { label: 'Pie de Página', path: '/admin/footer', icon: 'i-heroicons-bars-3-bottom-left' },
+  { label: 'Inspiración', path: '/admin/inspiration', icon: 'i-heroicons-light-bulb' },
   { label: 'Logos', path: '/admin/logo', icon: 'i-heroicons-camera' },
-  { label: 'Menu', path: '/admin/menu', icon: 'i-heroicons-list-bullet' },
-  { label: 'Social Proof', path: '/admin/social-proof', icon: 'i-heroicons-chat-bubble-left-right' },
-  { label: 'Theme', path: '/admin/theme', icon: 'i-heroicons-swatch' },
+  { label: 'Menú', path: '/admin/menu', icon: 'i-heroicons-list-bullet' },
+  { label: 'Redes Sociales', path: '/admin/social-proof', icon: 'i-heroicons-chat-bubble-left-right' },
+  { label: 'Tema', path: '/admin/theme', icon: 'i-heroicons-swatch' },
   { label: 'WhatsApp', path: '/admin/whatsapp', icon: 'i-heroicons-chat-bubble-oval-left' },
 ]
 </script>
@@ -75,7 +75,7 @@ const links = [
           <UIcon name="i-heroicons-user" class="w-5 h-5 text-slate-300" />
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-white truncate">Admin User</p>
+          <p class="text-sm font-medium text-white truncate">Administrador</p>
           <p class="text-xs text-slate-500 truncate">admin@publistand.com</p>
         </div>
         <button

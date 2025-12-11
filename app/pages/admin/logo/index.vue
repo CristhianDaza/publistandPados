@@ -14,10 +14,10 @@ const loading = ref(true)
 const items = ref([])
 
 const columns = [
-  { key: 'url', label: 'Light Mode Logo', type: 'image' },
-  { key: 'urlDark', label: 'Dark Mode Logo', type: 'image' },
-  { key: 'name', label: 'Name', type: 'text' },
-  { key: 'isActive', label: 'Active', type: 'boolean' }
+  { key: 'url', label: 'Logo Modo Claro', type: 'image' },
+  { key: 'urlDark', label: 'Logo Modo Oscuro', type: 'image' },
+  { key: 'name', label: 'Nombre', type: 'text' },
+  { key: 'isActive', label: 'Activo', type: 'boolean' }
 ]
 
 onMounted(async () => {
@@ -36,11 +36,11 @@ onMounted(async () => {
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-3xl font-bold text-white mb-2">Logos</h1>
-        <p class="text-slate-400">Manage application logos (Light & Dark mode).</p>
+        <p class="text-slate-400">Gestiona los logos de la aplicación (Modo Claro y Oscuro).</p>
       </div>
       <button class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-lg shadow-blue-500/20">
         <UIcon name="i-heroicons-plus" class="w-5 h-5" />
-        <span>Add New</span>
+        <span>Agregar Nuevo</span>
       </button>
     </div>
 

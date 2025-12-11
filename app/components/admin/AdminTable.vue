@@ -20,7 +20,7 @@ defineProps({
             <th v-for="col in columns" :key="col.key" class="p-4 font-semibold">
               {{ col.label }}
             </th>
-            <th class="p-4 font-semibold text-right">Actions</th>
+            <th class="p-4 font-semibold text-right">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-800">
@@ -44,7 +44,7 @@ defineProps({
                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
                   :class="item[col.key] ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'"
                 >
-                  {{ item[col.key] ? 'Active' : 'Inactive' }}
+                  {{ item[col.key] ? 'Activo' : 'Inactivo' }}
                 </span>
               </div>
               <div v-else-if="col.type === 'color'" class="flex items-center gap-2">
@@ -71,10 +71,10 @@ defineProps({
 
             <td class="p-4 text-right">
               <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <button class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:shadow shadow-blue-500/20 transition-all cursor-pointer" title="Edit">
+                <button class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:shadow shadow-blue-500/20 transition-all cursor-pointer" title="Editar">
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
-                <button class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:shadow shadow-red-500/20 transition-all cursor-pointer" title="Delete">
+                <button class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:shadow shadow-red-500/20 transition-all cursor-pointer" title="Eliminar">
                   <UIcon name="i-heroicons-trash" class="w-5 h-5" />
                 </button>
               </div>
@@ -84,7 +84,7 @@ defineProps({
             <td :colspan="columns.length + 1" class="p-8 text-center text-slate-500">
               <div class="flex flex-col items-center gap-2">
                 <UIcon name="i-heroicons-inbox" class="w-8 h-8 opacity-50" />
-                <p>No items found</p>
+                <p>No se encontraron elementos</p>
               </div>
             </td>
           </tr>
