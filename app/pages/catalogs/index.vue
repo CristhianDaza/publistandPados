@@ -78,7 +78,7 @@ useHead({
               {{ catalog.description }}
             </p>
           </div>
-          <a :href="catalog.link" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-10" aria-label="Ver catálogo"/>
+          <a :href="catalog.link" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-10" aria-label="Ver catálogo"></a>
         </article>
       </div>
     </div>
