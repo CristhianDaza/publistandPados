@@ -1,11 +1,18 @@
 <script setup>
-const { items, isCartOpen, closeCart, removeItem, clearCart, openSubmitFlow, totalUnits, openConfigurator, isSubmitModalOpen, closeSubmitModal } = useQuoteCart()
+const { items, isCartOpen, closeCart, removeItem, clearCart, openSubmitFlow, totalUnits, openConfigurator, isSubmitModalOpen, closeSubmitModal, customerInfo, setCustomerField, sendQuote, isSubmitting } = useQuoteCart()
 const { user } = useAuth()
 const toast = useToast()
 const infoBadge = 'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-[rgba(var(--theme-color-secondary),0.1)] dark:bg-[rgba(var(--theme-color-secondary),0.15)] text-gray-700 dark:text-gray-300'
 const cardBg = 'bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg shadow-black/5 dark:shadow-black/20'
 
 const empty = computed(() => !items.value.length)
+
+const contactFormValid = computed(() => {
+  if (user.value) return true
+  return customerInfo.value.name?.trim() &&
+    customerInfo.value.email?.trim() &&
+    customerInfo.value.phone?.trim()
+})
 
 const handleCloseCart = () => {
   closeCart()
@@ -41,6 +48,25 @@ const handleSubmit = async () => {
   }
 
   try {
+    if (!user.value) {
+      if (!contactFormValid.value) {
+        toast.add({
+          title: 'Datos incompletos',
+          description: 'Por favor completa nombre, correo y teléfono para enviar la cotización',
+          color: 'red'
+        })
+        return
+      }
+      await sendQuote()
+      toast.add({
+        title: 'Cotización enviada',
+        description: 'Te contactaremos pronto al correo registrado',
+        color: 'green',
+        timeout: 5000
+      })
+      return
+    }
+
     const result = await openSubmitFlow()
 
     if (user.value && result) {
@@ -134,6 +160,76 @@ const handleSubmit = async () => {
           </div>
 
           <footer v-if="!empty" class="p-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
+            <div v-if="!user" class="space-y-4">
+              <p class="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                Datos de contacto
+              </p>
+              <div class="space-y-5">
+                <div>
+                  <label class="block text-gray-900 dark:text-white font-semibold text-sm mb-2">
+                    Nombre completo <span class="text-red-500">*</span>
+                  </label>
+                  <UInput
+                    :model-value="customerInfo.name"
+                    placeholder="Ej: Juan Pérez"
+                    size="xl"
+                    :ui="{
+                      base: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-700',
+                      padding: { xl: 'px-4 py-3' },
+                      color: {
+                        white: {
+                          outline: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white ring-gray-300 dark:ring-slate-700 focus:ring-[rgb(var(--theme-color-primary))]'
+                        }
+                      }
+                    }"
+                    @update:model-value="setCustomerField('name', $event)"
+                  />
+                </div>
+                <div>
+                  <label class="block text-gray-900 dark:text-white font-semibold text-sm mb-2">
+                    Correo electrónico <span class="text-red-500">*</span>
+                  </label>
+                  <UInput
+                    :model-value="customerInfo.email"
+                    type="email"
+                    placeholder="Ej: usuario@dominio.com"
+                    size="xl"
+                    :ui="{
+                      base: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-700',
+                      padding: { xl: 'px-4 py-3' },
+                      color: {
+                        white: {
+                          outline: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white ring-gray-300 dark:ring-slate-700 focus:ring-[rgb(var(--theme-color-primary))]'
+                        }
+                      }
+                    }"
+                    @update:model-value="setCustomerField('email', $event)"
+                  />
+                </div>
+                <div>
+                  <label class="block text-gray-900 dark:text-white font-semibold text-sm mb-2">
+                    Teléfono <span class="text-red-500">*</span>
+                  </label>
+                  <UInput
+                    :model-value="customerInfo.phone"
+                    type="tel"
+                    placeholder="Ej: +57 300 123 4567"
+                    size="xl"
+                    :ui="{
+                      base: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-700',
+                      padding: { xl: 'px-4 py-3' },
+                      color: {
+                        white: {
+                          outline: 'bg-white/90 dark:bg-slate-900/80 text-gray-900 dark:text-white ring-gray-300 dark:ring-slate-700 focus:ring-[rgb(var(--theme-color-primary))]'
+                        }
+                      }
+                    }"
+                    @update:model-value="setCustomerField('phone', $event)"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div class="text-sm text-gray-600 dark:text-gray-400">
               Al enviar la cotización, nuestro equipo responderá al correo registrado.
             </div>
@@ -151,6 +247,8 @@ const handleSubmit = async () => {
                 color="primary"
                 class="cursor-pointer flex-[2] bg-[rgb(var(--theme-color-primary))] hover:opacity-90 font-semibold shadow-lg"
                 icon="i-heroicons-paper-airplane"
+                :loading="isSubmitting"
+                :disabled="!contactFormValid || isSubmitting"
                 @click="handleSubmit"
               >
                 Enviar cotización
@@ -187,3 +285,4 @@ const handleSubmit = async () => {
   border-radius: 999px;
 }
 </style>
+
