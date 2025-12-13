@@ -33,7 +33,11 @@ const filteredQuotes = computed(() => {
   if (!searchQuery.value) return quotes.value
 
   const query = searchQuery.value.toLowerCase()
-  return quotes.value.filter(quote =>
+  return quotes.value.map(quote => ({
+    ...quote,
+    _statusColor: getStatusColor(quote.status),
+    _statusLabel: getStatusLabel(quote.status)
+  })).filter(quote =>
     quote.id.toLowerCase().includes(query) ||
     quote.status?.toLowerCase().includes(query)
   )
@@ -60,17 +64,6 @@ const handleDelete = async (quote) => {
     })
   }
 }
-
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('es-CO', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 </script>
 
 <template>
@@ -90,6 +83,7 @@ const formatDate = (date) => {
           color="gray"
           variant="ghost"
           :loading="loading"
+          class="cursor-pointer"
           @click="fetchQuotes"
         >
           Actualizar
@@ -97,12 +91,7 @@ const formatDate = (date) => {
       </div>
 
       <div class="flex items-center gap-4">
-        <UInput
-          v-model="searchQuery"
-          placeholder="Buscar por ID o estado..."
-          icon="i-heroicons-magnifying-glass"
-          class="flex-1"
-        />
+        <QuoteSearchInput v-model="searchQuery" class="flex-1" />
       </div>
     </header>
 
@@ -119,6 +108,7 @@ const formatDate = (date) => {
       <UButton
         icon="i-heroicons-shopping-cart"
         color="primary"
+        class="cursor-pointer"
         @click="router.push('/products')"
       >
         Ver Productos
@@ -126,61 +116,14 @@ const formatDate = (date) => {
     </div>
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div
+      <QuoteCard
         v-for="quote in filteredQuotes"
         :key="quote.id"
-        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-shadow"
-      >
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex-1">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1 font-mono">
-              #{{ quote.id.substring(0, 8) }}
-            </p>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
-              {{ quote.summary?.itemCount || quote.items?.length || 0 }} Productos
-            </h3>
-            <UBadge :color="getStatusColor(quote.status)" variant="subtle">
-              {{ getStatusLabel(quote.status) }}
-            </UBadge>
-          </div>
-        </div>
-
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Total Unidades:</span>
-            <span class="font-semibold text-gray-900 dark:text-white">
-              {{ quote.summary?.totalUnits || 0 }}
-            </span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Fecha:</span>
-            <span class="text-gray-900 dark:text-white">
-              {{ formatDate(quote.createdAt) }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <UButton
-            icon="i-heroicons-eye"
-            size="sm"
-            color="gray"
-            variant="outline"
-            class="flex-1"
-            @click="handleView(quote)"
-          >
-            Ver Detalles
-          </UButton>
-          <UButton
-            icon="i-heroicons-trash"
-            size="sm"
-            color="red"
-            variant="ghost"
-            @click="handleDelete(quote)"
-          />
-        </div>
-      </div>
+        :quote="quote"
+        :loading="loading"
+        @view="handleView"
+        @delete="handleDelete"
+      />
     </div>
   </div>
 </template>
-
