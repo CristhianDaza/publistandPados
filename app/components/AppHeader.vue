@@ -2,6 +2,7 @@
 const { menuItems, fetchMenu, initializeMenu, loading } = useMenu()
 const { logo, initializeLogo } = useLogo()
 const { cartCount, toggleCart, items } = useQuoteCart()
+const { user } = useAuth()
 const toast = useToast()
 const isOpen = ref(false)
 const isScrolled = ref(false)
@@ -138,6 +139,15 @@ const openCart = () => {
       <div class="flex items-center gap-3">
         <ClientOnly>
           <UButton
+            v-if="user"
+            icon="i-heroicons-document-text"
+            color="gray"
+            variant="ghost"
+            aria-label="Mis cotizaciones"
+            class="cursor-pointer hidden md:flex"
+            to="/quotes"
+          />
+          <UButton
             icon="i-heroicons-building-storefront"
             color="gray"
             variant="ghost"
@@ -214,6 +224,15 @@ const openCart = () => {
               class="fixed inset-0 z-40 flex flex-col bg-background/95 backdrop-blur-xl md:hidden pt-24 px-6"
             >
                <nav class="flex flex-col gap-6">
+                  <NuxtLink
+                    v-if="user"
+                    to="/quotes"
+                    class="text-2xl font-semibold text-text hover:text-primary transition-all duration-200 active:scale-95 origin-left"
+                    active-class="text-primary"
+                    @click="isOpen = false"
+                  >
+                    Mis Cotizaciones
+                  </NuxtLink>
                   <NuxtLink
                     v-for="(item, index) in menuItems"
                     :key="item.id"

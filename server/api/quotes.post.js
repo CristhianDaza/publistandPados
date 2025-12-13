@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,8 +8,18 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: 'No hay items para cotizar' })
     }
 
-    if (!customer || (!customer.userId && (!customer.name || !customer.email || !customer.phone))) {
+    if (!customer) {
       throw createError({ statusCode: 400, statusMessage: 'Datos de contacto incompletos' })
+    }
+
+    if (customer.userId) {
+      if (!customer.email) {
+        throw createError({ statusCode: 400, statusMessage: 'Email es requerido' })
+      }
+    } else {
+      if (!customer.name || !customer.email || !customer.phone) {
+        throw createError({ statusCode: 400, statusMessage: 'Datos de contacto incompletos (nombre, email y teléfono requeridos)' })
+      }
     }
 
     const payload = {
@@ -21,16 +30,15 @@ export default defineEventHandler(async (event) => {
         itemCount: summary?.itemCount || items.length
       },
       status: 'pendiente',
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
 
     const { adminDb } = useFirebaseAdmin()
     const docRef = await adminDb.collection('quotes').add(payload)
-
     return { success: true, id: docRef.id }
   } catch (error) {
-    console.error('Error creando cotización:', error)
+    console.error('❌ Error creando cotización:', error)
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.statusMessage || 'Error creando cotización',

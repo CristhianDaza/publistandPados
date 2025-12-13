@@ -136,16 +136,30 @@ export const useQuoteCart = () => {
     }
   }
 
-  const openSubmitModal = () => {
-    if (!items.value.length) return
+  const openSubmitFlow = async () => {
+    if (!items.value.length) {
+      throw new Error('No hay productos para cotizar')
+    }
+
     if (user.value) {
       customerInfo.value = {
         name: user.value.name || user.value.displayName || '',
         email: user.value.email || '',
         phone: user.value.phone || ''
       }
+      return await sendQuote()
     }
+    customerInfo.value = makeCustomer()
     isSubmitModalOpen.value = true
+    return null
+  }
+
+  const openSubmitModal = () => {
+    if (!items.value.length) return
+    if (!user.value) {
+      customerInfo.value = makeCustomer()
+      isSubmitModalOpen.value = true
+    }
   }
 
   const closeSubmitModal = () => {
@@ -166,15 +180,28 @@ export const useQuoteCart = () => {
     if (!items.value.length) {
       throw new Error('No hay productos para cotizar')
     }
+
     const baseCustomer = user.value ? {
       userId: user.value.uid,
-      name: user.value.name || user.value.displayName || '',
-      email: user.value.email || '',
-      phone: user.value.phone || ''
+      name: customerInfo.value.name || user.value.name || user.value.displayName || '',
+      email: customerInfo.value.email || user.value.email || '',
+      phone: customerInfo.value.phone || user.value.phone || ''
     } : customerInfo.value
-    if (!baseCustomer || (!baseCustomer.userId && (!baseCustomer.name || !baseCustomer.email || !baseCustomer.phone))) {
+
+    if (!baseCustomer) {
       throw new Error('Datos de contacto incompletos')
     }
+    
+    if (user.value) {
+      if (!baseCustomer.userId || !baseCustomer.email) {
+        throw new Error('Datos de usuario incompletos')
+      }
+    } else {
+      if (!baseCustomer.name || !baseCustomer.email || !baseCustomer.phone) {
+        throw new Error('Datos de contacto incompletos')
+      }
+    }
+    
     isSubmitting.value = true
     try {
       const body = {
@@ -195,6 +222,9 @@ export const useQuoteCart = () => {
       closeCart()
       customerInfo.value = user.value ? customerInfo.value : makeCustomer()
       return response
+    } catch (error) {
+      console.error('❌ Error enviando cotización:', error)
+      throw error
     } finally {
       isSubmitting.value = false
     }
@@ -220,6 +250,7 @@ export const useQuoteCart = () => {
     openCart,
     closeCart,
     toggleCart,
+    openSubmitFlow,
     openSubmitModal,
     closeSubmitModal,
     setCustomerField,

@@ -20,6 +20,7 @@ const goBackToWebsite = () => {
 
 const links = [
   { label: 'Panel', path: '/admin', icon: 'i-heroicons-home' },
+  { label: 'Cotizaciones', path: '/admin/quotes', icon: 'i-heroicons-document-text' },
   { label: 'Carrusel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
   { label: 'Catálogos', path: '/admin/catalogs', icon: 'i-heroicons-book-open' },
   { label: 'Llamada a la Acción', path: '/admin/cta', icon: 'i-heroicons-megaphone' },
@@ -57,12 +58,12 @@ const links = [
             :to="link.path"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group"
             :class="[
-              route.path === link.path
+              route.path === link.path || (link.path !== '/admin' && route.path.startsWith(link.path))
                 ? 'bg-blue-600/10 text-blue-400 font-medium'
                 : 'hover:bg-slate-800 hover:text-white'
             ]"
           >
-            <UIcon :name="link.icon" class="w-5 h-5 flex-shrink-0" :class="route.path === link.path ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'" />
+            <UIcon :name="link.icon" class="w-5 h-5 flex-shrink-0" :class="(route.path === link.path || (link.path !== '/admin' && route.path.startsWith(link.path))) ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'" />
             <span>{{ link.label }}</span>
             <UIcon name="i-heroicons-chevron-right" class="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-slate-500" />
           </NuxtLink>

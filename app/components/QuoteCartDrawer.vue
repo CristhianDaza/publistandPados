@@ -1,10 +1,18 @@
 <script setup>
-const { items, isCartOpen, closeCart, removeItem, clearCart, openSubmitModal, totalUnits, openConfigurator } = useQuoteCart()
+const { items, isCartOpen, closeCart, removeItem, clearCart, openSubmitFlow, totalUnits, openConfigurator, isSubmitModalOpen, closeSubmitModal } = useQuoteCart()
+const { user } = useAuth()
 const toast = useToast()
 const infoBadge = 'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-[rgba(var(--theme-color-secondary),0.1)] dark:bg-[rgba(var(--theme-color-secondary),0.15)] text-gray-700 dark:text-gray-300'
 const cardBg = 'bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg shadow-black/5 dark:shadow-black/20'
 
 const empty = computed(() => !items.value.length)
+
+const handleCloseCart = () => {
+  closeCart()
+  if (isSubmitModalOpen.value) {
+    closeSubmitModal()
+  }
+}
 
 const handleRemove = (id) => {
   removeItem(id)
@@ -21,6 +29,37 @@ const formatDate = (timestamp) => {
     day: '2-digit', month: 'short', year: 'numeric'
   })
 }
+
+const handleSubmit = async () => {
+  if (!items.value.length) {
+    toast.add({
+      title: 'Cotización vacía',
+      description: 'Agrega productos antes de enviar la cotización',
+      color: 'gray'
+    })
+    return
+  }
+
+  try {
+    const result = await openSubmitFlow()
+
+    if (user.value && result) {
+      toast.add({
+        title: 'Cotización enviada',
+        description: 'Te contactaremos pronto al correo registrado',
+        color: 'green',
+        timeout: 5000
+      })
+    }
+  } catch (error) {
+    console.error('Error en flujo de envío de cotización:', error)
+    toast.add({
+      title: 'Error',
+      description: error.message || 'No se pudo enviar la cotización',
+      color: 'red'
+    })
+  }
+}
 </script>
 
 <template>
@@ -30,7 +69,7 @@ const formatDate = (timestamp) => {
         v-if="isCartOpen"
         class="fixed inset-0 z-[110] flex"
       >
-        <div class="flex-1 bg-black/50 backdrop-blur-sm" @click="closeCart" />
+        <div class="flex-1 bg-black/50 backdrop-blur-sm" @click="handleCloseCart" />
         <div class="w-full max-w-lg h-full flex flex-col bg-[rgb(var(--theme-color-background))] border-l border-gray-200 dark:border-gray-700 shadow-[0_30px_120px_-70px_rgba(15,23,42,0.8)]">
           <header class="p-6 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
@@ -112,7 +151,7 @@ const formatDate = (timestamp) => {
                 color="primary"
                 class="cursor-pointer flex-[2] bg-[rgb(var(--theme-color-primary))] hover:opacity-90 font-semibold shadow-lg"
                 icon="i-heroicons-paper-airplane"
-                @click="openSubmitModal"
+                @click="handleSubmit"
               >
                 Enviar cotización
               </UButton>

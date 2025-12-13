@@ -11,5 +11,7 @@
     <ScrollToTop />
     <QuoteConfigurator />
     <QuoteCartDrawer />
+    <QuoteSubmitModal />
+    <QuoteSuccessNotification />
   </div>
 </template>
