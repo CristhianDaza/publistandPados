@@ -1,6 +1,8 @@
 <script setup>
 const { menuItems, fetchMenu, initializeMenu, loading } = useMenu()
 const { logo, initializeLogo } = useLogo()
+const { cartCount, toggleCart, items } = useQuoteCart()
+const toast = useToast()
 const isOpen = ref(false)
 const isScrolled = ref(false)
 const route = useRoute()
@@ -64,6 +66,14 @@ watch(() => route.path, () => {
   isOpen.value = false
   isSearchOpen.value = false
 })
+
+const openCart = () => {
+  if (!items.value.length) {
+    toast.add({ title: 'No hay productos en cotización', color: 'gray' })
+    return
+  }
+  toggleCart()
+}
 </script>
 
 <template>
@@ -125,6 +135,25 @@ watch(() => route.path, () => {
           />
         </ClientOnly>
       </nav>
+      <div class="flex items-center gap-3">
+        <ClientOnly>
+          <UButton
+            icon="i-heroicons-building-storefront"
+            color="gray"
+            variant="ghost"
+            aria-label="Abrir cotización"
+            class="relative cursor-pointer"
+            @click="openCart"
+          >
+            <span
+              v-if="cartCount > 0"
+              class="absolute -top-1 -right-1 h-4 min-w-[1rem] px-1 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center"
+            >
+              {{ cartCount }}
+            </span>
+          </UButton>
+        </ClientOnly>
+      </div>
       <div class="flex items-center gap-2 md:hidden">
         <ClientOnly>
           <UButton

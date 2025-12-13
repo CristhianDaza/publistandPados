@@ -7,6 +7,7 @@ const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
 const { openModal } = useWhatsApp()
+const { openConfigurator } = useQuoteCart()
 const { formatPriceRange, formatPrice } = usePricing()
 
 const goBack = () => {
@@ -220,6 +221,12 @@ const handleKeydown = (e) => {
 }
 
 const handleQuoteRequest = () => {
+  if (product.value) {
+    openConfigurator(product.value)
+  }
+}
+
+const handleWhatsAppQuote = () => {
   if (product.value) {
     trackQuoteRequest(product.value)
     trackWhatsAppClick('product', {
@@ -648,13 +655,21 @@ watch(() => route.params.id, () => {
                   Volver
                 </UButton>
                 <UButton
+                  size="xl"
+                  class="flex-1 justify-center text-white bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-xl transition-all cursor-pointer"
+                  @click="handleQuoteRequest"
+                >
+                  <UIcon name="i-heroicons-pencil-square" class="mr-2" />
+                  Cotizar
+                </UButton>
+                <UButton
                   v-if="quoteUrl"
                   size="xl"
                   class="flex-1 justify-center text-white bg-[#25D366] hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 transition-all transform hover:-translate-y-0.5 ring-0 cursor-pointer"
-                  @click="handleQuoteRequest"
+                  @click="handleWhatsAppQuote"
                 >
                   <UIcon name="i-simple-icons-whatsapp" class="mr-2 text-xl" />
-                  Solicitar Cotización
+                  WhatsApp
                 </UButton>
               </div>
             </div>

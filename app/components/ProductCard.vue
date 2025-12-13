@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { getColorHex } from '~/utils/colorMap'
 const { user } = useAuth()
 const { formatPriceRange } = usePricing()
+const { openConfigurator } = useQuoteCart()
 
 const props = defineProps({
   product: {
@@ -65,6 +66,12 @@ const uniqueColors = computed(() => {
 
 const displayedColors = computed(() => uniqueColors.value.slice(0, 5))
 const remainingColorsCount = computed(() => Math.max(0, uniqueColors.value.length - 5))
+
+const handleQuoteClick = (event) => {
+  event.preventDefault()
+  event.stopPropagation()
+  openConfigurator(props.product)
+}
 </script>
 
 <template>
@@ -143,6 +150,17 @@ const remainingColorsCount = computed(() => Math.max(0, uniqueColors.value.lengt
             {{ formattedQuantity }} und
           </span>
         </div>
+
+        <UButton
+          size="sm"
+          color="primary"
+          block
+          class="mt-4 cursor-pointer"
+          icon="i-heroicons-shopping-bag"
+          @click="handleQuoteClick"
+        >
+          Cotizar
+        </UButton>
       </div>
     </div>
   </NuxtLink>
