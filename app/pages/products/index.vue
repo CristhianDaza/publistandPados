@@ -13,6 +13,19 @@ onMounted(() => {
 const selectedCategory = computed(() => route.query.category)
 const searchQuery = computed(() => route.query.search)
 
+const selectedMinQty = computed(() => {
+  const raw = Number(route.query.minQty)
+  return !isNaN(raw) && raw > 0 ? raw : 0
+})
+
+const getProductTotalStock = (product) => {
+  if (!product?.tableQuantity || !Array.isArray(product.tableQuantity)) return 0
+  return product.tableQuantity.reduce((acc, item) => {
+    const qty = Number(item.quantity)
+    return acc + (qty > 0 ? qty : 0)
+  }, 0)
+}
+
 const pageTitle = computed(() => {
   if (searchQuery.value) return 'Resultados de Búsqueda'
   if (selectedCategory.value) return selectedCategory.value
@@ -176,26 +189,36 @@ const categoriasCards = [
 ];
 
 const filteredProducts = computed(() => {
+  let base = products.value || []
+
   if (searchQuery.value) {
-    return filterProducts(products.value, searchQuery.value)
+    base = filterProducts(base, searchQuery.value)
   }
 
-  if (!selectedCategory.value) return []
+  if (selectedCategory.value) {
+    const targetCategory = selectedCategory.value.toLowerCase()
 
-  const targetCategory = selectedCategory.value.toLowerCase()
+    const categoryMatches = base.filter(product => {
+      if (!product.category || !Array.isArray(product.category)) return false
+      return product.category.some(cat => cat.toLowerCase() === targetCategory)
+    })
 
-  const categoryMatches = products.value.filter(product => {
-    if (!product.category || !Array.isArray(product.category)) return false
-    return product.category.some(cat => cat.toLowerCase() === targetCategory)
-  })
+    const searchMatches = filterProducts(base, selectedCategory.value)
 
-  const searchMatches = filterProducts(products.value, selectedCategory.value)
+    const combined = new Map()
+    categoryMatches.forEach(p => combined.set(p.id, p))
+    searchMatches.forEach(p => combined.set(p.id, p))
 
-  const combined = new Map()
-  categoryMatches.forEach(p => combined.set(p.id, p))
-  searchMatches.forEach(p => combined.set(p.id, p))
+    base = Array.from(combined.values())
+  } else if (!searchQuery.value) {
+    base = []
+  }
 
-  return Array.from(combined.values())
+  if (selectedMinQty.value > 0 && base.length > 0) {
+    base = base.filter(product => getProductTotalStock(product) >= selectedMinQty.value)
+  }
+
+  return base
 })
 
 const currentPage = ref(1)
@@ -225,6 +248,11 @@ watch(currentPage, (newPage) => {
 watch(itemsPerPage, (newLimit) => {
   currentPage.value = 1
   updateUrl({ limit: newLimit, page: 1 })
+})
+
+// resetear página al cambiar el filtro de cantidad
+watch(selectedMinQty, () => {
+  currentPage.value = 1
 })
 
 const updateUrl = (params) => {
@@ -326,7 +354,15 @@ const selectCategory = (categoryItem) => {
 }
 
 const clearFilters = () => {
-  router.push({ query: { category: undefined, search: undefined, page: undefined, limit: undefined } })
+  router.push({
+    query: {
+      category: undefined,
+      search: undefined,
+      minQty: undefined,
+      page: undefined,
+      limit: undefined
+    }
+  })
 }
 </script>
 
@@ -363,32 +399,54 @@ const clearFilters = () => {
         </div>
 
         <div v-if="filteredProducts.length > 0">
-          <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-secondary/5 p-4 rounded-xl border border-secondary/20">
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-secondary font-medium">Mostrar:</span>
-              <div class="relative">
-                <select
-                  v-model="itemsPerPage"
-                  :disabled="totalProducts <= 16"
-                  class="appearance-none bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-1.5 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option v-for="option in itemsPerPageOptions" :key="option.value" :value="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                  <UIcon name="i-heroicons-chevron-down" class="w-4 h-4" />
+          <div class="flex flex-col gap-4 mb-6 bg-secondary/5 p-4 rounded-xl border border-secondary/20">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-secondary font-medium">Mostrar:</span>
+                <div class="relative">
+                  <select
+                    v-model="itemsPerPage"
+                    :disabled="totalProducts <= 16"
+                    class="appearance-none bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-1.5 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option v-for="option in itemsPerPageOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                    <UIcon name="i-heroicons-chevron-down" class="w-4 h-4" />
+                  </div>
                 </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-secondary font-medium">Cantidad mínima:</span>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    step="50"
+                    :value="selectedMinQty"
+                    class="w-28 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-1.5 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow"
+                    @change="event => updateUrl({ minQty: event.target.value ? Number(event.target.value) : undefined, page: undefined })"
+                    placeholder="0"
+                  >
+                  <span class="text-xs text-gray-500">unds</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <span class="text-sm text-secondary">
+                  <span class="hidden sm:inline">Página</span>
+                  <span class="font-bold text-secondary"> {{ currentPage }} </span>
+                  de
+                  <span class="font-bold text-secondary"> {{ totalPages }} </span>
+                  <span class="hidden sm:inline mx-2">-</span>
+                  <span class="text-xs sm:text-sm">Mostrando {{ startItem }} - {{ endItem }} de {{ totalProducts }}</span>
+                </span>
               </div>
             </div>
 
-            <div class="flex items-center gap-4">
-               <span class="text-sm text-secondary">
-                 <span class="hidden sm:inline">Página</span> <span class="font-bold text-secondary">{{ currentPage }}</span> de <span class="font-bold text-secondary">{{ totalPages }}</span>
-                 <span class="hidden sm:inline mx-2">-</span>
-                 <span class="text-xs sm:text-sm">Mostrando {{ startItem }} - {{ endItem }} de {{ totalProducts }}</span>
-               </span>
-            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
