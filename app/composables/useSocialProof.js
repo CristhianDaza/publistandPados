@@ -1,11 +1,11 @@
 import { getSocialProof, createSocialProofItem, updateSocialProofItem, deleteSocialProofItem } from '~/services/firebase/socialProofFirebase'
 
 export const useSocialProof = () => {
-  const socialProofItems = useState('social_proof_items', () => [])
+  const items = useState('social_proof_list', () => [])
   const loading = useState('social_proof_loading', () => false)
   const error = useState('social_proof_error', () => null)
 
-  const socialProofCache = useCookie('social_proof_cache', {
+  const cache = useCookie('social_proof_cache', {
     maxAge: 60 * 60 * 24 * 365,
     default: () => null
   })
@@ -13,84 +13,94 @@ export const useSocialProof = () => {
   const fetchSocialProof = async () => {
     const today = new Date().toDateString()
 
-    if (socialProofCache.value && socialProofCache.value.date === today && socialProofCache.value.items?.length) {
-      socialProofItems.value = socialProofCache.value.items
+    if (cache.value && cache.value.date === today && cache.value.items?.length) {
+      items.value = cache.value.items
       return
     }
 
     loading.value = true
     error.value = null
     try {
-      socialProofItems.value = await getSocialProof()
-      if (socialProofItems.value.length === 0) {
-        const initialItems = []
-        if (socialProofItems.value.length === 0) {
-          socialProofItems.value = initialItems
-        }
-      }
-     
-      socialProofCache.value = {
+      const data = await getSocialProof()
+      items.value = data
+
+      cache.value = {
         date: today,
-        items: socialProofItems.value
+        items: data
       }
     } catch (e) {
-      error.value = e.message
       console.error('Error fetching social proof:', e)
+      error.value = e.message || 'An unknown error occurred'
     } finally {
       loading.value = false
     }
   }
 
-  const addItem = async (item) => {
+  const addSocialProofItem = async (item) => {
     loading.value = true
     try {
-      const id = await createSocialProofItem(item)
-      socialProofCache.value = null
+      await createSocialProofItem(item)
+      cache.value = null
       await fetchSocialProof()
-      return id
     } catch (e) {
-      error.value = e.message
-      throw e
+      console.error('Error adding social proof item:', e)
+      error.value = e.message || 'Error adding social proof item'
     } finally {
       loading.value = false
     }
   }
 
-  const updateItem = async (id, item) => {
+  const editSocialProofItem = async (id, item) => {
     loading.value = true
     try {
       await updateSocialProofItem(id, item)
-      socialProofCache.value = null
+      cache.value = null
       await fetchSocialProof()
     } catch (e) {
-      error.value = e.message
-      throw e
+      console.error('Error updating social proof item:', e)
+      error.value = e.message || 'Error updating social proof item'
     } finally {
       loading.value = false
     }
   }
 
-  const deleteItem = async (id) => {
+  const removeSocialProofItem = async (id) => {
     loading.value = true
     try {
       await deleteSocialProofItem(id)
-      socialProofCache.value = null
+      cache.value = null
       await fetchSocialProof()
     } catch (e) {
-      error.value = e.message
-      throw e
+      console.error('Error deleting social proof item:', e)
+      error.value = e.message || 'Error deleting social proof item'
     } finally {
       loading.value = false
+    }
+  }
+
+  const getSocialProofItem = async (id) => {
+    try {
+      if (items.value.length > 0) {
+        const found = items.value.find(i => i.id === id)
+        if (found) return found
+      }
+      await fetchSocialProof()
+      return items.value.find(i => i.id === id) || null
+    } catch (e) {
+      console.error('Error getting social proof item:', e)
+      throw e
     }
   }
 
   return {
-    socialProofItems,
+    items,
     loading,
     error,
     fetchSocialProof,
-    addItem,
-    updateItem,
-    deleteItem
+    addSocialProofItem,
+    editSocialProofItem,
+    removeSocialProofItem,
+    getSocialProofItem
   }
 }
+
