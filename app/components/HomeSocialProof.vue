@@ -1,14 +1,14 @@
 <script setup>
-const { socialProofItems, loading, fetchSocialProof } = useSocialProof()
+const { items, loading, fetchSocialProof } = useSocialProof()
 
 onMounted(() => {
   fetchSocialProof()
 })
 
 const displayItems = computed(() => {
-  if (!socialProofItems.value || socialProofItems.value.length === 0) return []
+  if (!items || !items.value || items.value.length === 0) return []
 
-  return socialProofItems.value.map((item, index) => ({
+  return items.value.map((item, index) => ({
     ...item,
     uniqueKey: item.id || `item-${index}`
   }))
