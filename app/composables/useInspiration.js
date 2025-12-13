@@ -1,4 +1,4 @@
-import { getInspiration, createInspirationItem, seedInspiration } from '~/services/firebase/inspirationFirebase'
+import { getInspiration, createInspirationItem, seedInspiration, updateInspirationItem, deleteInspirationItem, getInspirationItemById } from '~/services/firebase/inspirationFirebase'
 
 export const useInspiration = () => {
   const inspirationItems = useState('inspiration_items', () => [])
@@ -45,11 +45,11 @@ export const useInspiration = () => {
     }
   }
 
-  const addItem = async (item) => {
+  const addInspirationItem = async (item) => {
     try {
       const id = await createInspirationItem(item)
       inspirationCache.value = null
-      inspirationItems.value.push({ id, ...item })
+      await fetchInspiration()
       return id
     } catch (e) {
       console.error('Error adding inspiration item:', e)
@@ -57,11 +57,52 @@ export const useInspiration = () => {
     }
   }
 
+  const updateInspiration = async (id, item) => {
+    try {
+      await updateInspirationItem(id, item)
+      inspirationCache.value = null
+      await fetchInspiration()
+    } catch (e) {
+      console.error('Error updating inspiration item:', e)
+      throw e
+    }
+  }
+
+  const deleteInspiration = async (id) => {
+    try {
+      await deleteInspirationItem(id)
+      inspirationCache.value = null
+      await fetchInspiration()
+    } catch (e) {
+      console.error('Error deleting inspiration item:', e)
+      throw e
+    }
+  }
+
+  const getInspirationItem = async (id) => {
+    try {
+      if (inspirationItems.value.length > 0) {
+        const item = inspirationItems.value.find(i => i.id === id)
+        if (item) return item
+      }
+      return await getInspirationItemById(id)
+    } catch (e) {
+      console.error('Error getting inspiration item:', e)
+      throw e
+    }
+  }
+
+  const addItem = addInspirationItem
+
   return {
     inspirationItems,
     loading,
     error,
     fetchInspiration,
+    addInspirationItem,
+    updateInspiration,
+    deleteInspiration,
+    getInspirationItem,
     addItem
   }
 }

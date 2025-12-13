@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { getFirebaseDb } from './config'
 
 const COLLECTION_NAME = 'inspiration'
@@ -6,10 +6,21 @@ const COLLECTION_NAME = 'inspiration'
 export const getInspiration = async () => {
   const querySnapshot = await getDocs(collection(getFirebaseDb(), COLLECTION_NAME))
   const items = []
-  querySnapshot.forEach((doc) => {
-    items.push({ id: doc.id, ...doc.data() })
+  querySnapshot.forEach((docSnap) => {
+    items.push({ id: docSnap.id, ...docSnap.data() })
   })
   return items.sort((a, b) => a.order - b.order)
+}
+
+export const getInspirationItemById = async (id) => {
+  const docRef = doc(getFirebaseDb(), COLLECTION_NAME, id)
+  const docSnap = await getDoc(docRef)
+
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() }
+  } else {
+    throw new Error('No such document!')
+  }
 }
 
 export const createInspirationItem = async (item) => {
