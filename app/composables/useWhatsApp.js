@@ -2,11 +2,11 @@ import {
   getWhatsAppContacts,
   addWhatsAppContact,
   updateWhatsAppContact,
-  deleteWhatsAppContact
+  deleteWhatsAppContact,
+  getWhatsAppContactById
 } from '~/services/firebase/whatsappFirebase'
 
 export const useWhatsApp = () => {
-
   const contacts = useState('whatsapp_contacts_list', () => [])
   const loading = useState('whatsapp_loading', () => false)
   const isModalOpen = useState('whatsapp_modal_open', () => false)
@@ -62,6 +62,19 @@ export const useWhatsApp = () => {
     }
   }
 
+  const getContact = async (id) => {
+    try {
+      if (contacts.value.length > 0) {
+        const item = contacts.value.find(i => i.id === id)
+        if (item) return item
+      }
+      return await getWhatsAppContactById(id)
+    } catch (e) {
+      console.error('Error getting whatsapp contact:', e)
+      throw e
+    }
+  }
+
   const openModal = (message = '') => {
     currentMessage.value = message
     isModalOpen.value = true
@@ -81,6 +94,7 @@ export const useWhatsApp = () => {
     addContact,
     updateContact,
     deleteContact,
+    getContact,
     openModal,
     closeModal
   }
