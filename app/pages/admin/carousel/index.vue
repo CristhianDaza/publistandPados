@@ -22,7 +22,6 @@ const columns = [
   { key: 'title', label: 'Título', type: 'text' },
   { key: 'description', label: 'Descripción', type: 'text' },
   { key: 'order', label: 'Orden', type: 'text' },
-  { key: 'active', label: 'Estado', type: 'boolean' },
   { key: 'link', label: 'Link', type: 'link' }
 ]
 
@@ -58,7 +57,7 @@ const confirmDelete = async () => {
     }
 
     await deleteItem(itemToDelete.value.id)
-    
+
     deleteModalOpen.value = false
     itemToDelete.value = null
   } catch (error) {
@@ -77,9 +76,9 @@ const confirmDelete = async () => {
         <h1 class="text-3xl font-bold text-white mb-2">Carrusel</h1>
         <p class="text-slate-400">Gestiona las imágenes y el contenido del carrusel principal.</p>
       </div>
-      <button 
-        @click="handleCreate"
+      <button
         class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-lg shadow-blue-500/20"
+        @click="handleCreate"
       >
         <UIcon name="i-heroicons-plus" class="w-5 h-5" />
         <span>Agregar Nuevo</span>
@@ -98,8 +97,8 @@ const confirmDelete = async () => {
       @delete="handleDelete"
     />
 
-    <div 
-      v-if="deleteModalOpen" 
+    <div
+      v-if="deleteModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
     >
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
