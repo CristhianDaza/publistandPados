@@ -7,6 +7,7 @@ const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
 const { openModal } = useWhatsApp()
+const { formatPriceRange, formatPrice } = usePricing()
 
 const goBack = () => {
   if (window.history.state?.back) {
@@ -161,30 +162,18 @@ const priceDisplay = computed(() => {
       .map(v => parseFloat(v.price))
       .filter(p => !isNaN(p) && p > 0)
 
-  if (prices.length === 0) return 'Consultar'
-
-  const minPrice = Math.min(...prices)
-  const maxPrice = Math.max(...prices)
-
-  if (minPrice === maxPrice) {
-    return formatCurrency(minPrice)
-  }
-
-  return `De ${formatCurrency(minPrice)} a ${formatCurrency(maxPrice)}`
+  return formatPriceRange(prices)
 })
 
 const formatNumber = (value) => {
-  if (!value && value !== 0) return '0'
-  return new Intl.NumberFormat('es-CO').format(value)
+  if (!Number.isFinite(Number(value))) return '0'
+  return new Intl.NumberFormat('es-CO').format(Number(value))
 }
 
 const formatCurrency = (value) => {
-  if (!value || isNaN(value)) return 'Consultar'
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0
-  }).format(value)
+  const numeric = Number(value)
+  if (!Number.isFinite(numeric) || numeric <= 0) return 'Consultar'
+  return formatPrice(numeric)
 }
 
 const selectImage = (img, index) => {

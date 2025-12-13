@@ -1,5 +1,6 @@
 export const useSeo = () => {
   const route = useRoute()
+  const { applyPriceIncrease } = usePricing()
 
   const SITE_NAME = 'Publistandpados'
   const DEFAULT_DESCRIPTION = 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.'
@@ -46,8 +47,13 @@ export const useSeo = () => {
         .map(v => parseFloat(v.price))
         .filter(p => !isNaN(p) && p > 0)
       if (prices.length) {
-        minPrice = Math.min(...prices)
-        maxPrice = Math.max(...prices)
+        const adjusted = prices
+          .map(price => applyPriceIncrease(price))
+          .filter(price => price !== null)
+        if (adjusted.length) {
+          minPrice = Math.min(...adjusted)
+          maxPrice = Math.max(...adjusted)
+        }
       }
     }
 

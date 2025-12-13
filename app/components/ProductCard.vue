@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { getColorHex } from '~/utils/colorMap'
 const { user } = useAuth()
+const { formatPriceRange } = usePricing()
 
 const props = defineProps({
   product: {
@@ -23,26 +24,12 @@ const discountPercentage = computed(() => {
 })
 
 const formattedPrice = computed(() => {
-  if (!props.product.tableQuantity || props.product.tableQuantity.length === 0) {
-    return 'Consultar'
-  }
-
   const prices = props.product.tableQuantity
-      .map(item => Number(item.price))
-      .filter(p => !isNaN(p) && p > 0)
+    ?.map(item => Number(item.price))
+    .filter(p => !isNaN(p) && p > 0)
 
-  if (prices.length === 0) return 'Consultar'
-
-  const minPrice = Math.min(...prices)
-  const maxPrice = Math.max(...prices)
-
-  const format = (p) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(p)
-
-  if (minPrice === maxPrice) {
-    return format(minPrice)
-  } else {
-    return `De ${format(minPrice)} hasta ${format(maxPrice)}`
-  }
+  if (!prices?.length) return 'Consultar'
+  return formatPriceRange(prices)
 })
 
 const totalStock = computed(() => {
