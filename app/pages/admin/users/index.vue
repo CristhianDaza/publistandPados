@@ -92,6 +92,7 @@ const handleSendReset = async (item) => {
       v-else
       :columns="columns"
       :items="users"
+      :show-reset-password="true"
       @edit="handleEdit"
       @delete="handleDelete"
       @reset-password="handleSendReset"

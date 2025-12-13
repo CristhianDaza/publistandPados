@@ -7,6 +7,10 @@ defineProps({
   items: {
     type: Array,
     required: true
+  },
+  showResetPassword: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -81,6 +85,7 @@ const emit = defineEmits(['edit', 'delete', 'reset-password'])
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
                 <button
+                  v-if="showResetPassword"
                   class="p-2 rounded-lg text-amber-400 hover:bg-amber-500/10 hover:shadow shadow-amber-500/20 transition-all cursor-pointer"
                   title="Enviar enlace de cambio de contraseña"
                   @click.stop="emit('reset-password', item)"
