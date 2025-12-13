@@ -71,10 +71,18 @@ defineProps({
 
             <td class="p-4 text-right">
               <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <button class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:shadow shadow-blue-500/20 transition-all cursor-pointer" title="Editar">
+                <button
+                  class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:shadow shadow-blue-500/20 transition-all cursor-pointer"
+                  title="Editar"
+                  @click.stop="$emit('edit', item)"
+                >
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
-                <button class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:shadow shadow-red-500/20 transition-all cursor-pointer" title="Eliminar">
+                <button
+                  class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:shadow shadow-red-500/20 transition-all cursor-pointer"
+                  title="Eliminar"
+                  @click.stop="$emit('delete', item)"
+                >
                   <UIcon name="i-heroicons-trash" class="w-5 h-5" />
                 </button>
               </div>

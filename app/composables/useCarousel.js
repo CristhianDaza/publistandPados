@@ -1,4 +1,4 @@
-import { getCarousel, createCarouselItem, updateCarouselItem, deleteCarouselItem } from '~/services/firebase/carouselFirebase'
+import { getCarousel, createCarouselItem, updateCarouselItem, deleteCarouselItem, getCarouselItemById } from '~/services/firebase/carouselFirebase'
 
 export const useCarousel = () => {
   const carouselItems = useState('carousel_items', () => [])
@@ -55,6 +55,21 @@ export const useCarousel = () => {
     }
   }
 
+
+
+  const getCarouselItem = async (id) => {
+    try {
+      if (carouselItems.value.length > 0) {
+        const item = carouselItems.value.find(i => i.id === id)
+        if (item) return item
+      }
+      return await getCarouselItemById(id)
+    } catch (e) {
+      console.error('Error getting carousel item:', e)
+      throw e
+    }
+  }
+
   const deleteItem = async (id) => {
     try {
       await deleteCarouselItem(id)
@@ -72,6 +87,7 @@ export const useCarousel = () => {
     fetchCarousel,
     addCarouselItem,
     updateItem,
-    deleteItem
+    deleteItem,
+    getCarouselItem
   }
 }

@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { getFirebaseDb } from './config'
 
 const COLLECTION_NAME = 'carousel'
@@ -10,6 +10,17 @@ export const getCarousel = async () => {
     items.push({ id: doc.id, ...doc.data() })
   })
   return items.sort((a, b) => a.order - b.order)
+}
+
+export const getCarouselItemById = async (id) => {
+  const docRef = doc(getFirebaseDb(), COLLECTION_NAME, id)
+  const docSnap = await getDoc(docRef)
+
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() }
+  } else {
+    throw new Error("No such document!")
+  }
 }
 
 export const createCarouselItem = async (item) => {

@@ -15,8 +15,13 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
-      firebaseMeasurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+      firebaseMeasurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+      cloudinaryCloudName: process.env.NUXT_CLOUDINARY_CLOUD_NAME,
+      cloudinaryApiKey: process.env.NUXT_CLOUDINARY_API_KEY,
+      cloudinaryUploadPreset: process.env.NUXT_CLOUDINARY_UPLOAD_PRESET
     },
+    cloudinaryApiSecret: process.env.NUXT_CLOUDINARY_API_SECRET,
+    cloudinaryApiEnvironment: process.env.NUXT_CLOUDINARY_API_ENVIRONMENT,
     firebase2: {
       apiKey: process.env.NUXT_FIREBASE2_API_KEY,
       authDomain: process.env.NUXT_FIREBASE2_AUTH_DOMAIN,
