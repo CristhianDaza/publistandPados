@@ -64,7 +64,6 @@ const categoriasCards = [
     items: [
       "Mugs y vasos metálicos",
       "Mugs de cerámica",
-      "Mug ceramica",
       "Vasos plásticos y ecológicos",
       "Botellas en acero",
       "Botellas en aluminio",
