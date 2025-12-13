@@ -31,59 +31,49 @@ const handleClose = () => {
 <template>
   <Teleport to="body">
     <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 translate-y-4"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-4"
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
     >
       <div
         v-if="showNotification"
-        class="fixed bottom-4 right-4 z-[100] max-w-md"
+        class="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       >
-        <div class="bg-white dark:bg-gray-800 border border-green-500/50 rounded-xl shadow-2xl p-6">
-          <div class="flex items-start gap-4">
-            <div class="flex-shrink-0">
-              <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                <UIcon name="i-heroicons-check-circle" class="w-6 h-6 text-green-500" />
-              </div>
+        <div class="bg-slate-900 border border-green-500/30 rounded-xl p-8 w-full max-w-md shadow-2xl">
+          <div class="flex flex-col items-center text-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-2">
+              <UIcon name="i-heroicons-check" class="w-8 h-8 text-green-500" />
             </div>
-            <div class="flex-1">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                ¡Cotización Enviada!
+            <div>
+              <h3 class="text-2xl font-bold text-white mb-2">
+                ¡Cotización enviada!
               </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                Tu solicitud ha sido recibida. Nuestro equipo te contactará pronto.
+              <p class="text-sm text-slate-300 max-w-sm">
+                Tu solicitud ha sido recibida. Nuestro equipo revisará la cotización y te contactará pronto.
               </p>
-              <div class="flex items-center gap-2">
-                <UButton
-                  size="sm"
-                  color="primary"
-                  @click="handleViewQuote"
-                >
-                  Ver Detalles
-                </UButton>
-                <UButton
-                  size="sm"
-                  color="gray"
-                  variant="ghost"
-                  @click="handleClose"
-                >
-                  Cerrar
-                </UButton>
-              </div>
             </div>
-            <button
-              class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              @click="handleClose"
-            >
-              <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
-            </button>
+            <div class="mt-6 flex flex-col sm:flex-row sm:justify-center sm:gap-10 w-full text-sm font-medium">
+              <button
+                type="button"
+                class="text-green-400 hover:text-green-300 cursor-pointer mb-2 sm:mb-0"
+                @click="handleViewQuote"
+              >
+                Ver detalles de la cotización
+              </button>
+              <button
+                type="button"
+                class="text-slate-200 hover:text-white cursor-pointer"
+                @click="handleClose"
+              >
+                Cerrar
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </Transition>
   </Teleport>
 </template>
-
