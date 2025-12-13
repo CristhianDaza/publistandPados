@@ -11,6 +11,27 @@ export const useAuth = () => {
   const loading = useState('auth_loading', () => true)
   const error = useState('auth_error', () => null)
 
+  const handleUserData = (currentUser, userData) => {
+    if (userData && userData.active === false) {
+      user.value = null
+      return false
+    }
+
+    if (userData) {
+      user.value = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+        ...userData
+      }
+    } else {
+      user.value = currentUser
+    }
+
+    return true
+  }
+
   const initAuth = () => {
     if (import.meta.server) return
 
@@ -24,24 +45,18 @@ export const useAuth = () => {
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid))
           if (userDoc.exists()) {
             const userData = userDoc.data()
-            user.value = {
-              uid: currentUser.uid,
-              email: currentUser.email,
-              displayName: currentUser.displayName,
-              photoURL: currentUser.photoURL,
-              ...userData
+            const allowed = handleUserData(currentUser, userData)
+            if (!allowed) {
+              await signOut(auth)
             }
           } else {
             const q = query(collection(db, 'users'), where('email', '==', currentUser.email))
             const querySnapshot = await getDocs(q)
             if (!querySnapshot.empty) {
               const userData = querySnapshot.docs[0].data()
-              user.value = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                displayName: currentUser.displayName,
-                photoURL: currentUser.photoURL,
-                ...userData
+              const allowed = handleUserData(currentUser, userData)
+              if (!allowed) {
+                await signOut(auth)
               }
             } else {
               user.value = currentUser
@@ -74,6 +89,14 @@ export const useAuth = () => {
       let userData = {}
       if (userDoc.exists()) {
         userData = userDoc.data()
+      }
+
+      if (userData && userData.active === false) {
+        await signOut(auth)
+        const inactiveError = new Error('La cuenta está desactivada')
+        inactiveError.code = 'user-inactive'
+        error.value = inactiveError
+        throw inactiveError
       }
 
       user.value = { ...userCredential.user, ...userData }

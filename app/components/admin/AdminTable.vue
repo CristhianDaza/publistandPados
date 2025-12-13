@@ -9,6 +9,8 @@ defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(['edit', 'delete', 'reset-password'])
 </script>
 
 <template>
@@ -74,14 +76,21 @@ defineProps({
                 <button
                   class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:shadow shadow-blue-500/20 transition-all cursor-pointer"
                   title="Editar"
-                  @click.stop="$emit('edit', item)"
+                  @click.stop="emit('edit', item)"
                 >
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
                 <button
+                  class="p-2 rounded-lg text-amber-400 hover:bg-amber-500/10 hover:shadow shadow-amber-500/20 transition-all cursor-pointer"
+                  title="Enviar enlace de cambio de contraseña"
+                  @click.stop="emit('reset-password', item)"
+                >
+                  <UIcon name="i-heroicons-key" class="w-5 h-5" />
+                </button>
+                <button
                   class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:shadow shadow-red-500/20 transition-all cursor-pointer"
                   title="Eliminar"
-                  @click.stop="$emit('delete', item)"
+                  @click.stop="emit('delete', item)"
                 >
                   <UIcon name="i-heroicons-trash" class="w-5 h-5" />
                 </button>
