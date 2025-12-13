@@ -27,7 +27,7 @@ const links = [
   { label: 'Inspiración', path: '/admin/inspiration', icon: 'i-heroicons-light-bulb' },
   { label: 'Logos', path: '/admin/logo', icon: 'i-heroicons-camera' },
   { label: 'Menú', path: '/admin/menu', icon: 'i-heroicons-list-bullet' },
-  { label: 'Redes Sociales', path: '/admin/social-proof', icon: 'i-heroicons-chat-bubble-left-right' },
+  { label: 'Logos Clientes', path: '/admin/social-proof', icon: 'i-heroicons-chat-bubble-left-right' },
   { label: 'Tema', path: '/admin/theme', icon: 'i-heroicons-swatch' },
   { label: 'Usuarios', path: '/admin/users', icon: 'i-heroicons-users' },
   { label: 'WhatsApp', path: '/admin/whatsapp', icon: 'i-heroicons-chat-bubble-oval-left' },
