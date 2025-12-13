@@ -1,4 +1,4 @@
-import { getMenu, createMenuItem, updateMenuItem, deleteMenuItem, seedMenu } from '~/services/firebase/menuFirebase'
+import { getMenu, createMenuItem, updateMenuItem, deleteMenuItem, seedMenu, getMenuById } from '~/services/firebase/menuFirebase'
 
 export const useMenu = () => {
   const menuItems = useState('menu_items', () => [])
@@ -65,6 +65,19 @@ export const useMenu = () => {
     }
   }
 
+  const getMenuItem = async (id) => {
+    if (menuItems.value && menuItems.value.length) {
+      const found = menuItems.value.find(i => i.id === id)
+      if (found) return found
+    }
+    try {
+      return await getMenuById(id)
+    } catch (e) {
+      console.error('Error getting menu item:', e)
+      return null
+    }
+  }
+
   const initializeMenu = async () => {
     const initialData = []
     try {
@@ -84,6 +97,7 @@ export const useMenu = () => {
     addMenuItem,
     updateItem,
     deleteItem,
+    getMenuItem,
     initializeMenu
   }
 }
