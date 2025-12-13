@@ -1,4 +1,4 @@
-import { getCatalogs, createCatalog, updateCatalog, deleteCatalog } from '~/services/firebase/catalogsFirebase'
+import { getCatalogs, createCatalog, updateCatalog, deleteCatalog, getCatalogById } from '~/services/firebase/catalogsFirebase'
 
 export const useCatalogs = () => {
   const catalogs = useState('catalogs_list', () => [])
@@ -78,6 +78,19 @@ export const useCatalogs = () => {
     }
   }
 
+  const getCatalogItem = async (id) => {
+    try {
+      if (catalogs.value.length > 0) {
+        const item = catalogs.value.find(i => i.id === id)
+        if (item) return item
+      }
+      return await getCatalogById(id)
+    } catch (e) {
+      console.error('Error getting catalog item:', e)
+      throw e
+    }
+  }
+
   return {
     catalogs,
     loading,
@@ -85,6 +98,7 @@ export const useCatalogs = () => {
     fetchCatalogs,
     addCatalog,
     editCatalog,
-    removeCatalog
+    removeCatalog,
+    getCatalogItem
   }
 }

@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { getFirebaseDb } from './config'
 
 const COLLECTION_NAME = 'catalogs'
@@ -25,4 +25,13 @@ export const updateCatalog = async (id, item) => {
 export const deleteCatalog = async (id) => {
   const docRef = doc(getFirebaseDb(), COLLECTION_NAME, id)
   await deleteDoc(docRef)
+}
+
+export const getCatalogById = async (id) => {
+  const docRef = doc(getFirebaseDb(), COLLECTION_NAME, id)
+  const docSnap = await getDoc(docRef)
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() }
+  }
+  return null
 }
