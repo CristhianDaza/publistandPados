@@ -2,7 +2,7 @@
 const { menuItems, fetchMenu, initializeMenu, loading } = useMenu()
 const { logo, initializeLogo } = useLogo()
 const { cartCount, toggleCart, items } = useQuoteCart()
-const { user } = useAuth()
+const { user, logout } = useAuth()
 const toast = useToast()
 const isOpen = ref(false)
 const isScrolled = ref(false)
@@ -75,6 +75,16 @@ const openCart = () => {
   }
   toggleCart()
 }
+
+const handleLogout = async () => {
+  try {
+    await logout()
+    isOpen.value = false
+    navigateTo('/')
+  } catch (e) {
+    console.error('Logout error:', e)
+  }
+}
 </script>
 
 <template>
@@ -113,18 +123,29 @@ const openCart = () => {
         <ProductSearchInput class="w-full" />
       </div>
       <nav class="hidden md:flex items-center gap-2">
-        <NuxtLink
-          v-for="item in menuItems"
-          :key="item.id"
-          :to="item.to"
-          class="relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out
-                 text-secondary
-                 hover:bg-secondary/10 hover:text-primary
-                 active:scale-95"
-          active-class="!text-primary bg-primary/10 font-semibold"
-        >
-          {{ item.label }}
-        </NuxtLink>
+        <template v-for="item in menuItems" :key="item.id">
+          <button
+            v-if="(item.to === '/admin' || item.label === 'Admin') && user?.role === 'cliente'"
+            class="relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out
+                   text-secondary
+                   hover:bg-secondary/10 hover:text-primary
+                   active:scale-95 cursor-pointer"
+            @click="handleLogout"
+          >
+            Cerrar Sesión
+          </button>
+          <NuxtLink
+            v-else
+            :to="item.to"
+            class="relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ease-in-out
+                   text-secondary
+                   hover:bg-secondary/10 hover:text-primary
+                   active:scale-95"
+            active-class="!text-primary bg-primary/10 font-semibold"
+          >
+            {{ item.label }}
+          </NuxtLink>
+        </template>
         <ClientOnly>
           <UButton
             :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
@@ -233,17 +254,26 @@ const openCart = () => {
                   >
                     Mis Cotizaciones
                   </NuxtLink>
-                  <NuxtLink
-                    v-for="(item, index) in menuItems"
-                    :key="item.id"
-                    :to="item.to"
-                    class="text-2xl font-semibold text-text hover:text-primary transition-all duration-200 active:scale-95 origin-left"
-                    active-class="text-primary"
-                    :style="{ transitionDelay: `${index * 50}ms` }"
-                    @click="isOpen = false"
-                  >
-                    {{ item.label }}
-                  </NuxtLink>
+                  <template v-for="(item, index) in menuItems" :key="item.id">
+                    <button
+                      v-if="(item.to === '/admin' || item.label === 'Admin') && user?.role === 'cliente'"
+                      class="text-left text-2xl font-semibold text-text hover:text-primary transition-all duration-200 active:scale-95 origin-left"
+                      :style="{ transitionDelay: `${index * 50}ms` }"
+                      @click="handleLogout"
+                    >
+                      Cerrar Sesión
+                    </button>
+                    <NuxtLink
+                      v-else
+                      :to="item.to"
+                      class="text-2xl font-semibold text-text hover:text-primary transition-all duration-200 active:scale-95 origin-left"
+                      active-class="text-primary"
+                      :style="{ transitionDelay: `${index * 50}ms` }"
+                      @click="isOpen = false"
+                    >
+                      {{ item.label }}
+                    </NuxtLink>
+                  </template>
                </nav>
 
                <div v-if="menuItems.length === 0 && !loading" class="mt-auto mb-10">
