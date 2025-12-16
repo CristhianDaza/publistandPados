@@ -11,23 +11,23 @@
   },
   "dependencies": {
     "@emailjs/browser": "4.4.1",
-    "@nuxt/eslint": "1.11.0",
+    "@nuxt/eslint": "1.12.1",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "4.2.1",
     "@pinia/nuxt": "0.11.3",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "firebase": "12.6.0",
     "firebase-admin": "13.6.0",
-    "nuxt": "4.2.1",
+    "nuxt": "4.2.2",
     "pinia": "3.0.4",
     "typescript": "5.9.3",
     "vue": "3.5.25",
-    "vue-router": "4.6.3"
+    "vue-router": "4.6.4"
   },
   "packageManager": "pnpm@10.21.0+sha512.da3337267e400fdd3d479a6c68079ac6db01d8ca4f67572083e722775a796788a7a9956613749e000fac20d424b594f7a791a5f4e2e13581c5ef947f26968a40",
   "devDependencies": {
-    "@nuxtjs/robots": "5.6.3",
-    "@nuxtjs/sitemap": "7.4.9",
-    "tailwindcss": "^4.1.17"
+    "@nuxtjs/robots": "5.6.7",
+    "@nuxtjs/sitemap": "7.4.10",
+    "tailwindcss": "^4.1.18"
   }
 }
