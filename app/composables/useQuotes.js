@@ -70,7 +70,7 @@ export const useQuotes = () => {
     }
   }
 
-  const addComment = async (id, commentText) => {
+  const addComment = async (id, commentText, isInternal = false) => {
     if (!isAdmin.value) {
       throw new Error('No tienes permiso para agregar comentarios')
     }
@@ -81,7 +81,8 @@ export const useQuotes = () => {
       await quotesFirebase.addComment(id, {
         text: commentText,
         author: user.value?.name || user.value?.displayName || user.value?.email || 'Admin',
-        authorId: user.value?.uid
+        authorId: user.value?.uid,
+        isInternal: isInternal
       })
 
       if (selectedQuote.value?.id === id) {
@@ -102,8 +103,17 @@ export const useQuotes = () => {
     try {
       const quote = await quotesFirebase.getById(id)
 
-      if (!isAdmin.value && quote.customer?.userId !== user.value?.uid) {
-        throw new Error('No tienes permiso para eliminar esta cotización')
+      if (!isAdmin.value) {
+        if (quote.customer?.userId !== user.value?.uid) {
+          throw new Error('No tienes permiso para eliminar esta cotización')
+        }
+        if (quote.status === 'completada') {
+          throw new Error('No puedes eliminar una cotización completada')
+        }
+      } else {
+        if (quote.status !== 'completada') {
+          throw new Error('Como administrador, solo puedes eliminar cotizaciones completadas')
+        }
       }
 
       await quotesFirebase.delete(id)
@@ -147,6 +157,28 @@ export const useQuotes = () => {
     { value: 'rechazada', label: 'Rechazada' }
   ]
 
+  const deleteCompletedQuotes = async () => {
+    if (!isAdmin.value) {
+      throw new Error('No tienes permiso para realizar esta acción')
+    }
+
+    loading.value = true
+    error.value = null
+    try {
+      const completedQuotes = quotes.value.filter(q => q.status === 'completada')
+      await Promise.all(completedQuotes.map(quote => quotesFirebase.delete(quote.id)))
+
+      await fetchQuotes()
+      return completedQuotes.length
+    } catch (e) {
+      error.value = e
+      console.error('Error deleting completed quotes:', e)
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     quotes,
     loading,
@@ -158,6 +190,7 @@ export const useQuotes = () => {
     updateQuoteStatus,
     addComment,
     deleteQuote,
+    deleteCompletedQuotes,
     getStatusColor,
     getStatusLabel,
     statusOptions

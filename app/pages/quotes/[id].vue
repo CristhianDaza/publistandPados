@@ -12,10 +12,37 @@ const {
   selectedQuote,
   loading,
   fetchQuoteById,
+  updateQuoteStatus,
+  addComment,
   deleteQuote,
   getStatusColor,
-  getStatusLabel
+  getStatusLabel,
+  statusOptions,
+  isAdmin
 } = useQuotes()
+
+const newComment = ref('')
+const isInternalComment = ref(false)
+
+const handlePostComment = async () => {
+  if (!newComment.value.trim()) return
+
+  try {
+    await addComment(selectedQuote.value.id, newComment.value, isInternalComment.value)
+    newComment.value = ''
+    isInternalComment.value = false
+    toast.add({
+      title: 'Comentario agregado',
+      color: 'green'
+    })
+  } catch (error) {
+    toast.add({
+      title: 'Error al agregar comentario',
+      description: error.message,
+      color: 'red'
+    })
+  }
+}
 
 const quoteId = computed(() => route.params.id)
 
@@ -186,11 +213,24 @@ const cardBg = 'bg-background/80 border border-secondary/20 rounded-2xl shadow-s
         <div class="space-y-6">
           <div :class="cardBg" class="p-6">
             <h2 class="text-lg font-bold text-text mb-4">Estado</h2>
-            <div class="flex items-center justify-center mb-4">
+
+            <div v-if="isAdmin" class="mb-4">
+              <select
+                v-model="selectedQuote.status"
+                class="w-full bg-slate-800 text-white border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
+                @change="updateQuoteStatus(selectedQuote.id, $event.target.value)"
+              >
+                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                   {{ option.label }}
+                </option>
+              </select>
+            </div>
+            <div v-else class="flex items-center justify-center mb-4">
               <UBadge :color="getStatusColor(selectedQuote.status)" variant="subtle" size="lg">
                 {{ getStatusLabel(selectedQuote.status) }}
               </UBadge>
             </div>
+
             <div class="text-center text-sm text-secondary">
               <p v-if="selectedQuote.status === 'pendiente'">
                 Tu cotización está siendo revisada por nuestro equipo.
@@ -210,9 +250,65 @@ const cardBg = 'bg-background/80 border border-secondary/20 rounded-2xl shadow-s
             </div>
           </div>
 
+          <div v-if="isAdmin || (selectedQuote.comments && selectedQuote.comments.some(c => !c.isInternal))" :class="cardBg" class="p-6">
+             <h2 class="text-lg font-bold text-text mb-4">Comentarios</h2>
+             <div class="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2">
+               <div
+                  v-for="comment in selectedQuote.comments"
+                  :key="comment.id"
+                  v-show="isAdmin || !comment.isInternal"
+                  class="bg-background/50 rounded-lg p-3 text-sm border border-secondary/10"
+                  :class="{'border-l-4 border-l-yellow-500': comment.isInternal}"
+               >
+                 <div class="flex justify-between items-start mb-1">
+                   <span class="font-semibold text-text">{{ comment.author }}</span>
+                   <span class="text-xs text-secondary">{{ formatDate(comment.createdAt) }}</span>
+                 </div>
+                 <p class="text-text/90 whitespace-pre-wrap">{{ comment.text }}</p>
+                 <div v-if="comment.isInternal && isAdmin" class="mt-1">
+                   <UBadge color="yellow" variant="soft" size="xs">Nota Interna</UBadge>
+                 </div>
+               </div>
+             </div>
+
+             <div v-if="isAdmin" class="space-y-3 pt-4 border-t border-secondary/20">
+               <UTextarea
+                v-model="newComment"
+                placeholder="Escribe un comentario..."
+                :rows="3"
+                :ui="{
+                  base: 'bg-slate-800 text-white',
+                  color: {
+                    white: {
+                      outline: 'bg-slate-800 text-white ring-slate-700 focus:ring-blue-500'
+                    }
+                  }
+                }"
+               />
+               <div class="flex items-center justify-between">
+                 <UCheckbox v-model="isInternalComment" label="Nota Interna" />
+                 <UButton
+                    size="md"
+                    color="blue"
+                    :loading="loading"
+                    :disabled="!newComment.trim()"
+                    class="font-bold cursor-pointer"
+                    @click="handlePostComment"
+                 >
+                   Enviar Comentario
+                 </UButton>
+               </div>
+             </div>
+          </div>
+
           <div :class="cardBg" class="p-6">
             <h2 class="text-lg font-bold text-text mb-4">Información de Contacto</h2>
             <div class="space-y-3 text-sm">
+              <div class="flex items-center gap-2 mb-2">
+                 <UBadge :color="selectedQuote.customer?.userId ? 'green' : 'gray'" variant="soft">
+                    {{ selectedQuote.customer?.userId ? 'Usuario Registrado' : 'Invitado' }}
+                 </UBadge>
+              </div>
               <div>
                 <p class="text-secondary mb-1">Nombre</p>
                 <p class="text-text font-semibold">{{ selectedQuote.customer?.name || 'N/A' }}</p>

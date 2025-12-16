@@ -146,21 +146,22 @@ export const quotesFirebase = {
       if (!quoteDoc.exists()) {
         throw new Error('Cotización no encontrada')
       }
-      
+
       const currentComments = quoteDoc.data().comments || []
       const newComment = {
         id: crypto.randomUUID(),
         text: comment.text,
         author: comment.author || 'Admin',
         authorId: comment.authorId || null,
+        isInternal: comment.isInternal || false,
         createdAt: Timestamp.now()
       }
-      
+
       await updateDoc(docRef, {
         comments: [...currentComments, newComment],
         updatedAt: Timestamp.now()
       })
-      
+
       return { id, comment: newComment }
     } catch (error) {
       console.error('Error adding comment:', error)

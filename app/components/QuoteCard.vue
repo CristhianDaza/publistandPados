@@ -61,6 +61,17 @@ const formatDate = (date) => {
             {{ formatDate(quote.createdAt) }}
           </span>
         </div>
+
+        <div v-if="quote.customer" class="pt-3 border-t border-secondary/10 mt-3">
+          <div class="flex items-center justify-between mb-1">
+             <span class="text-xs font-semibold text-secondary">Cliente</span>
+             <UBadge :color="quote.customer.userId ? 'green' : 'gray'" variant="soft" size="xs">
+                {{ quote.customer.userId ? 'Registrado' : 'Invitado' }}
+             </UBadge>
+          </div>
+          <p class="text-xs text-text truncate" :title="quote.customer.name">{{ quote.customer.name }}</p>
+          <p class="text-xs text-secondary truncate" :title="quote.customer.email">{{ quote.customer.email }}</p>
+        </div>
       </div>
 
       <div class="mt-auto flex items-center gap-2 pt-3 border-t border-secondary/20">
