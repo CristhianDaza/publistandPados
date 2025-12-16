@@ -132,7 +132,7 @@ const handleSubmit = async () => {
                     <p class="text-xs text-gray-500 dark:text-gray-400">ID: {{ item.productId }}</p>
                   </div>
                   <div class="flex items-center gap-2">
-                    <UButton icon="i-heroicons-pencil" variant="ghost" size="xs" color="gray" class="cursor-pointer text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white" @click="openConfigurator(item, item)">
+                    <UButton icon="i-heroicons-pencil" variant="ghost" size="xs" color="gray" class="cursor-pointer text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white" @click="openConfigurator(item.productData, item)">
                       Editar
                     </UButton>
                     <UButton icon="i-heroicons-trash" color="red" variant="ghost" size="xs" class="cursor-pointer text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" @click="handleRemove(item.id)" />
