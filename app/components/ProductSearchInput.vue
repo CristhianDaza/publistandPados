@@ -108,14 +108,14 @@ defineExpose({
         type="text"
         placeholder="Buscar productos..."
         class="w-full pl-10 pr-10 py-2.5 text-sm
-               bg-white dark:bg-gray-900/80
-               border border-gray-300 dark:border-secondary/30
+               bg-secondary/5
+               border border-secondary/30
                rounded-xl
-               text-black dark:text-white
-               placeholder-gray-400 dark:placeholder-secondary/60
+               text-text dark:text-text
+               placeholder-text
                focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
                transition-all duration-200
-               hover:border-primary/50 dark:hover:border-secondary/50
+               hover:border-primary/50
                shadow-sm"
         @keydown.enter="handleSearch"
         @focus="showDropdown = true"
@@ -146,7 +146,7 @@ defineExpose({
     >
       <div
         v-if="showHint && searchQuery.length > 0 && searchQuery.length < 3"
-        class="absolute top-full left-0 right-0 mt-1 px-3 py-2 text-xs text-primary bg-primary/10 rounded-lg border border-primary/20 z-[60]"
+        class="absolute top-full left-0 right-0 mt-1 px-3 py-2 text-xs text-primary bg-background/80 dark:bg-background/80 rounded-lg border border-primary/20 z-[60]"
       >
         <UIcon name="i-heroicons-information-circle" class="w-4 h-4 inline mr-1" />
         Escribe al menos 3 caracteres para buscar

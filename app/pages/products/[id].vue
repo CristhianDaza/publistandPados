@@ -388,7 +388,7 @@ watch(() => route.params.id, () => {
                 class="w-full h-full object-contain p-8 md:p-12 transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-1"
               >
 
-              <div class="absolute bottom-6 right-6 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center gap-2 shadow-lg">
+              <div class="bg-primary text-text absolute bottom-6 right-6 backdrop-blur-md px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center gap-2 shadow-lg">
                 <UIcon name="i-heroicons-magnifying-glass-plus" class="text-lg" />
                 <span class="text-sm font-medium">Click para ampliar</span>
               </div>
@@ -499,28 +499,28 @@ watch(() => route.params.id, () => {
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 p-4 rounded-2xl border border-green-100 dark:border-green-800/30">
+              <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-4 rounded-2xl border border-primary">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
-                  <span class="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Stock Total</span>
+                  <span class="w-2 h-2 rounded-full animate-pulse"/>
+                  <span class="text-xs font-medium text-primary uppercase tracking-wider">Stock Total</span>
                 </div>
-                <span class="text-2xl font-bold text-green-700 dark:text-green-300">{{ formattedTotalStock }}</span>
-                <span class="text-sm text-green-600 dark:text-green-400 ml-1">{{ totalStock === 1 ? 'und' : 'unds' }}</span>
+                <span class="text-2xl font-bold text-primary">{{ formattedTotalStock }}</span>
+                <span class="text-sm text-primary/70 ml-1">{{ totalStock === 1 ? 'unidad' : 'unidades' }}</span>
               </div>
-              <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary/10 dark:to-primary/5 p-4 rounded-2xl border border-primary-100 dark:border-primary/20">
+              <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-4 rounded-2xl border border-primary-100 dark:border-primary">
                 <div class="flex items-center gap-2 mb-1">
                   <UIcon name="i-heroicons-swatch" class="text-primary text-sm" />
                   <span class="text-xs font-medium text-primary uppercase tracking-wider">Colores</span>
                 </div>
                 <span class="text-2xl font-bold text-primary">{{ uniqueColorsCount }}</span>
-                <span class="text-sm text-primary/70 ml-1">disponibles</span>
+                <span class="text-sm text-primary/70 ml-1">{{ uniqueColorsCount === 1 ? 'disponible' : 'disponibles' }}</span>
               </div>
             </div>
 
-            <div v-if="hasVariants" class="bg-secondary/5 rounded-3xl border border-secondary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
+            <div v-if="hasVariants" class="bg-primary/5 rounded-3xl border border-primary/20 overflow-hidden shadow-xl shadow-black/5 dark:shadow-black/20 backdrop-blur-sm">
               <div class="p-5 border-b border-secondary/20 bg-secondary/5">
                 <h3 class="font-semibold text-text flex items-center gap-3 text-lg">
-                  <span class="p-2 bg-primary/10 rounded-lg">
+                  <span class="p-2 bg-primary/5 rounded-lg">
                     <UIcon name="i-heroicons-swatch" class="text-primary text-xl" />
                   </span>
                   Disponibilidad por Color
@@ -528,7 +528,7 @@ watch(() => route.params.id, () => {
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
-                  <thead class="text-xs text-gray-500 uppercase bg-secondary/10 sticky top-0 backdrop-blur-sm">
+                  <thead class="text-xs text-text uppercase bg-primary/5 sticky top-0 backdrop-blur-sm">
                     <tr>
                       <th class="px-5 py-4 text-left font-semibold">Color</th>
                       <th v-if="user" class="px-5 py-4 text-right font-semibold">Precio</th>
@@ -561,11 +561,11 @@ watch(() => route.params.id, () => {
                         <span
                           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all"
                           :class="variant.quantity > 0
-                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-900/40 dark:to-emerald-900/30 dark:text-green-300'
-                            : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 dark:from-red-900/40 dark:to-rose-900/30 dark:text-red-300'"
+                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800'
+                            : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800'"
                         >
                           <span class="w-1.5 h-1.5 rounded-full" :class="variant.quantity > 0 ? 'bg-green-500' : 'bg-red-500'"/>
-                          {{ formatNumber(variant.quantity) }} {{ variant.quantity === 1 ? 'und' : 'unds' }}
+                          {{ formatNumber(variant.quantity) }} {{ variant.quantity === 1 ? 'unidad' : 'unidades' }}
                         </span>
                       </td>
                     </tr>
@@ -648,7 +648,7 @@ watch(() => route.params.id, () => {
                   variant="outline"
                   color="gray"
                   size="xl"
-                  class="flex-1 justify-center hover:bg-gray-50 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white transition-all cursor-pointer"
+                  class="flex-1 justify-center hover:bg-primary/20 hover:text-text transition-all cursor-pointer"
                   @click="goBack"
                 >
                   <UIcon name="i-heroicons-arrow-left" class="mr-2" />

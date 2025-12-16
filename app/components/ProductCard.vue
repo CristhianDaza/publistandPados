@@ -96,7 +96,7 @@ const handleQuoteClick = (event) => {
       >
 
       <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]">
-        <span class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+        <span class="bg-primary text-text px-4 py-2 rounded-full text-sm font-medium shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
           Ver Detalles
         </span>
       </div>
@@ -116,7 +116,7 @@ const handleQuoteClick = (event) => {
           <p class="text-primary font-bold text-lg md:text-xl">
             {{ formattedPrice }}
           </p>
-          <span class="text-[10px] text-gray-500 dark:text-white font-bold uppercase tracking-wide bg-gray-100 dark:bg-secondary/20 px-1.5 py-0.5 rounded">
+          <span class="text-[10px] text-text font-bold uppercase tracking-wide bg-secondary/20 px-1.5 py-0.5 rounded">
             + IVA
           </span>
         </div>
@@ -136,7 +136,7 @@ const handleQuoteClick = (event) => {
               +{{ remainingColorsCount }}
             </div>
           </div>
-          <span class="text-xs text-gray-400 font-medium">{{ uniqueColors.length }} colores</span>
+          <span class="text-xs text-text font-medium">{{ uniqueColors.length }} {{  uniqueColors.length === 1 ? 'color' : 'colores' }}</span>
         </div>
 
         <div class="pt-3 border-t border-secondary/20 flex justify-between items-center text-xs">
@@ -146,8 +146,8 @@ const handleQuoteClick = (event) => {
               {{ hasStock ? 'Disponible' : 'Agotado' }}
             </span>
           </div>
-          <span class="font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md border border-gray-100 dark:border-gray-700">
-            {{ formattedQuantity }} und
+          <span class="font-bold text-text bg-secondary/5 px-2 py-1 rounded-md border border-primary/10">
+            {{ formattedQuantity }} {{  formattedQuantity.length === 1 ? 'unidad' : 'unidades' }}
           </span>
         </div>
 
@@ -155,6 +155,7 @@ const handleQuoteClick = (event) => {
           size="sm"
           color="primary"
           block
+          variant="outline"
           class="mt-4 cursor-pointer"
           icon="i-heroicons-shopping-bag"
           @click="handleQuoteClick"

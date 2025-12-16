@@ -407,7 +407,7 @@ const clearFilters = () => {
                   <select
                     v-model="itemsPerPage"
                     :disabled="totalProducts <= 16"
-                    class="appearance-none bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-1.5 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="appearance-none bg-secondary/10 border border-secondary/10 text-text dark:text-text py-1.5 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option v-for="option in itemsPerPageOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
@@ -427,11 +427,11 @@ const clearFilters = () => {
                     min="0"
                     step="50"
                     :value="selectedMinQty"
-                    class="w-28 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-1.5 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow"
-                    @change="event => updateUrl({ minQty: event.target.value ? Number(event.target.value) : undefined, page: undefined })"
+                    class="w-28 bg-secondary/10 border border-secondary/10 text-text py-1.5 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow"
                     placeholder="0"
+                    @change="event => updateUrl({ minQty: event.target.value ? Number(event.target.value) : undefined, page: undefined })"
                   >
-                  <span class="text-xs text-gray-500">unds</span>
+                  <span class="text-text">unds</span>
                 </div>
               </div>
 
@@ -463,7 +463,7 @@ const clearFilters = () => {
               color="gray"
               variant="ghost"
               :disabled="currentPage === 1"
-              class="cursor-pointer hover:scale-105 transition-transform w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+              class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary/10"
               @click="currentPage--"
             />
 
@@ -471,11 +471,11 @@ const clearFilters = () => {
               v-for="page in displayedPages"
               :key="page"
               :class="[
-                'cursor-pointer hover:scale-105 w-10 h-10 flex items-center justify-center rounded-full text-sm font-medium transition-all duration-200',
+                'cursor-pointer w-10 h-10 flex items-center justify-center rounded-full text-sm font-medium duration-200',
                 page === currentPage
                   ? 'bg-primary text-white shadow-lg scale-105'
                   : typeof page === 'number'
-                    ? 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'text-text hover:bg-secondary/10'
                     : 'text-gray-400 cursor-default'
               ]"
               :disabled="typeof page !== 'number'"
@@ -489,7 +489,7 @@ const clearFilters = () => {
               color="gray"
               variant="ghost"
               :disabled="currentPage === totalPages"
-              class="cursor-pointer hover:scale-105 transition-transform w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+              class="cursor-pointer transition-all w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary/10"
               @click="currentPage++"
             />
           </div>
