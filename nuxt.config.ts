@@ -4,6 +4,26 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1024,
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('firebase')) {
+                return 'firebase';
+              }
+              if (id.includes('vue') || id.includes('nuxt') || id.includes('pinia')) {
+                return 'framework';
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap'],
   css: ['~/assets/css/main.css'],
