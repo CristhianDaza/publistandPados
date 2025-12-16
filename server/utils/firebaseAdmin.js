@@ -19,11 +19,18 @@ export const useFirebaseAdmin = () => {
         throw new Error(`Failed to parse process.env.FIREBASE_SERVICE_ACCOUNT: ${e.message}`)
       }
     }
+   else if (process.env.FIREBASE_ADMIN_PRIVATE_KEY && process.env.FIREBASE_ADMIN_CLIENT_EMAIL && process.env.FIREBASE_ADMIN_PROJECT_ID) {
+      serviceAccount = {
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n')
+      }
+    }
     else {
       const serviceAccountPath = resolve(process.cwd(), 'service-account.json')
 
       if (!existsSync(serviceAccountPath)) {
-        throw new Error(`Service account not found. Checked env var FIREBASE_SERVICE_ACCOUNT and file at: ${serviceAccountPath}`)
+        throw new Error(`Service account not found. Checked env vars (FIREBASE_SERVICE_ACCOUNT or FIREBASE_ADMIN_*) and file at: ${serviceAccountPath}`)
       }
 
       try {
