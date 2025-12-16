@@ -18,7 +18,12 @@ export default defineNuxtConfig({
       firebaseMeasurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
       cloudinaryCloudName: process.env.NUXT_CLOUDINARY_CLOUD_NAME,
       cloudinaryApiKey: process.env.NUXT_CLOUDINARY_API_KEY,
-      cloudinaryUploadPreset: process.env.NUXT_CLOUDINARY_UPLOAD_PRESET
+      cloudinaryUploadPreset: process.env.NUXT_CLOUDINARY_UPLOAD_PRESET,
+      emailjsServiceId: process.env.NUXT_EMAILJS_SERVICE_ID,
+      emailjsTemplateId: process.env.NUXT_EMAILJS_TEMPLATE_ID,
+      emailjsPublicKey: process.env.NUXT_EMAILJS_PUBLIC_KEY,
+      emailjsToEmail: process.env.NUXT_EMAILJS_TO_EMAIL,
+      emailjsTemplateQuoteId: process.env.NUXT_EMAILJS_TEMPLATE_QUOTE_ID
     },
     cloudinaryApiSecret: process.env.NUXT_CLOUDINARY_API_SECRET,
     cloudinaryApiEnvironment: process.env.NUXT_CLOUDINARY_API_ENVIRONMENT,

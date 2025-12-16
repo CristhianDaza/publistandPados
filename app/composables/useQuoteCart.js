@@ -22,6 +22,7 @@ export const useQuoteCart = () => {
   const isLoaded = useState('quote_cart_loaded', () => false)
   const isSubmitting = useState('quote_cart_submitting', () => false)
   const lastQuoteId = useState('quote_cart_last_id', () => null)
+  const lastQuoteData = useState('quote_cart_last_data', () => null)
   const { user } = useAuth()
 
   const ensureLoaded = () => {
@@ -218,6 +219,7 @@ export const useQuoteCart = () => {
         body
       })
       lastQuoteId.value = response?.id || null
+      lastQuoteData.value = { ...body, id: lastQuoteId.value }
       clearCart()
       closeSubmitModal()
       closeCart()
@@ -255,6 +257,7 @@ export const useQuoteCart = () => {
     openSubmitModal,
     closeSubmitModal,
     setCustomerField,
-    sendQuote
+    sendQuote,
+    lastQuoteData
   }
 }
