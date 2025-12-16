@@ -45,7 +45,7 @@ const formatDate = (date) => {
       </p>
 
       <h3 class="font-bold text-secondary mb-2 text-base group-hover:text-primary transition-colors">
-        {{ quote.summary?.itemCount || quote.items?.length || 0 }} productos
+        {{ quote.summary?.itemCount || quote.items?.length || 0 }} {{ (quote.summary?.itemCount || quote.items?.length || 0) === 1 ? 'producto' : 'productos' }}
       </h3>
 
       <div class="space-y-2 mb-4 text-sm">
