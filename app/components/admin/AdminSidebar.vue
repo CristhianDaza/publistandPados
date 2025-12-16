@@ -20,7 +20,7 @@ const goBackToWebsite = () => {
 
 const links = [
   { label: 'Panel', path: '/admin', icon: 'i-heroicons-home' },
-  { label: 'Cotizaciones', path: '/admin/quotes', icon: 'i-heroicons-document-text' },
+  { label: 'Cotizaciones', path: '/quotes', icon: 'i-heroicons-document-text' },
   { label: 'Carrusel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
   { label: 'Catálogos', path: '/admin/catalogs', icon: 'i-heroicons-book-open' },
   { label: 'Llamada a la Acción', path: '/admin/cta', icon: 'i-heroicons-megaphone' },

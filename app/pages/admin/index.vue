@@ -6,7 +6,7 @@ useHead({
   title: 'Panel de Control'
 })
 const summaryItems = [
-  { label: 'Cotizaciones', path: '/admin/quotes', icon: 'i-heroicons-document-text' },
+  { label: 'Cotizaciones', path: '/quotes', icon: 'i-heroicons-document-text' },
   { label: 'Carrusel', path: '/admin/carousel', icon: 'i-heroicons-photo' },
   { label: 'Catálogos', path: '/admin/catalogs', icon: 'i-heroicons-book-open' },
   { label: 'Llamada a la Acción', path: '/admin/cta', icon: 'i-heroicons-megaphone' },
