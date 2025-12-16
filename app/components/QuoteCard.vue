@@ -30,6 +30,8 @@ const formatDate = (date) => {
     minute: '2-digit'
   })
 }
+
+const { formatCurrency } = usePricing()
 </script>
 
 <template>
@@ -53,6 +55,12 @@ const formatDate = (date) => {
           <span class="text-gray-600 dark:text-gray-400">Total unidades</span>
           <span class="font-semibold text-gray-900 dark:text-white">
             {{ quote.summary?.totalUnits || 0 }}
+          </span>
+        </div>
+        <div v-if="quote.summary?.totalPrice" class="flex justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Total Estimado</span>
+          <span class="font-bold text-primary">
+            {{ formatCurrency(quote.summary.totalPrice) }}
           </span>
         </div>
         <div class="flex justify-between">

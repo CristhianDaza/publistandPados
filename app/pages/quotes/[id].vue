@@ -20,6 +20,7 @@ const {
   statusOptions,
   isAdmin
 } = useQuotes()
+const { formatCurrency } = usePricing()
 
 const newComment = ref('')
 const isInternalComment = ref(false)
@@ -171,10 +172,17 @@ const cardBg = 'bg-background/80 border border-secondary/20 rounded-2xl shadow-s
                         <li
                           v-for="entry in item.entries"
                           :key="entry.id"
-                          class="flex items-center justify-between text-sm"
+                          class="flex items-start justify-between text-sm py-1 border-b border-secondary/10 last:border-0"
                         >
-                          <span class="text-text/80">{{ entry.colorName }}</span>
-                          <span class="text-text font-semibold">{{ entry.quantity }} und</span>
+                          <div>
+                            <span class="text-text/80 block">{{ entry.colorName }}</span>
+                            <div v-if="entry.price" class="text-xs mt-0.5">
+                               <span class="font-medium text-text bg-primary/5 px-1.5 py-0.5 rounded text-[10px]">
+                                  {{ formatCurrency(entry.price) }} c/u
+                               </span>
+                            </div>
+                          </div>
+                          <span class="text-text font-semibold whitespace-nowrap">{{ entry.quantity }} und</span>
                         </li>
                       </ul>
                     </div>
@@ -200,6 +208,10 @@ const cardBg = 'bg-background/80 border border-secondary/20 rounded-2xl shadow-s
               <div class="flex justify-between text-lg">
                 <span class="text-secondary">Total Unidades:</span>
                 <span class="text-text font-bold">{{ selectedQuote.summary?.totalUnits || 0 }}</span>
+              </div>
+              <div v-if="selectedQuote.summary?.totalPrice" class="flex justify-between text-lg mt-2 pt-2 border-t border-secondary/10">
+                <span class="text-primary font-semibold">Total Estimado:</span>
+                <span class="text-primary font-bold text-xl">{{ formatCurrency(selectedQuote.summary.totalPrice) }}</span>
               </div>
             </div>
           </div>
@@ -255,8 +267,8 @@ const cardBg = 'bg-background/80 border border-secondary/20 rounded-2xl shadow-s
              <div class="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2">
                <div
                   v-for="comment in selectedQuote.comments"
-                  :key="comment.id"
                   v-show="isAdmin || !comment.isInternal"
+                  :key="comment.id"
                   class="bg-background/50 rounded-lg p-3 text-sm border border-secondary/10"
                   :class="{'border-l-4 border-l-yellow-500': comment.isInternal}"
                >

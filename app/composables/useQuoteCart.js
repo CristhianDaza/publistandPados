@@ -24,6 +24,7 @@ export const useQuoteCart = () => {
   const lastQuoteId = useState('quote_cart_last_id', () => null)
   const lastQuoteData = useState('quote_cart_last_data', () => null)
   const { user } = useAuth()
+  const { applyPriceIncrease } = usePricing()
 
   const ensureLoaded = () => {
     if (!import.meta.client || isLoaded.value) return
@@ -93,12 +94,21 @@ export const useQuoteCart = () => {
     const product = configuratorProduct.value
     if (!product || !Array.isArray(entries) || entries.length === 0) return
     const id = editingItemId.value || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`)
-    const sanitizedEntries = entries.map(entry => ({
-      id: entry.id || `${id}-${Math.random()}`,
-      colorName: entry.colorName,
-      colorHex: entry.colorHex || null,
-      quantity: Number(entry.quantity)
-    }))
+    const sanitizedEntries = entries.map(entry => {
+      const variant = product.tableQuantity?.find(v =>
+        (v.colorName === entry.colorName) || (v.color === entry.colorName)
+      )
+      const basePrice = Number(variant?.price) || 0
+      const unitPrice = applyPriceIncrease(basePrice) || 0
+
+      return {
+        id: entry.id || `${id}-${Math.random()}`,
+        colorName: entry.colorName,
+        colorHex: entry.colorHex || null,
+        quantity: Number(entry.quantity),
+        price: unitPrice
+      }
+    })
     const now = Date.now()
     const payload = {
       id,
@@ -210,7 +220,10 @@ export const useQuoteCart = () => {
         items: items.value,
         summary: {
           totalUnits: totalUnits.value,
-          itemCount: items.value.length
+          itemCount: items.value.length,
+          totalPrice: items.value.reduce((acc, item) => {
+            return acc + (item.entries?.reduce((sum, entry) => sum + ((entry.price || 0) * (entry.quantity || 0)), 0) || 0)
+          }, 0)
         },
         customer: baseCustomer
       }
