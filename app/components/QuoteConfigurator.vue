@@ -5,23 +5,23 @@ const toast = useToast()
 
 const labelClass = 'text-[11px] font-semibold uppercase tracking-[0.3em] text-gray-500 dark:text-gray-400'
 const panelClass = 'rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-lg shadow-black/5 dark:shadow-black/20 p-4'
-const controlClass = 'w-full rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-color-primary),0.5)] focus:border-[rgb(var(--theme-color-primary))] transition-shadow shadow-sm'
+const controlClass = 'w-full rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-color-primary),0.5)] focus:border-[rgb(var(--theme-color-primary))] transition-shadow shadow-sm disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-50 dark:disabled:bg-gray-800'
 const textareaClass = `${controlClass} resize-none`
 
 const entries = ref([
-  { id: crypto?.randomUUID?.() || `${Date.now()}-1`, colorName: '', colorHex: '', quantity: '' }
+  { id: crypto?.randomUUID?.() || `${Date.now()}-1`, colorName: '', colorHex: '', quantity: '', maxQuantity: 0 }
 ])
 const marked = ref(false)
-const colorCount = ref(1)
+const colorCount = ref(0)
 const notes = ref('')
 const isSaving = ref(false)
 const editingItem = computed(() => items.value.find(item => item.id === editingItemId.value) || null)
 
 watch(isConfiguratorOpen, (open) => {
   if (!open) {
-    entries.value = [{ id: crypto?.randomUUID?.() || `${Date.now()}-1`, colorName: '', colorHex: '', quantity: '' }]
+    entries.value = [{ id: crypto?.randomUUID?.() || `${Date.now()}-1`, colorName: '', colorHex: '', quantity: '', maxQuantity: 0 }]
     marked.value = false
-    colorCount.value = 1
+    colorCount.value = 0
     notes.value = ''
   } else if (editingItem.value) {
     entries.value = editingItem.value.entries.map(entry => ({ ...entry }))
@@ -40,7 +40,8 @@ const colorOptions = computed(() => {
     if (!map.has(key)) {
       map.set(key, {
         name: key,
-        hex: item.color || '#ccc'
+        hex: item.color || '#ccc',
+        quantity: Number(item.quantity || 0)
       })
     }
   })
@@ -48,7 +49,7 @@ const colorOptions = computed(() => {
 })
 
 const addEntry = () => {
-  entries.value.push({ id: crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`, colorName: '', colorHex: '', quantity: '' })
+  entries.value.push({ id: crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`, colorName: '', colorHex: '', quantity: '', maxQuantity: 0 })
 }
 
 const removeEntry = (entryId) => {
@@ -61,6 +62,16 @@ const removeEntry = (entryId) => {
 const handleColorChange = (entry, color) => {
   entry.colorName = color?.name || ''
   entry.colorHex = color?.hex || ''
+  entry.maxQuantity = color?.quantity || 0
+  if (entry.quantity > entry.maxQuantity) {
+    entry.quantity = entry.maxQuantity
+  }
+}
+
+const validateEntryQuantity = (entry) => {
+  if (entry.quantity > entry.maxQuantity) {
+    entry.quantity = entry.maxQuantity
+  }
 }
 
 const isValid = computed(() => {
@@ -100,7 +111,7 @@ const handleSave = async () => {
     <Transition name="fade">
       <div
         v-if="isConfiguratorOpen"
-        class="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        class="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
         @click.self="closeConfigurator"
       >
         <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto custom-scroll rounded-[2.5rem] border border-gray-200 dark:border-gray-700 bg-[rgb(var(--theme-color-background))] p-6 md:p-10 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.65)]">
@@ -150,7 +161,13 @@ const handleSave = async () => {
                       class="mt-3"
                       :class="controlClass"
                       placeholder="Ej. 100"
+                      :disabled="!entry.colorName"
+                      :max="entry.maxQuantity"
+                      @input="validateEntryQuantity(entry)"
                     >
+                    <p v-if="entry.colorName" class="text-xs text-gray-500 mt-1 ml-1">
+                      Disponible: {{ entry.maxQuantity }}
+                    </p>
                   </div>
                   <div class="md:col-span-2 flex items-end">
                     <UButton color="red" variant="ghost" icon="i-heroicons-trash" class="w-full cursor-pointer text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" @click="removeEntry(entry.id)" />
@@ -169,8 +186,8 @@ const handleSave = async () => {
               </div>
               <div :class="panelClass">
                 <label :class="labelClass">Colores de impresión</label>
-                <select v-model.number="colorCount" class="mt-3" :class="controlClass">
-                  <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
+                <select v-model.number="colorCount" class="mt-3" :class="controlClass" :disabled="!marked">
+                  <option v-for="n in 5" :key="n-1" :value="n-1">{{ n-1 }}</option>
                 </select>
               </div>
               <div :class="panelClass">
