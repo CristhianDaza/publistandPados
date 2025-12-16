@@ -13,7 +13,7 @@ const modelValue = defineModel({ type: String, default: '' })
     <input
       v-model="modelValue"
       type="text"
-      placeholder="Buscar por ID o estado..."
+      placeholder="Buscar por nombre, correo, teléfono, estado o ID..."
       class="w-full pl-10 pr-4 py-2.5 text-sm
              bg-white dark:bg-gray-900/80
              border border-gray-300 dark:border-secondary/30

@@ -46,7 +46,8 @@ const filteredQuotes = computed(() => {
       quote.id.toLowerCase().includes(query) ||
       quote.status?.toLowerCase().includes(query) ||
       quote.customer?.name?.toLowerCase().includes(query) ||
-      quote.customer?.email?.toLowerCase().includes(query)
+      quote.customer?.email?.toLowerCase().includes(query) ||
+      quote.customer?.phone?.toLowerCase().includes(query)
     )
   }
 
