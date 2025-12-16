@@ -8,6 +8,7 @@ useHead({
   title: 'Cotizaciones'
 })
 
+const { user } = useAuth()
 const {
   quotes,
   loading,
@@ -22,9 +23,11 @@ const router = useRouter()
 
 const searchQuery = ref('')
 
-onMounted(async () => {
-  await fetchQuotes()
-})
+watch(user, async (newUser) => {
+  if (newUser) {
+    await fetchQuotes()
+  }
+}, { immediate: true })
 
 const filteredQuotes = computed(() => {
   if (!searchQuery.value) return quotes.value
@@ -72,18 +75,18 @@ const formatDate = (date) => {
 }
 
 const columns = [
-  { key: 'id', label: 'ID', sortable: true },
-  { key: 'customer', label: 'Cliente', sortable: true },
-  { key: 'items', label: 'Productos', sortable: true },
-  { key: 'units', label: 'Unidades', sortable: true },
-  { key: 'status', label: 'Estado', sortable: true },
-  { key: 'createdAt', label: 'Fecha', sortable: true },
-  { key: 'actions', label: 'Acciones' }
+  { key: 'quote_id', label: 'ID', sortable: true, id: 'quote_id' },
+  { key: 'customer', label: 'Cliente', sortable: true, id: 'customer' },
+  { key: 'items', label: 'Productos', sortable: true, id: 'items' },
+  { key: 'units', label: 'Unidades', sortable: true, id: 'units' },
+  { key: 'status', label: 'Estado', sortable: true, id: 'status' },
+  { key: 'createdAt', label: 'Fecha', sortable: true, id: 'createdAt' },
+  { key: 'actions', label: 'Acciones', id: 'actions' }
 ]
 
 const rows = computed(() => {
   return filteredQuotes.value.map(quote => ({
-    id: quote.id,
+    quote_id: quote.id,
     customer: quote.customer?.name || quote.customer?.email || 'Sin nombre',
     email: quote.customer?.email || 'N/A',
     phone: quote.customer?.phone || 'N/A',
@@ -147,9 +150,9 @@ const rows = computed(() => {
         :rows="rows"
         :loading="loading"
       >
-        <template #id-data="{ row }">
+        <template #quote_id-data="{ row }">
           <span class="font-mono text-xs text-slate-400">
-            {{ row.id.substring(0, 8) }}...
+            {{ row.quote_id.substring(0, 8) }}...
           </span>
         </template>
 

@@ -21,13 +21,13 @@ const router = useRouter()
 
 const searchQuery = ref('')
 
-onMounted(async () => {
-  if (!user.value) {
+watch(user, async (newUser) => {
+  if (newUser) {
+    await fetchQuotes()
+  } else {
     await router.push('/login')
-    return
   }
-  await fetchQuotes()
-})
+}, { immediate: true })
 
 const filteredQuotes = computed(() => {
   if (!searchQuery.value) return quotes.value

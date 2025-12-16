@@ -8,7 +8,7 @@ export const useQuotes = () => {
   const { user } = useAuth()
 
   const isAdmin = computed(() => {
-    return user.value?.role === 'admin' || user.value?.isAdmin === true
+    return ['admin', 'asesor', 'web'].includes(user.value?.role) || user.value?.isAdmin === true
   })
 
   const fetchQuotes = async () => {
@@ -39,7 +39,7 @@ export const useQuotes = () => {
       if (!isAdmin.value && quote.customer?.userId !== user.value?.uid) {
         throw new Error('No tienes permiso para ver esta cotización')
       }
-      
+
       selectedQuote.value = quote
       return quote
     } catch (e) {
@@ -55,7 +55,7 @@ export const useQuotes = () => {
     if (!isAdmin.value) {
       throw new Error('No tienes permiso para actualizar el estado')
     }
-    
+
     loading.value = true
     error.value = null
     try {
@@ -74,7 +74,7 @@ export const useQuotes = () => {
     if (!isAdmin.value) {
       throw new Error('No tienes permiso para agregar comentarios')
     }
-    
+
     loading.value = true
     error.value = null
     try {
@@ -83,7 +83,7 @@ export const useQuotes = () => {
         author: user.value?.name || user.value?.displayName || user.value?.email || 'Admin',
         authorId: user.value?.uid
       })
-      
+
       if (selectedQuote.value?.id === id) {
         await fetchQuoteById(id)
       }
@@ -105,7 +105,7 @@ export const useQuotes = () => {
       if (!isAdmin.value && quote.customer?.userId !== user.value?.uid) {
         throw new Error('No tienes permiso para eliminar esta cotización')
       }
-      
+
       await quotesFirebase.delete(id)
       await fetchQuotes()
     } catch (e) {
