@@ -65,6 +65,7 @@ export const useQuoteCart = () => {
     configuratorProduct.value = product
     editingItemId.value = itemToEdit?.id || null
     isConfiguratorOpen.value = true
+    isCartOpen.value = false
   }
 
   const closeConfigurator = () => {
@@ -191,7 +192,7 @@ export const useQuoteCart = () => {
     if (!baseCustomer) {
       throw new Error('Datos de contacto incompletos')
     }
-    
+
     if (user.value) {
       if (!baseCustomer.userId || !baseCustomer.email) {
         throw new Error('Datos de usuario incompletos')
@@ -201,7 +202,7 @@ export const useQuoteCart = () => {
         throw new Error('Datos de contacto incompletos')
       }
     }
-    
+
     isSubmitting.value = true
     try {
       const body = {
