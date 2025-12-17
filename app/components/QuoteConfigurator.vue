@@ -3,9 +3,9 @@ const { isConfiguratorOpen, configuratorProduct, closeConfigurator, addItem, edi
 const { trackQuoteRequest } = useAnalytics()
 const toast = useToast()
 
-const labelClass = 'text-[11px] font-semibold uppercase tracking-[0.3em] text-gray-500 dark:text-gray-400'
-const panelClass = 'rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-lg shadow-black/5 dark:shadow-black/20 p-4'
-const controlClass = 'w-full rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-color-primary),0.5)] focus:border-[rgb(var(--theme-color-primary))] transition-shadow shadow-sm disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-gray-50 dark:disabled:bg-gray-800'
+const labelClass = 'text-[11px] font-semibold uppercase tracking-[0.3em] text-text/60'
+const panelClass = 'rounded-2xl border border-text/20 bg-background/60 backdrop-blur-sm shadow-lg shadow-black/5 dark:shadow-black/20 p-4'
+const controlClass = 'w-full rounded-2xl border border-text/20 bg-background text-sm text-text px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow shadow-sm disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-text/5'
 const textareaClass = `${controlClass} resize-none`
 
 const entries = ref([
@@ -114,14 +114,14 @@ const handleSave = async () => {
         class="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
         @click.self="closeConfigurator"
       >
-        <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto custom-scroll rounded-[2.5rem] border border-gray-200 dark:border-gray-700 bg-[rgb(var(--theme-color-background))] p-6 md:p-10 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.65)]">
+        <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto custom-scroll rounded-[2.5rem] border border-text/20 bg-background p-6 md:p-10 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.65)]">
           <header class="flex items-start justify-between gap-4 mb-6">
             <div>
-              <p class="text-xs uppercase text-gray-400 dark:text-gray-500 tracking-[0.3em]">Cotización</p>
-              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ configuratorProduct?.name }}</h2>
-              <p class="text-sm text-gray-600 dark:text-gray-400">{{ editingItemId ? 'Actualiza' : 'Configura' }} cantidades y colores para este producto</p>
+              <p class="text-xs uppercase text-text/60 tracking-[0.3em]">Cotización</p>
+              <h2 class="text-2xl font-bold text-text">{{ configuratorProduct?.name }}</h2>
+              <p class="text-sm text-text/80">{{ editingItemId ? 'Actualiza' : 'Configura' }} cantidades y colores para este producto</p>
             </div>
-            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors" @click="closeConfigurator">
+            <button class="text-text/60 hover:text-text cursor-pointer transition-colors" @click="closeConfigurator">
               <UIcon name="i-heroicons-x-mark" class="w-6 h-6" />
             </button>
           </header>
@@ -129,8 +129,8 @@ const handleSave = async () => {
           <div class="space-y-6">
             <section class="space-y-4">
               <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Cantidades por color</h3>
-                <UButton icon="i-heroicons-plus" variant="ghost" color="gray" class="cursor-pointer text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white" @click="addEntry">Agregar línea</UButton>
+                <h3 class="text-lg font-semibold text-text">Cantidades por color</h3>
+                <UButton icon="i-heroicons-plus" variant="ghost" color="gray" class="cursor-pointer text-text/80 hover:text-text" @click="addEntry">Agregar línea</UButton>
               </div>
               <div class="space-y-4">
                 <div
@@ -165,7 +165,7 @@ const handleSave = async () => {
                       :max="entry.maxQuantity"
                       @input="validateEntryQuantity(entry)"
                     >
-                    <p v-if="entry.colorName" class="text-xs text-gray-500 mt-1 ml-1">
+                    <p v-if="entry.colorName" class="text-xs text-text/60 mt-1 ml-1">
                       Disponible: {{ entry.maxQuantity }}
                     </p>
                   </div>
@@ -179,8 +179,8 @@ const handleSave = async () => {
             <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div :class="panelClass">
                 <label :class="labelClass">Marcado</label>
-                <label class="mt-4 flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
-                  <input v-model="marked" type="checkbox" class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary">
+                <label class="mt-4 flex items-center gap-3 text-sm text-text/80">
+                  <input v-model="marked" type="checkbox" class="h-5 w-5 rounded border-text/20 text-primary focus:ring-primary">
                   ¿Requiere marcaje?
                 </label>
               </div>
@@ -213,21 +213,21 @@ const handleSave = async () => {
           </div>
 
           <footer class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="text-sm text-gray-600 dark:text-gray-400">
+            <div class="text-sm text-text/60">
               Se agregará este producto al carrito de cotización para enviarlo más tarde.
             </div>
             <div class="flex gap-3">
               <UButton
                 variant="outline"
                 color="gray"
-                class="cursor-pointer text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+                class="cursor-pointer text-text/80 border-text/20 hover:bg-text/5"
                 @click="closeConfigurator"
               >
                 Cancelar
               </UButton>
               <UButton
                 color="primary"
-                class="cursor-pointer bg-[rgb(var(--theme-color-primary))] hover:opacity-90 font-semibold shadow-lg"
+                class="cursor-pointer bg-primary hover:opacity-90 font-semibold shadow-lg"
                 :loading="isSaving"
                 :disabled="!isValid"
                 icon="i-heroicons-check-circle"
@@ -238,6 +238,7 @@ const handleSave = async () => {
             </div>
           </footer>
         </div>
+
       </div>
     </Transition>
   </Teleport>
