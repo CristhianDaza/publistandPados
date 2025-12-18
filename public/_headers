@@ -1,0 +1,92 @@
+# Security Headers for all pages
+/*
+  # Security Headers
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Content Security Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://res.cloudinary.com https://www.googletagmanager.com https://cdn.jsdelivr.net https://cdn.emailjs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://res.cloudinary.com https://api.cloudinary.com https://*.firebaseio.com https://*.googleapis.com https://api.emailjs.com wss://*.firebaseio.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';
+
+# Static Assets - Long-term caching
+/_nuxt/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# JavaScript and CSS bundles
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+
+# Images - Medium-term caching
+/*.jpg
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/jpeg
+
+/*.jpeg
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/jpeg
+
+/*.png
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/png
+
+/*.webp
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/webp
+
+/*.svg
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/svg+xml
+
+/*.ico
+  Cache-Control: public, max-age=2592000
+  Content-Type: image/x-icon
+
+# Fonts - Long-term caching
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff2
+
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/ttf
+
+/*.otf
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/otf
+
+# HTML pages - No cache (always fresh)
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# API routes - No cache
+/api/*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Manifest and service worker
+/manifest.json
+  Cache-Control: no-cache
+  Content-Type: application/manifest+json
+
+/sw.js
+  Cache-Control: no-cache
+  Content-Type: application/javascript
+
+# Robots and sitemap - Short cache
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+/sitemap.xml
+  Cache-Control: public, max-age=86400

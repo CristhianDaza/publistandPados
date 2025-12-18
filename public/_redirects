@@ -1,0 +1,5 @@
+# Remove trailing slashes (redirect with 301 permanent)
+/*/ /:splat 301!
+
+# SPA fallback - must be last
+/* /index.html 200

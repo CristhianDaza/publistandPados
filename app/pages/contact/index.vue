@@ -173,7 +173,7 @@ const sendEmail = async () => {
               <button
                 type="submit"
                 :disabled="loading"
-                class="relative w-full group"
+                class="cursor-pointer relative w-full group"
               >
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/90 to-primary rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-200"></div>
                 <div class="relative flex w-full justify-center items-center rounded-2xl bg-primary px-6 py-4 text-base font-bold leading-6 text-white shadow-xl hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed group-hover:shadow-2xl">
