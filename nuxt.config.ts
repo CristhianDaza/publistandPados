@@ -85,7 +85,9 @@ export default defineNuxtConfig({
         { name: 'twitter:site', content: '@publistandpados' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', href: '/icon.png' },
+        { rel: 'apple-touch-icon', href: '/icon.png' }
       ]
     }
   }
