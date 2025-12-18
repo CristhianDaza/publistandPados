@@ -19,12 +19,14 @@ setPageSeo({
   <div class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl">
+        <span class="text-primary font-bold tracking-wider uppercase text-sm">Catálogos</span>
+        <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl mt-2 mb-4">
           Nuestros Catálogos
         </h1>
-        <p class="mt-4 max-w-2xl mx-auto text-xl text-secondary">
+        <p class="text-lg text-text/70 leading-relaxed">
           Explora nuestras colecciones y encuentra lo que buscas.
         </p>
+        <div class="w-24 h-1 bg-primary mx-auto rounded-full mt-4"/>
       </div>
 
       <div v-if="loading" class="flex justify-center items-center py-20">

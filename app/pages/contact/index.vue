@@ -89,12 +89,14 @@ const sendEmail = async () => {
     
     <div class="max-w-3xl mx-auto">
       <div class="text-center mb-12">
-        <h1 class="text-5xl font-extrabold text-primary tracking-tight sm:text-6xl mb-6">
+        <span class="text-primary font-bold tracking-wider uppercase text-sm">Contacto</span>
+        <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl mt-2 mb-4">
           Hablemos de tu proyecto
         </h1>
         <p class="text-lg text-text/70 leading-relaxed">
           ¿Tienes alguna pregunta o proyecto en mente? Estamos aquí para ayudarte a hacer realidad tus ideas.
         </p>
+        <div class="w-24 h-1 bg-primary mx-auto rounded-full mt-4"/>
       </div>
 
       <div class="relative">

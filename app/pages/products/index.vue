@@ -371,14 +371,17 @@ const clearFilters = () => {
     <div class="max-w-7xl mx-auto">
 
       <div class="text-center mb-12">
-        <span class="text-primary font-bold tracking-wider uppercase text-sm">Catálogo</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">
+        <span class="text-primary font-bold tracking-wider uppercase text-sm">Productos</span>
+        <h1 class="text-4xl font-extrabold text-text tracking-tight sm:text-5xl mt-2 mb-4">
           {{ pageTitle }}
-        </h2>
-        <p v-if="searchQuery" class="text-gray-500 dark:text-gray-400 mb-2">
+        </h1>
+        <p v-if="searchQuery" class="text-lg text-text/70 leading-relaxed">
           Resultados para: "{{ searchQuery }}"
         </p>
-        <div class="w-24 h-1 bg-primary mx-auto rounded-full"/>
+        <p v-else class="text-lg text-text/70 leading-relaxed">
+          Explora nuestras categorías y encuentra lo que buscas.
+        </p>
+        <div class="w-24 h-1 bg-primary mx-auto rounded-full mt-4"/>
       </div>
 
       <div v-if="loading" class="flex justify-center py-20">
