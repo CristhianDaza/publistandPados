@@ -82,12 +82,11 @@ export default defineNuxtConfig({
         { property: 'og:site_name', content: 'Publistand Pados' },
         { property: 'og:locale', content: 'es_CO' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@publistandpados' }
+        { name: 'twitter:site', content: '@publistandpados' },
+        { name: 'msapplication-TileImage', content: '/favicon.ico' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'icon', type: 'image/png', href: '/icon.png' },
-        { rel: 'apple-touch-icon', href: '/icon.png' }
       ]
     }
   }
