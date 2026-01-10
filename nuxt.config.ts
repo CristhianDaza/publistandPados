@@ -25,7 +25,7 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap'],
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxtjs/seo'],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
@@ -60,12 +60,25 @@ export default defineNuxtConfig({
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL,
     name: 'Publistandpados',
+    description: 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.',
+    defaultLocale: 'es',
+  },
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Publistandpados',
+      url: process.env.NUXT_PUBLIC_SITE_URL,
+      logo: '/icon.png',
+    },
   },
   robots: {
     disallow: ['/admin', '/admin/**'],
   },
   sitemap: {
     exclude: ['/admin/**'],
+  },
+  ogImage: {
+    enabled: true,
   },
   app: {
     head: {
@@ -76,13 +89,8 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Artículos promocionales y publicitarios personalizados. Amplio catálogo de productos para tu marca.' },
+        // description is handled by site config or component
         { name: 'format-detection', content: 'telephone=no' },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'Publistand Pados' },
-        { property: 'og:locale', content: 'es_CO' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@publistandpados' },
         { name: 'msapplication-TileImage', content: '/favicon.ico' },
         { name: 'apple-mobile-web-app-title', content: 'Publistandpados' }
       ],
