@@ -19,6 +19,9 @@ export default defineNuxtConfig({
       }
     }
   },
+  routeRules: {
+    '/products/**': { isr: 3600 }
+  },
   compatibilityDate: '2024-11-01',
   future: {
     compatibilityVersion: 4,
