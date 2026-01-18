@@ -1,10 +1,9 @@
-import { useFirebaseAdmin } from './firebaseAdmin'
+import { fetchAllProducts } from './productsService'
 
 export const fetchProductRoutes = async () => {
   try {
-    const { adminDb } = useFirebaseAdmin()
-    const snapshot = await adminDb.collection('products').select('id').get()
-    return snapshot.docs.map(doc => `/products/${doc.id}`)
+    const products = await fetchAllProducts()
+    return products.map(p => `/products/${p.id}`)
   } catch (error) {
     console.error('Error fetching product routes:', error)
     return []

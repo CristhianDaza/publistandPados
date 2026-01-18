@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  let id = getRouterParam(event, 'id')
 
   if (!id) {
     throw createError({
@@ -9,30 +9,35 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  // Ensure ID is decoded (e.g. "ANF%20076" -> "ANF 076")
   try {
-    const { adminDb } = useFirebaseAdmin()
-    const docRef = adminDb.collection('products').doc(id)
-    const docSnap = await docRef.get()
+    id = decodeURIComponent(id)
+  } catch (e) {
+    // ignore
+  }
 
-    if (!docSnap.exists) {
+  console.log(`[API] Fetching product: "${id}"`)
+
+  try {
+    const product = await findProductById(id)
+
+    if (!product) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Product not found',
       })
     }
 
-    const data = docSnap.data()
-
-    return {
-      id: docSnap.id,
-      ...data
-    }
+    return product
 
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error)
+    // If it's already a H3 error, rethrow it
+    if (error.statusCode) throw error
+
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal Server Error',
+      statusMessage: error.message,
     })
   }
 })
