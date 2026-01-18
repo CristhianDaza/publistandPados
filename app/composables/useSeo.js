@@ -102,7 +102,8 @@ export const useSeo = () => {
       ogType: 'product',
       twitterTitle: title,
       twitterDescription: description,
-      twitterImage: image
+      twitterImage: image,
+      twitterCard: 'summary_large_image'
     })
   }
 

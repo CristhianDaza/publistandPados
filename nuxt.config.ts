@@ -1,5 +1,24 @@
+import { fetchProductRoutes } from './server/utils/productRoutes'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  hooks: {
+    async 'nitro:config'(nitroConfig) {
+      if (nitroConfig.dev) return // Don't pre-render in dev
+
+      try {
+        const routes = await fetchProductRoutes()
+        if (routes && routes.length) {
+          nitroConfig.prerender = nitroConfig.prerender || {}
+          nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
+          nitroConfig.prerender.routes.push(...routes)
+          console.log(`[SEO] Added ${routes.length} product routes to pre-render`)
+        }
+      } catch (e) {
+        console.error('[SEO] Failed to fetch product routes:', e)
+      }
+    }
+  },
   compatibilityDate: '2024-11-01',
   future: {
     compatibilityVersion: 4,
@@ -95,9 +114,9 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-title', content: 'Publistandpados' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon-96x96.png', sizes: '96x96' },
+        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'shortcut icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-96x96.png', sizes: '96x96' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest' }
       ]
