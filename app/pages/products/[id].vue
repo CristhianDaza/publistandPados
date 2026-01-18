@@ -2,7 +2,8 @@
 import { getColorHex } from '~/utils/colorMap'
 const route = useRoute()
 const router = useRouter()
-const { getProductById, products } = useProducts()
+const { getProducts, products } = useProducts()
+const { getProductById } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
@@ -19,10 +20,18 @@ const goBack = () => {
 }
 const { user } = useAuth()
 
-const { data: product, status, error: asyncError } = await useAsyncData(
-    `product-${route.params.id}`,
-    () => getProductById(route.params.id)
+const { data: product, status, error: asyncError } = await useFetch(
+    `/api/products/${route.params.id}`,
+    {
+      key: `product-${route.params.id}`
+    }
 )
+
+onMounted(() => {
+  if (products.value.length === 0) {
+     getProducts()
+  }
+})
 
 const loading = computed(() => status.value === 'pending')
 const error = computed(() => asyncError.value?.message || null)
