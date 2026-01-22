@@ -85,32 +85,36 @@ const handleSave = async () => {
     }
     await updateFooterConfig(configToSave)
 
-    const currentIds = form.socialLinks.filter(l => l.id).map(l => l.id)
-    const linksToDelete = originalSocialLinks.filter(l => !currentIds.includes(l.id))
+    try {
+      const currentIds = form.socialLinks.filter(l => l.id).map(l => l.id)
+      const linksToDelete = originalSocialLinks.filter(l => !currentIds.includes(l.id))
 
-    for (const link of linksToDelete) {
-      await deleteSocialLink(link.id)
-    }
-
-    for (const link of form.socialLinks) {
-      if (link.id) {
-        await updateSocialLink(link.id, {
-          name: link.name,
-          to: link.to,
-          icon: link.icon
-        })
-      } else {
-        await addSocialLink({
-          name: link.name,
-          to: link.to,
-          icon: link.icon
-        })
+      for (const link of linksToDelete) {
+        await deleteSocialLink(link.id)
       }
-    }
 
-    const updatedLinks = await getSocialLinks()
-    originalSocialLinks.value = JSON.parse(JSON.stringify(updatedLinks))
-    form.socialLinks = updatedLinks.map(link => ({ ...link }))
+      for (const link of form.socialLinks) {
+        if (link.id) {
+          await updateSocialLink(link.id, {
+            name: link.name,
+            to: link.to,
+            icon: link.icon
+          })
+        } else {
+          await addSocialLink({
+            name: link.name,
+            to: link.to,
+            icon: link.icon
+          })
+        }
+      }
+
+      const updatedLinks = await getSocialLinks()
+      originalSocialLinks.value = JSON.parse(JSON.stringify(updatedLinks))
+      form.socialLinks = updatedLinks.map(link => ({ ...link }))
+    } catch (socialError) {
+      console.error('Error handling social links:', socialError)
+    }
 
     showSuccessModal.value = true
     setTimeout(() => {
