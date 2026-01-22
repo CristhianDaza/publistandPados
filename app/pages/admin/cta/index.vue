@@ -98,6 +98,16 @@ const removeStat = (index) => {
   form.stats.splice(index, 1)
 }
 
+const inputUiConfig = { 
+  base: 'bg-slate-800 text-white', 
+  padding: { xl: 'px-4 py-3' },
+  color: { 
+    white: { 
+      outline: 'bg-slate-800 text-white ring-slate-700 focus:ring-blue-500' 
+    } 
+  } 
+}
+
 const showSuccessModal = ref(false)
 </script>
 
@@ -130,22 +140,43 @@ const showSuccessModal = ref(false)
           <div class="space-y-6">
             <div>
               <label class="block text-white font-semibold mb-2">Tagline (Texto pequeño arriba)</label>
-              <UInput v-model="form.tagline" placeholder="Ej: Nueva Colección" />
+              <UInput 
+                v-model="form.tagline" 
+                placeholder="Ej: Nueva Colección" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
             
             <div>
               <label class="block text-white font-semibold mb-2">Título Principal</label>
-              <UInput v-model="form.title" size="lg" placeholder="Título grande..." />
+              <UInput 
+                v-model="form.title" 
+                size="xl" 
+                placeholder="Título grande..." 
+                :ui="inputUiConfig"
+              />
             </div>
 
             <div>
               <label class="block text-white font-semibold mb-2">Subtítulo</label>
-              <UInput v-model="form.subtitle" placeholder="Subtítulo..." />
+              <UInput 
+                v-model="form.subtitle" 
+                placeholder="Subtítulo..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
 
             <div>
               <label class="block text-white font-semibold mb-2">Descripción</label>
-              <UTextarea v-model="form.description" :rows="4" placeholder="Descripción detallada..." />
+              <UTextarea 
+                v-model="form.description" 
+                :rows="4" 
+                placeholder="Descripción detallada..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
           </div>
         </div>
@@ -163,11 +194,21 @@ const showSuccessModal = ref(false)
             <div class="space-y-4">
               <div>
                 <label class="block text-slate-400 text-sm mb-1">Texto</label>
-                <UInput v-model="form.primaryButton.text" placeholder="Ej: Comprar Ahora" />
+                <UInput 
+                  v-model="form.primaryButton.text" 
+                  placeholder="Ej: Comprar Ahora" 
+                  size="xl"
+                  :ui="inputUiConfig"
+                />
               </div>
               <div>
                 <label class="block text-slate-400 text-sm mb-1">Enlace</label>
-                <UInput v-model="form.primaryButton.link" placeholder="https://..." />
+                <UInput 
+                  v-model="form.primaryButton.link" 
+                  placeholder="https://..." 
+                  size="xl"
+                  :ui="inputUiConfig"
+                />
               </div>
             </div>
           </div>
@@ -177,11 +218,21 @@ const showSuccessModal = ref(false)
             <div class="space-y-4">
               <div>
                 <label class="block text-slate-400 text-sm mb-1">Texto</label>
-                <UInput v-model="form.secondaryButton.text" placeholder="Ej: Ver Catálogo" />
+                <UInput 
+                  v-model="form.secondaryButton.text" 
+                  placeholder="Ej: Ver Catálogo" 
+                  size="xl"
+                  :ui="inputUiConfig"
+                />
               </div>
               <div>
                 <label class="block text-slate-400 text-sm mb-1">Enlace</label>
-                <UInput v-model="form.secondaryButton.link" placeholder="https://..." />
+                <UInput 
+                  v-model="form.secondaryButton.link" 
+                  placeholder="https://..." 
+                  size="xl"
+                  :ui="inputUiConfig"
+                />
               </div>
             </div>
           </div>
@@ -207,7 +258,13 @@ const showSuccessModal = ref(false)
 
         <div class="space-y-3">
           <div v-for="(feature, index) in form.features" :key="index" class="flex items-center gap-2">
-            <UInput v-model="form.features[index]" class="flex-1" placeholder="Describe una característica..." />
+            <UInput 
+              v-model="form.features[index]" 
+              class="flex-1" 
+              placeholder="Describe una característica..." 
+              size="xl"
+              :ui="inputUiConfig"
+            />
             <UButton 
               color="red" 
               variant="ghost" 
@@ -244,11 +301,21 @@ const showSuccessModal = ref(false)
           <div v-for="(stat, index) in form.stats" :key="index" class="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-slate-950/30 p-3 rounded-lg border border-slate-800/50">
             <div class="flex-1 w-full">
               <label class="block text-xs text-slate-500 mb-1" v-if="index === 0">Valor (ej: +50)</label>
-              <UInput v-model="stat.value" placeholder="Valor" />
+              <UInput 
+                v-model="stat.value" 
+                placeholder="Valor" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
              <div class="flex-1 w-full">
               <label class="block text-xs text-slate-500 mb-1" v-if="index === 0">Etiqueta (ej: Clientes Felices)</label>
-              <UInput v-model="stat.label" placeholder="Etiqueta" />
+              <UInput 
+                v-model="stat.label" 
+                placeholder="Etiqueta" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
             <UButton 
               color="red" 
