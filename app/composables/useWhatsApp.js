@@ -15,7 +15,11 @@ export const useWhatsApp = () => {
   const fetchContacts = async () => {
     loading.value = true
     try {
-      contacts.value = await getWhatsAppContacts()
+      const data = await getWhatsAppContacts()
+      contacts.value = data.map(contact => ({
+        ...contact,
+        image: contact.image || DEFAULT_WHATSAPP_IMAGE
+      }))
     } catch (e) {
       console.error('Error fetching contacts:', e)
     } finally {
@@ -64,11 +68,22 @@ export const useWhatsApp = () => {
 
   const getContact = async (id) => {
     try {
+      let item = null
       if (contacts.value.length > 0) {
-        const item = contacts.value.find(i => i.id === id)
-        if (item) return item
+        item = contacts.value.find(i => i.id === id)
       }
-      return await getWhatsAppContactById(id)
+      
+      if (!item) {
+        item = await getWhatsAppContactById(id)
+      }
+
+      if (item) {
+        return {
+          ...item,
+          image: item.image || DEFAULT_WHATSAPP_IMAGE
+        }
+      }
+      return null
     } catch (e) {
       console.error('Error getting whatsapp contact:', e)
       throw e
@@ -96,6 +111,9 @@ export const useWhatsApp = () => {
     deleteContact,
     getContact,
     openModal,
-    closeModal
+    closeModal,
+    DEFAULT_WHATSAPP_IMAGE
   }
 }
+
+export const DEFAULT_WHATSAPP_IMAGE = 'https://res.cloudinary.com/djcbrawhb/image/upload/v1765337698/mam_whtasapp_zq35lb.png'

@@ -10,7 +10,7 @@ useHead({
 })
 
 const router = useRouter()
-const { contacts, loading, fetchContacts, deleteContact } = useWhatsApp()
+const { contacts, loading, fetchContacts, deleteContact, DEFAULT_WHATSAPP_IMAGE } = useWhatsApp()
 const { deleteImage, getPublicIdFromUrl } = useCloudinary()
 
 const deleteModalOpen = ref(false)
@@ -49,7 +49,7 @@ const confirmDelete = async () => {
 
   deleting.value = true
   try {
-    if (itemToDelete.value.image) {
+    if (itemToDelete.value.image && itemToDelete.value.image !== DEFAULT_WHATSAPP_IMAGE) {
       const publicId = getPublicIdFromUrl(itemToDelete.value.image)
       if (publicId) {
         await deleteImage(publicId)

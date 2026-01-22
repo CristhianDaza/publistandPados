@@ -7,7 +7,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { contacts, fetchContacts, addContact, updateContact, getContact } = useWhatsApp()
+const { contacts, fetchContacts, addContact, updateContact, getContact, DEFAULT_WHATSAPP_IMAGE } = useWhatsApp()
 const { deleteImage, getPublicIdFromUrl } = useCloudinary()
 
 const isNew = route.params.id === 'new'
@@ -75,7 +75,11 @@ const handleSave = async () => {
     data.order = Number(data.order)
     data.active = !!data.active
 
-    if (!isNew && originalImage.value && form.image !== originalImage.value) {
+    if (data.image === DEFAULT_WHATSAPP_IMAGE) {
+      data.image = ''
+    }
+
+    if (!isNew && originalImage.value && form.image !== originalImage.value && originalImage.value !== DEFAULT_WHATSAPP_IMAGE) {
       const publicId = getPublicIdFromUrl(originalImage.value)
       if (publicId) {
         await deleteImage(publicId)
@@ -96,7 +100,7 @@ const handleSave = async () => {
 }
 
 const handleCancel = async () => {
-  if (form.image && form.image !== originalImage.value) {
+  if (form.image && form.image !== originalImage.value && form.image !== DEFAULT_WHATSAPP_IMAGE) {
     const publicId = getPublicIdFromUrl(form.image)
     if (publicId) {
       await deleteImage(publicId)

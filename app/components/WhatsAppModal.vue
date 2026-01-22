@@ -1,5 +1,5 @@
 <script setup>
-const { isModalOpen, closeModal, contacts, fetchContacts, loading, currentMessage } = useWhatsApp()
+const { isModalOpen, closeModal, contacts, fetchContacts, loading, currentMessage, DEFAULT_WHATSAPP_IMAGE } = useWhatsApp()
 
 onMounted(() => {
   fetchContacts()
@@ -62,7 +62,7 @@ const getWhatsAppLink = (contact) => {
               >
                   <div class="relative w-14 h-14">
                     <img
-                      :src="contact.image || 'https://avatars.githubusercontent.com/u/739984?v=4'"
+                      :src="contact.image || DEFAULT_WHATSAPP_IMAGE"
                       :alt="contact.name"
                       class="w-full h-full rounded-full object-cover ring-2 ring-transparent group-hover:ring-[#25D366] transition-all"
                     >
