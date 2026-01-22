@@ -7,12 +7,17 @@ export const useCloudinary = () => {
     if (!file) return null
 
     uploading.value = true
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('upload_preset', config.public.cloudinaryUploadPreset)
-    formData.append('cloud_name', config.public.cloudinaryCloudName)
 
     try {
+      const { signature, timestamp, apiKey } = await $fetch('/api/cloudinary/signature')
+
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('api_key', apiKey)
+      formData.append('timestamp', timestamp)
+      formData.append('signature', signature)
+      formData.append('upload_preset', config.public.cloudinaryUploadPreset)
+
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${config.public.cloudinaryCloudName}/image/upload`,
         {
@@ -22,7 +27,8 @@ export const useCloudinary = () => {
       )
 
       if (!response.ok) {
-        throw new Error('Upload failed')
+        const errData = await response.json()
+        throw new Error(errData.error?.message || 'Upload failed')
       }
 
       const data = await response.json()
