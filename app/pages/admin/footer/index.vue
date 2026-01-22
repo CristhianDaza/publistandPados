@@ -20,6 +20,16 @@ const loading = ref(true)
 const saving = ref(false)
 const showSuccessModal = ref(false)
 
+const inputUiConfig = { 
+  base: 'bg-slate-800 text-white', 
+  padding: { xl: 'px-4 py-3' },
+  color: { 
+    white: { 
+      outline: 'bg-slate-800 text-white ring-slate-700 focus:ring-blue-500' 
+    } 
+  } 
+}
+
 const originalSocialLinks = ref([])
 
 const form = reactive({
@@ -153,18 +163,35 @@ const handleSave = async () => {
           <div class="space-y-6">
             <div>
               <label class="block text-white font-semibold mb-2">Dirección</label>
-              <UTextarea v-model="form.contact.address" :rows="3" placeholder="Dirección física..." />
+              <UTextarea 
+                v-model="form.contact.address" 
+                :rows="3" 
+                placeholder="Dirección física..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
              <div>
               <label class="block text-white font-semibold mb-2">Teléfono</label>
-              <UInput v-model="form.contact.phone" placeholder="+57 300..." />
+              <UInput 
+                v-model="form.contact.phone" 
+                placeholder="+57 300..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
           </div>
 
           <div class="space-y-6">
             <div>
               <label class="block text-white font-semibold mb-2">Email</label>
-              <UInput v-model="form.contact.email" type="email" placeholder="contacto@..." />
+              <UInput 
+                v-model="form.contact.email" 
+                type="email" 
+                placeholder="contacto@..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
           </div>
         </div>
@@ -183,18 +210,34 @@ const handleSave = async () => {
           <div class="space-y-6">
             <div>
               <label class="block text-white font-semibold mb-2">Título CTA</label>
-              <UInput v-model="form.cta.title" placeholder="Ej: Inicia tu Proyecto" />
+              <UInput 
+                v-model="form.cta.title" 
+                placeholder="Ej: Inicia tu Proyecto" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
             <div>
               <label class="block text-white font-semibold mb-2">Texto del botón</label>
-              <UInput v-model="form.cta.buttonText" placeholder="Ej: Cotizar Ahora" />
+              <UInput 
+                v-model="form.cta.buttonText" 
+                placeholder="Ej: Cotizar Ahora" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
           </div>
 
           <div class="space-y-6">
             <div>
               <label class="block text-white font-semibold mb-2">Texto Descriptivo</label>
-              <UTextarea v-model="form.cta.text" :rows="4" placeholder="Texto persuasivo..." />
+              <UTextarea 
+                v-model="form.cta.text" 
+                :rows="4" 
+                placeholder="Texto persuasivo..." 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
           </div>
         </div>
@@ -221,16 +264,32 @@ const handleSave = async () => {
           <div v-for="(link, index) in form.socialLinks" :key="index" class="flex flex-col md:flex-row gap-4 items-start md:items-center bg-slate-950/30 p-4 rounded-lg border border-slate-800/50">
             <div class="flex-1 w-full md:w-auto">
               <label class="block text-xs text-slate-500 mb-1" v-if="index === 0">Nombre (ej: Instagram)</label>
-              <UInput v-model="link.name" placeholder="Nombre" />
+              <UInput 
+                v-model="link.name" 
+                placeholder="Nombre" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
             <div class="flex-1 w-full md:w-auto">
               <label class="block text-xs text-slate-500 mb-1" v-if="index === 0">URL (ej: https://...)</label>
-              <UInput v-model="link.to" placeholder="Enlace" />
+              <UInput 
+                v-model="link.to" 
+                placeholder="Enlace" 
+                size="xl"
+                :ui="inputUiConfig"
+              />
             </div>
             <div class="flex-1 w-full md:w-auto">
               <label class="block text-xs text-slate-500 mb-1" v-if="index === 0">Código Ícono (ej: i-simple-icons-instagram)</label>
               <div class="flex gap-2 items-center">
-                 <UInput v-model="link.icon" class="flex-1" placeholder="Código de ícono" />
+                 <UInput 
+                   v-model="link.icon" 
+                   class="flex-1" 
+                   placeholder="Código de ícono" 
+                   size="xl"
+                   :ui="inputUiConfig"
+                 />
                  <div v-if="link.icon" class="w-8 h-8 flex items-center justify-center bg-slate-800 rounded border border-slate-700">
                     <UIcon :name="link.icon" class="w-5 h-5 text-white" />
                  </div>
