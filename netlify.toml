@@ -1,6 +1,6 @@
 [build]
   command = "pnpm exec nuxi build --preset netlify"
-  publish = ".output/public"
+  publish = "dist"
 
 [build.environment]
   PNPM_VERSION = "10.30.0"
