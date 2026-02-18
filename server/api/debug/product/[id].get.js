@@ -35,9 +35,20 @@ const normalizeDateMs = (value) => {
   return null
 }
 
+const normalizeId = (value) => {
+  if (value === null || value === undefined) return ''
+  return String(value)
+    .normalize('NFKC')
+    .replace(/\s+/g, '')
+    .toUpperCase()
+    .trim()
+}
+
 const inspectCollectionForProductId = async (db, collectionName, productId) => {
   const snapshot = await getDocs(collection(db, collectionName))
   const matches = []
+  const nearMatches = []
+  const normalizedTarget = normalizeId(productId)
 
   snapshot.forEach((docSnap) => {
     const data = docSnap.data()
@@ -45,24 +56,80 @@ const inspectCollectionForProductId = async (db, collectionName, productId) => {
 
     if (products) {
       products.forEach((product, index) => {
-        if (product?.id === productId) {
+        const productIdRaw = product?.id
+        const normalizedProductId = normalizeId(productIdRaw)
+
+        if (productIdRaw === productId) {
           matches.push({
             docId: docSnap.id,
             location: `products[${index}]`,
             api: product?.api ?? null,
-            name: product?.name ?? null
+            name: product?.name ?? null,
+            id: productIdRaw
+          })
+          return
+        }
+
+        if (normalizedProductId && normalizedProductId === normalizedTarget) {
+          nearMatches.push({
+            docId: docSnap.id,
+            location: `products[${index}]`,
+            api: product?.api ?? null,
+            name: product?.name ?? null,
+            id: productIdRaw,
+            reason: 'normalized-id-match'
+          })
+          return
+        }
+
+        if (normalizedTarget && normalizedProductId.includes(normalizedTarget)) {
+          nearMatches.push({
+            docId: docSnap.id,
+            location: `products[${index}]`,
+            api: product?.api ?? null,
+            name: product?.name ?? null,
+            id: productIdRaw,
+            reason: 'contains-target'
           })
         }
       })
       return
     }
 
-    if (data?.id === productId) {
+    const rootId = data?.id
+    const normalizedRootId = normalizeId(rootId)
+
+    if (rootId === productId) {
       matches.push({
         docId: docSnap.id,
         location: 'document-root',
         api: data?.api ?? null,
-        name: data?.name ?? null
+        name: data?.name ?? null,
+        id: rootId
+      })
+      return
+    }
+
+    if (normalizedRootId && normalizedRootId === normalizedTarget) {
+      nearMatches.push({
+        docId: docSnap.id,
+        location: 'document-root',
+        api: data?.api ?? null,
+        name: data?.name ?? null,
+        id: rootId,
+        reason: 'normalized-id-match'
+      })
+      return
+    }
+
+    if (normalizedTarget && normalizedRootId.includes(normalizedTarget)) {
+      nearMatches.push({
+        docId: docSnap.id,
+        location: 'document-root',
+        api: data?.api ?? null,
+        name: data?.name ?? null,
+        id: rootId,
+        reason: 'contains-target'
       })
     }
   })
@@ -70,6 +137,7 @@ const inspectCollectionForProductId = async (db, collectionName, productId) => {
   return {
     docsScanned: snapshot.size,
     matches,
+    nearMatches: nearMatches.slice(0, 25),
     found: matches.length > 0
   }
 }
