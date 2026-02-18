@@ -1,7 +1,7 @@
-import { useFirebaseAdmin } from '~/server/utils/firebaseAdmin'
+import { findProductById } from '../../utils/productsService.js'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  let id = getRouterParam(event, 'id')
 
   if (!id) {
     throw createError({
@@ -11,25 +11,29 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { adminDb } = useFirebaseAdmin()
-    const docRef = adminDb.collection('products').doc(id)
-    const docSnap = await docRef.get()
+    try {
+      id = decodeURIComponent(id)
+    } catch {
+      // Ignore malformed URI sequences and use raw id.
+    }
 
-    if (!docSnap.exists) {
+    const product = await findProductById(id)
+
+    if (!product) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Product not found',
       })
     }
 
-    const data = docSnap.data()
-    return {
-      id: docSnap.id,
-      ...data
-    }
-
+    return product
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error)
+
+    if (error?.statusCode) {
+      throw error
+    }
+
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

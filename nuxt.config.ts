@@ -1,26 +1,7 @@
-import { fetchProductRoutes } from './server/utils/productRoutes'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  hooks: {
-    async 'nitro:config'(nitroConfig) {
-      if (nitroConfig.dev) return // Don't pre-render in dev
-
-      try {
-        const routes = await fetchProductRoutes()
-        if (routes && routes.length) {
-          nitroConfig.prerender = nitroConfig.prerender || {}
-          nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
-          nitroConfig.prerender.routes.push(...routes)
-          console.log(`[SEO] Added ${routes.length} product routes to pre-render`)
-        }
-      } catch (e) {
-        console.error('[SEO] Failed to fetch product routes:', e)
-      }
-    }
-  },
   routeRules: {
-    '/products/**': { isr: 3600 }
+    '/products/**': { swr: 3600 }
   },
   compatibilityDate: '2024-11-01',
   future: {
