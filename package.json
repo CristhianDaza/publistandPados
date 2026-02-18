@@ -11,19 +11,19 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@nuxt/eslint": "^1.12.1",
+    "@nuxt/eslint": "^1.15.1",
     "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.4.0",
-    "@nuxtjs/seo": "^3.3.0",
+    "@nuxtjs/seo": "^3.4.0",
     "@pinia/nuxt": "^0.11.3",
-    "eslint": "^9.39.2",
-    "firebase": "^12.8.0",
-    "firebase-admin": "^13.6.0",
-    "nuxt": "^4.2.2",
+    "eslint": "^10.0.0",
+    "firebase": "^12.9.0",
+    "firebase-admin": "^13.6.1",
+    "nuxt": "^4.3.1",
     "pinia": "^3.0.4",
     "typescript": "^5.9.3",
-    "vue": "^3.5.27",
-    "vue-router": "^4.6.4"
+    "vue": "^3.5.28",
+    "vue-router": "^5.0.2"
   },
   "pnpm": {
     "overrides": {
@@ -31,8 +31,8 @@
       "@vue/shared": "latest"
     }
   },
-  "packageManager": "pnpm@10.21.0+sha512.da3337267e400fdd3d479a6c68079ac6db01d8ca4f67572083e722775a796788a7a9956613749e000fac20d424b594f7a791a5f4e2e13581c5ef947f26968a40",
+  "packageManager": "pnpm@10.30.0",
   "devDependencies": {
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.2.0"
   }
 }
