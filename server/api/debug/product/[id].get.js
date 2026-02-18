@@ -49,12 +49,28 @@ const inspectCollectionForProductId = async (db, collectionName, productId) => {
   const matches = []
   const nearMatches = []
   const normalizedTarget = normalizeId(productId)
+  let docsWithProductsArray = 0
+  let docsWithRootId = 0
+  let totalProductsEntries = 0
+  const sampleDocShapes = []
 
   snapshot.forEach((docSnap) => {
     const data = docSnap.data()
     const products = Array.isArray(data?.products) ? data.products : null
+    const keys = Object.keys(data || {})
+
+    if (sampleDocShapes.length < 8) {
+      sampleDocShapes.push({
+        docId: docSnap.id,
+        topLevelKeys: keys.slice(0, 20),
+        hasProductsArray: Boolean(products),
+        hasRootId: typeof data?.id === 'string'
+      })
+    }
 
     if (products) {
+      docsWithProductsArray++
+      totalProductsEntries += products.length
       products.forEach((product, index) => {
         const productIdRaw = product?.id
         const normalizedProductId = normalizeId(productIdRaw)
@@ -98,6 +114,9 @@ const inspectCollectionForProductId = async (db, collectionName, productId) => {
 
     const rootId = data?.id
     const normalizedRootId = normalizeId(rootId)
+    if (typeof rootId === 'string' && rootId.length > 0) {
+      docsWithRootId++
+    }
 
     if (rootId === productId) {
       matches.push({
@@ -136,6 +155,10 @@ const inspectCollectionForProductId = async (db, collectionName, productId) => {
 
   return {
     docsScanned: snapshot.size,
+    docsWithProductsArray,
+    docsWithRootId,
+    totalProductsEntries,
+    sampleDocShapes,
     matches,
     nearMatches: nearMatches.slice(0, 25),
     found: matches.length > 0

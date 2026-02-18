@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore'
 
 const normalizeDateMs = (value) => {
   if (value === null || value === undefined) return null
@@ -54,9 +54,11 @@ export default defineEventHandler(async (event) => {
     const CHUNK_SIZE = 50
     let chunkCount = 0
     let totalSynced = 0
+    let totalSyncedToFirebase2 = 0
     let totalProductsBeforeFilter = 0
     let totalProductsAfterFilter = 0
     let batch = adminDb.batch()
+    let db2Batch = writeBatch(db2)
 
     const sanitizeData = (data) => {
       if (data === null || typeof data !== 'object') return data
@@ -85,18 +87,24 @@ export default defineEventHandler(async (event) => {
       const data = sanitizeData(rawData)
       const docRef = adminDb.collection('products').doc(docSnap.id)
       batch.set(docRef, data, { merge: true })
+      const db2ProductsRef = doc(db2, 'products', docSnap.id)
+      db2Batch.set(db2ProductsRef, data, { merge: true })
       chunkCount++
       totalSynced++
+      totalSyncedToFirebase2++
 
       if (chunkCount >= CHUNK_SIZE) {
         await batch.commit()
+        await db2Batch.commit()
         batch = adminDb.batch()
+        db2Batch = writeBatch(db2)
         chunkCount = 0
       }
     }
 
     if (chunkCount > 0) {
       await batch.commit()
+      await db2Batch.commit()
     }
 
     const sourceStatusRef = doc(db2, 'lastedUpdatedProducts', 'status')
@@ -120,6 +128,7 @@ export default defineEventHandler(async (event) => {
     console.info('[sync-products] completed', {
       sourceDocsCount: snapshot.size,
       totalSynced,
+      totalSyncedToFirebase2,
       totalProductsBeforeFilter,
       totalProductsAfterFilter,
       lastUpdateMs,
