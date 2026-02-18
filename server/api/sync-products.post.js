@@ -1,4 +1,39 @@
-import { collection, getDocs, query, limit } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+
+const normalizeDateMs = (value) => {
+  if (value === null || value === undefined) return null
+
+  if (typeof value?.toMillis === 'function') {
+    const ms = value.toMillis()
+    return Number.isFinite(ms) ? ms : null
+  }
+
+  if (value instanceof Date) {
+    const ms = value.getTime()
+    return Number.isFinite(ms) ? ms : null
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) return null
+    return value < 1e12 ? Math.trunc(value * 1000) : Math.trunc(value)
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Date.parse(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  if (typeof value === 'object') {
+    const seconds = value.seconds ?? value._seconds
+    const nanoseconds = value.nanoseconds ?? value._nanoseconds ?? 0
+
+    if (typeof seconds === 'number' && Number.isFinite(seconds)) {
+      return Math.trunc(seconds * 1000 + nanoseconds / 1e6)
+    }
+  }
+
+  return null
+}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -65,14 +100,29 @@ export default defineEventHandler(async (event) => {
       await batch.commit()
     }
 
-    const sourceUpdateCol = collection(db2, 'lastedUpdatedProducts')
-    const sourceUpdateSnap = await getDocs(query(sourceUpdateCol, limit(1)))
+    const sourceStatusRef = doc(db2, 'lastedUpdatedProducts', 'status')
+    const sourceStatusSnap = await getDoc(sourceStatusRef)
+    const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : {}
 
-    if (!sourceUpdateSnap.empty) {
-      const sourceData = sourceUpdateSnap.docs[0].data()
-      const destDocRef = adminDb.collection('lastedUpdatedProducts').doc('status')
-      await destDocRef.set(sourceData)
-    }
+    const lastUpdateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso) ?? Date.now()
+    const lastUpdateIso = new Date(lastUpdateMs).toISOString()
+
+    const destDocRef = adminDb.collection('lastedUpdatedProducts').doc('status')
+    await destDocRef.set({
+      ...sourceStatus,
+      lastUpdate: lastUpdateIso,
+      lastUpdateIso,
+      lastUpdateMs,
+      syncedAt: new Date().toISOString(),
+      syncVersion: 2,
+      syncRecoveryV2Done: true
+    }, { merge: true })
+
+    console.info('[sync-products] completed', {
+      totalSynced,
+      lastUpdateMs,
+      sourceCollectionName
+    })
 
     return { success: true, message: 'Products synced successfully', count: totalSynced }
   } catch (error) {

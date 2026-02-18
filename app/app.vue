@@ -17,18 +17,20 @@ watch(authLoading, async (newLoading) => {
 const checkAndSync = async () => {
   try {
     if (user.value?.role === 'admin') {
-      const { api1Date, api2Date } = await $fetch('/api/get-sync-status')
+      const {
+        api1DateMs,
+        api2DateMs,
+        syncRecoveryV2Done
+      } = await $fetch('/api/get-sync-status')
 
-      let shouldSync = false
-      if (!api1Date && api2Date) {
-        shouldSync = true
-      } else if (api1Date && api2Date) {
-        const date1 = new Date(api1Date)
-        const date2 = new Date(api2Date)
-        if (date2 > date1) {
-          shouldSync = true
-        }
-      }
+      const validApi1DateMs = typeof api1DateMs === 'number' && Number.isFinite(api1DateMs) ? api1DateMs : null
+      const validApi2DateMs = typeof api2DateMs === 'number' && Number.isFinite(api2DateMs) ? api2DateMs : null
+
+      const shouldForceRecoverySync = syncRecoveryV2Done !== true
+      const shouldSyncByDate = validApi2DateMs !== null && (validApi1DateMs === null || validApi2DateMs > validApi1DateMs)
+      const shouldSyncFallback = validApi1DateMs === null && validApi2DateMs === null
+
+      const shouldSync = shouldForceRecoverySync || shouldSyncByDate || shouldSyncFallback
 
       if (shouldSync) {
         isSyncing.value = true

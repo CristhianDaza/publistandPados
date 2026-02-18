@@ -1,30 +1,72 @@
-import { collection, getDocs, limit, query } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
+
+const normalizeDateMs = (value) => {
+  if (value === null || value === undefined) return null
+
+  if (typeof value?.toMillis === 'function') {
+    const ms = value.toMillis()
+    return Number.isFinite(ms) ? ms : null
+  }
+
+  if (value instanceof Date) {
+    const ms = value.getTime()
+    return Number.isFinite(ms) ? ms : null
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) return null
+    return value < 1e12 ? Math.trunc(value * 1000) : Math.trunc(value)
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Date.parse(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  if (typeof value === 'object') {
+    const seconds = value.seconds ?? value._seconds
+    const nanoseconds = value.nanoseconds ?? value._nanoseconds ?? 0
+
+    if (typeof seconds === 'number' && Number.isFinite(seconds)) {
+      return Math.trunc(seconds * 1000 + nanoseconds / 1e6)
+    }
+  }
+
+  return null
+}
 
 export default defineEventHandler(async (event) => {
   try {
     const db1 = useFirebase1()
     const db2 = useFirebase2()
 
-    const col2 = collection(db2, 'lastedUpdatedProducts')
-    const q2 = query(col2, limit(1))
-    const snap2 = await getDocs(q2)
-    let api2Date = null
-    if (!snap2.empty) {
-      api2Date = snap2.docs[0].data().lastUpdate
-    }
+    const sourceStatusRef = doc(db2, 'lastedUpdatedProducts', 'status')
+    const sourceStatusSnap = await getDoc(sourceStatusRef)
+    const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : null
 
-    const col1 = collection(db1, 'lastedUpdatedProducts')
-    const q1 = query(col1, limit(1))
-    const snap1 = await getDocs(q1)
-    let api1Date = null
-    if (!snap1.empty) {
-      api1Date = snap1.docs[0].data().lastUpdate
-    }
+    const destStatusRef = doc(db1, 'lastedUpdatedProducts', 'status')
+    const destStatusSnap = await getDoc(destStatusRef)
+    const destStatus = destStatusSnap.exists() ? destStatusSnap.data() : null
+
+    const api2DateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso)
+    const api1DateMs = normalizeDateMs(destStatus?.lastUpdateMs ?? destStatus?.lastUpdate ?? destStatus?.lastUpdateIso)
+
+    const api2DateIso = api2DateMs ? new Date(api2DateMs).toISOString() : null
+    const api1DateIso = api1DateMs ? new Date(api1DateMs).toISOString() : null
+
+    console.info('[sync-status] dates', {
+      api1DateMs,
+      api2DateMs,
+      syncRecoveryV2Done: Boolean(destStatus?.syncRecoveryV2Done)
+    })
 
     return {
       success: true,
-      api1Date,
-      api2Date
+      api1DateIso,
+      api2DateIso,
+      api1DateMs,
+      api2DateMs,
+      syncRecoveryV2Done: Boolean(destStatus?.syncRecoveryV2Done)
     }
   } catch (error) {
     console.error('Error getting sync status:', error)
