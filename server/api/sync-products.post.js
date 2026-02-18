@@ -49,15 +49,13 @@ export default defineEventHandler(async (event) => {
       return { success: true, message: 'No products to sync', count: 0 }
     }
 
-    const docsToSync = snapshot.docs.filter((docSnap) => !docSnap.id.startsWith('api_cataprom'))
-
-    if (docsToSync.length === 0) {
-      return { success: true, message: 'No products to sync after filtering', count: 0 }
-    }
+    const docsToSync = snapshot.docs
 
     const CHUNK_SIZE = 50
     let chunkCount = 0
     let totalSynced = 0
+    let totalProductsBeforeFilter = 0
+    let totalProductsAfterFilter = 0
     let batch = adminDb.batch()
 
     const sanitizeData = (data) => {
@@ -80,7 +78,9 @@ export default defineEventHandler(async (event) => {
     for (const docSnap of docsToSync) {
       let rawData = docSnap.data()
       if (rawData.products && Array.isArray(rawData.products)) {
+        totalProductsBeforeFilter += rawData.products.length
         rawData.products = rawData.products.filter(p => p.api !== 'cataProm')
+        totalProductsAfterFilter += rawData.products.length
       }
 
       const data = sanitizeData(rawData)
@@ -119,7 +119,10 @@ export default defineEventHandler(async (event) => {
     }, { merge: true })
 
     console.info('[sync-products] completed', {
+      sourceDocsCount: snapshot.size,
       totalSynced,
+      totalProductsBeforeFilter,
+      totalProductsAfterFilter,
       lastUpdateMs,
       sourceCollectionName
     })

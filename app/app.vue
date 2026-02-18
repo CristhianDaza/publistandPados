@@ -5,7 +5,6 @@ const { initApp } = useAppLoading()
 const isSyncing = ref(false)
 const isCheckingSync = ref(false)
 const hasLoadedProducts = ref(false)
-
 const SYNC_TIME_ZONE = 'America/Bogota'
 const HOURLY_RETRY_MS = 60 * 60 * 1000
 let syncRetryTimer = null
@@ -94,12 +93,11 @@ const checkAndSync = async ({ loadProductsIfNeeded = false } = {}) => {
 
     const shouldForceRecoverySync = syncRecoveryV2Done !== true
     const shouldSyncFallback = validApi1DateMs === null && validApi2DateMs === null
+    const shouldSyncByStatusUpdate = validApi2DateMs !== null && (validApi1DateMs === null || validApi2DateMs > validApi1DateMs)
+    const shouldSync = shouldForceRecoverySync || shouldSyncByStatusUpdate || shouldSyncFallback
     const isApi2UpdatedToday = api2DayKey !== null && api2DayKey === todayKey
     const isApi1SyncedToday = api1DayKey !== null && api1DayKey === todayKey
-    const needsSyncToday = isApi2UpdatedToday && !isApi1SyncedToday
-
-    const shouldSync = shouldForceRecoverySync || needsSyncToday || shouldSyncFallback
-    const shouldRetryHourly = shouldForceRecoverySync || shouldSyncFallback || !isApi2UpdatedToday || needsSyncToday
+    const shouldRetryHourly = shouldForceRecoverySync || shouldSyncFallback || !isApi2UpdatedToday || (isApi2UpdatedToday && !isApi1SyncedToday)
 
     if (shouldSync) {
       isSyncing.value = true
@@ -124,6 +122,7 @@ const checkAndSync = async ({ loadProductsIfNeeded = false } = {}) => {
       await fetchProducts()
       hasLoadedProducts.value = true
     }
+    ensureSyncRetryTimer(user.value?.role === 'admin')
   } finally {
     isCheckingSync.value = false
   }
