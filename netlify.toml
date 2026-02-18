@@ -1,7 +1,6 @@
 [build]
-  command = "pnpm run build"
+  command = "pnpm exec nuxi build --preset netlify"
   publish = ".output/public"
 
 [build.environment]
-  NITRO_PRESET = "netlify"
   PNPM_VERSION = "10.30.0"
