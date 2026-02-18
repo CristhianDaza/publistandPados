@@ -79,7 +79,6 @@ export default defineEventHandler(async (event) => {
       let rawData = docSnap.data()
       if (rawData.products && Array.isArray(rawData.products)) {
         totalProductsBeforeFilter += rawData.products.length
-        rawData.products = rawData.products.filter(p => p.api !== 'cataProm')
         totalProductsAfterFilter += rawData.products.length
       }
 
