@@ -54,6 +54,8 @@ const loadFirebase2ServiceAccount = () => {
 }
 
 export const useFirebase2Admin = () => {
+  const config = useRuntimeConfig()
+  const firebase2ProjectId = process.env.FIREBASE2_ADMIN_PROJECT_ID || config.firebase2?.projectId
   let app
   const existing = getApps().find((candidate) => candidate.name === FIREBASE2_APP_NAME)
 
@@ -62,7 +64,10 @@ export const useFirebase2Admin = () => {
   } else {
     const serviceAccount = loadFirebase2ServiceAccount()
     app = initializeApp(
-      { credential: cert(serviceAccount) },
+      {
+        credential: cert(serviceAccount),
+        projectId: firebase2ProjectId || serviceAccount.projectId
+      },
       FIREBASE2_APP_NAME
     )
   }
