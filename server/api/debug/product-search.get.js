@@ -1,4 +1,4 @@
-import { collection, getDocs } from 'firebase/firestore'
+import { useFirebase2Admin } from '../../utils/firebase2Admin'
 
 const normalizeText = (value) => {
   if (value === null || value === undefined) return ''
@@ -14,8 +14,8 @@ const includesNormalized = (value, query) => {
   return normalizedValue.includes(query)
 }
 
-const scanCollection = async (db, collectionName, query, maxResults) => {
-  const snapshot = await getDocs(collection(db, collectionName))
+const scanCollection = async (adminDb, collectionName, query, maxResults) => {
+  const snapshot = await adminDb.collection(collectionName).get()
   const results = []
   let scannedProducts = 0
 
@@ -78,14 +78,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const db1 = useFirebase1()
-    const db2 = useFirebase2()
+    const { adminDb } = useFirebaseAdmin()
+    const { adminDb2 } = useFirebase2Admin()
     const config = useRuntimeConfig()
     const sourceCollectionName = config.firebase2.sourceCollection
 
     const [source, destination] = await Promise.all([
-      scanCollection(db2, sourceCollectionName, query, maxResults),
-      scanCollection(db1, 'products', query, maxResults)
+      scanCollection(adminDb2, sourceCollectionName, query, maxResults),
+      scanCollection(adminDb, 'products', query, maxResults)
     ])
 
     return {

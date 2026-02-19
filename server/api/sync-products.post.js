@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore'
+import { useFirebase2Admin } from '../utils/firebase2Admin'
 
 const normalizeDateMs = (value) => {
   if (value === null || value === undefined) return null
@@ -38,12 +38,11 @@ const normalizeDateMs = (value) => {
 export default defineEventHandler(async (event) => {
   try {
     const { adminDb } = useFirebaseAdmin()
-    const db2 = useFirebase2()
+    const { adminDb2 } = useFirebase2Admin()
     const config = useRuntimeConfig()
 
     const sourceCollectionName = config.firebase2.sourceCollection
-    const sourceCollection = collection(db2, sourceCollectionName)
-    const snapshot = await getDocs(sourceCollection)
+    const snapshot = await adminDb2.collection(sourceCollectionName).get()
 
     if (snapshot.empty) {
       return { success: true, message: 'No products to sync', count: 0 }
@@ -58,7 +57,7 @@ export default defineEventHandler(async (event) => {
     let totalProductsBeforeFilter = 0
     let totalProductsAfterFilter = 0
     let batch = adminDb.batch()
-    let db2Batch = writeBatch(db2)
+    let db2Batch = adminDb2.batch()
 
     const sanitizeData = (data) => {
       if (data === null || typeof data !== 'object') return data
@@ -87,7 +86,7 @@ export default defineEventHandler(async (event) => {
       const data = sanitizeData(rawData)
       const docRef = adminDb.collection('products').doc(docSnap.id)
       batch.set(docRef, data, { merge: true })
-      const db2ProductsRef = doc(db2, 'products', docSnap.id)
+      const db2ProductsRef = adminDb2.collection('products').doc(docSnap.id)
       db2Batch.set(db2ProductsRef, data, { merge: true })
       chunkCount++
       totalSynced++
@@ -97,7 +96,7 @@ export default defineEventHandler(async (event) => {
         await batch.commit()
         await db2Batch.commit()
         batch = adminDb.batch()
-        db2Batch = writeBatch(db2)
+        db2Batch = adminDb2.batch()
         chunkCount = 0
       }
     }
@@ -107,8 +106,8 @@ export default defineEventHandler(async (event) => {
       await db2Batch.commit()
     }
 
-    const sourceStatusRef = doc(db2, 'lastedUpdatedProducts', 'status')
-    const sourceStatusSnap = await getDoc(sourceStatusRef)
+    const sourceStatusRef = adminDb2.collection('lastedUpdatedProducts').doc('status')
+    const sourceStatusSnap = await sourceStatusRef.get()
     const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : {}
 
     const lastUpdateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso) ?? Date.now()

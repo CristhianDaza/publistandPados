@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore'
+import { useFirebase2Admin } from '../utils/firebase2Admin'
 
 const normalizeDateMs = (value) => {
   if (value === null || value === undefined) return null
@@ -37,15 +37,15 @@ const normalizeDateMs = (value) => {
 
 export default defineEventHandler(async (event) => {
   try {
-    const db1 = useFirebase1()
-    const db2 = useFirebase2()
+    const { adminDb } = useFirebaseAdmin()
+    const { adminDb2 } = useFirebase2Admin()
 
-    const sourceStatusRef = doc(db2, 'lastedUpdatedProducts', 'status')
-    const sourceStatusSnap = await getDoc(sourceStatusRef)
+    const sourceStatusRef = adminDb2.collection('lastedUpdatedProducts').doc('status')
+    const sourceStatusSnap = await sourceStatusRef.get()
     const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : null
 
-    const destStatusRef = doc(db1, 'lastedUpdatedProducts', 'status')
-    const destStatusSnap = await getDoc(destStatusRef)
+    const destStatusRef = adminDb.collection('lastedUpdatedProducts').doc('status')
+    const destStatusSnap = await destStatusRef.get()
     const destStatus = destStatusSnap.exists() ? destStatusSnap.data() : null
 
     const api2DateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso)

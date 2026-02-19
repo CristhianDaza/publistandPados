@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { useFirebase2Admin } from '../../../utils/firebase2Admin'
 
 const normalizeDateMs = (value) => {
   if (value === null || value === undefined) return null
@@ -44,8 +44,8 @@ const normalizeId = (value) => {
     .trim()
 }
 
-const inspectCollectionForProductId = async (db, collectionName, productId) => {
-  const snapshot = await getDocs(collection(db, collectionName))
+const inspectCollectionForProductId = async (adminDb, collectionName, productId) => {
+  const snapshot = await adminDb.collection(collectionName).get()
   const matches = []
   const nearMatches = []
   const normalizedTarget = normalizeId(productId)
@@ -181,17 +181,17 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const db1 = useFirebase1()
-    const db2 = useFirebase2()
+    const { adminDb } = useFirebaseAdmin()
+    const { adminDb2 } = useFirebase2Admin()
     const config = useRuntimeConfig()
     const sourceCollectionName = config.firebase2.sourceCollection
 
     const [sourceInspection, destInspection, sourceStatusSnap, destStatusSnap, directDestDocSnap] = await Promise.all([
-      inspectCollectionForProductId(db2, sourceCollectionName, id),
-      inspectCollectionForProductId(db1, 'products', id),
-      getDoc(doc(db2, 'lastedUpdatedProducts', 'status')),
-      getDoc(doc(db1, 'lastedUpdatedProducts', 'status')),
-      getDoc(doc(db1, 'products', id))
+      inspectCollectionForProductId(adminDb2, sourceCollectionName, id),
+      inspectCollectionForProductId(adminDb, 'products', id),
+      adminDb2.collection('lastedUpdatedProducts').doc('status').get(),
+      adminDb.collection('lastedUpdatedProducts').doc('status').get(),
+      adminDb.collection('products').doc(id).get()
     ])
 
     const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : null
