@@ -10,9 +10,16 @@ export const useProducts = () => {
   const products = useState('products', () => [])
   const loading = useState('products-loading', () => false)
   const error = useState('products-error', () => null)
+  const lastRemoteFetchAt = useState('products-last-remote-fetch-at', () => 0)
+  const REMOTE_REFRESH_INTERVAL_MS = 10 * 60 * 1000
 
   const getProducts = async (force = false) => {
-    if (!force && products.value.length > 0) return
+    if (!force && products.value.length > 0) {
+      const now = Date.now()
+      if (now - lastRemoteFetchAt.value < REMOTE_REFRESH_INTERVAL_MS) {
+        return
+      }
+    }
 
     loading.value = true
     error.value = null
@@ -22,12 +29,11 @@ export const useProducts = () => {
         const cached = await getFromIDB('products')
         if (cached && Array.isArray(cached) && cached.length > 0) {
           products.value = markRaw(cached)
-          loading.value = false
-          return
         }
       }
 
       const data = await fetchProducts()
+      lastRemoteFetchAt.value = Date.now()
 
       if (import.meta.client) {
         await saveToIDB('products', data)

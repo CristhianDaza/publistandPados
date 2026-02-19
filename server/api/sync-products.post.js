@@ -36,11 +36,12 @@ const normalizeDateMs = (value) => {
   return null
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   try {
     const { adminDb } = useFirebaseAdmin()
     const { adminDb2 } = useFirebase2Admin()
     const config = useRuntimeConfig()
+    const shouldMirrorToFirebase2 = config.firebase2?.mirrorToProducts === true
 
     const sourceCollectionName = config.firebase2.sourceCollection
     const snapshot = await adminDb2.collection(sourceCollectionName).get()
@@ -58,7 +59,7 @@ export default defineEventHandler(async (event) => {
     let totalProductsBeforeFilter = 0
     let totalProductsAfterFilter = 0
     let batch = adminDb.batch()
-    let db2Batch = adminDb2.batch()
+    let db2Batch = shouldMirrorToFirebase2 ? adminDb2.batch() : null
 
     const sanitizeData = (data) => {
       if (data === null || typeof data !== 'object') return data
@@ -81,30 +82,42 @@ export default defineEventHandler(async (event) => {
       let rawData = docSnap.data()
       if (rawData.products && Array.isArray(rawData.products)) {
         totalProductsBeforeFilter += rawData.products.length
+        rawData = {
+          ...rawData,
+          products: rawData.products.filter((product) => product?.api !== 'cataProm')
+        }
         totalProductsAfterFilter += rawData.products.length
       }
 
       const data = sanitizeData(rawData)
       const docRef = adminDb.collection('products').doc(docSnap.id)
       batch.set(docRef, data, { merge: true })
-      const db2ProductsRef = adminDb2.collection('products').doc(docSnap.id)
-      db2Batch.set(db2ProductsRef, data, { merge: true })
+      if (shouldMirrorToFirebase2 && db2Batch) {
+        const db2ProductsRef = adminDb2.collection('products').doc(docSnap.id)
+        db2Batch.set(db2ProductsRef, data, { merge: true })
+      }
       chunkCount++
       totalSynced++
-      totalSyncedToFirebase2++
+      if (shouldMirrorToFirebase2) {
+        totalSyncedToFirebase2++
+      }
 
       if (chunkCount >= CHUNK_SIZE) {
         await batch.commit()
-        await db2Batch.commit()
+        if (shouldMirrorToFirebase2 && db2Batch) {
+          await db2Batch.commit()
+        }
         batch = adminDb.batch()
-        db2Batch = adminDb2.batch()
+        db2Batch = shouldMirrorToFirebase2 ? adminDb2.batch() : null
         chunkCount = 0
       }
     }
 
     if (chunkCount > 0) {
       await batch.commit()
-      await db2Batch.commit()
+      if (shouldMirrorToFirebase2 && db2Batch) {
+        await db2Batch.commit()
+      }
     }
 
     const sourceStatusRef = adminDb2.collection('lastedUpdatedProducts').doc('status')
@@ -129,6 +142,7 @@ export default defineEventHandler(async (event) => {
       sourceDocsCount: snapshot.size,
       totalSynced,
       totalSyncedToFirebase2,
+      shouldMirrorToFirebase2,
       totalProductsBeforeFilter,
       totalProductsAfterFilter,
       lastUpdateMs,
