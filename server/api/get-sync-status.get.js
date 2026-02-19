@@ -71,10 +71,14 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error('Error getting sync status:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to get sync status',
-      data: error.message
-    })
+    return {
+      success: false,
+      api1DateIso: null,
+      api2DateIso: null,
+      api1DateMs: null,
+      api2DateMs: null,
+      syncRecoveryV2Done: false,
+      error: error?.message ?? 'Unknown error'
+    }
   }
 })
