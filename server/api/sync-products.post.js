@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
 
     const sourceStatusRef = adminDb2.collection('lastedUpdatedProducts').doc('status')
     const sourceStatusSnap = await sourceStatusRef.get()
-    const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : {}
+    const sourceStatus = sourceStatusSnap.exists ? sourceStatusSnap.data() : {}
 
     const lastUpdateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso) ?? Date.now()
     const lastUpdateIso = new Date(lastUpdateMs).toISOString()

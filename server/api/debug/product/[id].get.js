@@ -195,8 +195,8 @@ export default defineEventHandler(async (event) => {
       adminDb.collection('products').doc(id).get()
     ])
 
-    const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : null
-    const destStatus = destStatusSnap.exists() ? destStatusSnap.data() : null
+    const sourceStatus = sourceStatusSnap.exists ? sourceStatusSnap.data() : null
+    const destStatus = destStatusSnap.exists ? destStatusSnap.data() : null
 
     const api2DateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso)
     const api1DateMs = normalizeDateMs(destStatus?.lastUpdateMs ?? destStatus?.lastUpdate ?? destStatus?.lastUpdateIso)
@@ -216,7 +216,7 @@ export default defineEventHandler(async (event) => {
       },
       destination: {
         ...destInspection,
-        directDocByIdExists: directDestDocSnap.exists()
+        directDocByIdExists: directDestDocSnap.exists
       },
       syncStatus: {
         api1DateMs,

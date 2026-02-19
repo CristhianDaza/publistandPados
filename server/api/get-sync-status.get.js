@@ -43,11 +43,11 @@ export default defineEventHandler(async (event) => {
 
     const sourceStatusRef = adminDb2.collection('lastedUpdatedProducts').doc('status')
     const sourceStatusSnap = await sourceStatusRef.get()
-    const sourceStatus = sourceStatusSnap.exists() ? sourceStatusSnap.data() : null
+    const sourceStatus = sourceStatusSnap.exists ? sourceStatusSnap.data() : null
 
     const destStatusRef = adminDb.collection('lastedUpdatedProducts').doc('status')
     const destStatusSnap = await destStatusRef.get()
-    const destStatus = destStatusSnap.exists() ? destStatusSnap.data() : null
+    const destStatus = destStatusSnap.exists ? destStatusSnap.data() : null
 
     const api2DateMs = normalizeDateMs(sourceStatus?.lastUpdateMs ?? sourceStatus?.lastUpdate ?? sourceStatus?.lastUpdateIso)
     const api1DateMs = normalizeDateMs(destStatus?.lastUpdateMs ?? destStatus?.lastUpdate ?? destStatus?.lastUpdateIso)
