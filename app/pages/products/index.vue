@@ -1,5 +1,6 @@
 <script setup>
 import { filterProducts } from '~/utils/search'
+import { isProductNew } from '~/utils/products'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,7 @@ onMounted(() => {
 
 const selectedCategory = computed(() => route.query.category)
 const searchQuery = computed(() => route.query.search)
+const selectedNewOnly = computed(() => route.query.new === 'true')
 
 const selectedMinQty = computed(() => {
   const raw = Number(route.query.minQty)
@@ -27,18 +29,29 @@ const getProductTotalStock = (product) => {
 }
 
 const pageTitle = computed(() => {
+  if (selectedNewOnly.value) return 'Productos Nuevos'
   if (searchQuery.value) return 'Resultados de Búsqueda'
   if (selectedCategory.value) return selectedCategory.value
   return 'Nuestras Categorías'
 })
 
 const seoTitle = computed(() => {
+  if (selectedNewOnly.value) return 'Productos Nuevos - Catalogo'
   if (searchQuery.value) return `Búsqueda: ${searchQuery.value}`
   if (selectedCategory.value) return `${selectedCategory.value} - Catálogo`
   return 'Catálogo de Productos'
 })
 
 const seoDescription = computed(() => {
+  if (selectedNewOnly.value && searchQuery.value) {
+    return `Explora los productos nuevos relacionados con "${searchQuery.value}" en nuestro catálogo.`
+  }
+  if (selectedNewOnly.value && selectedCategory.value) {
+    return `Explora los productos nuevos en la categoria ${selectedCategory.value} dentro de nuestro catálogo.`
+  }
+  if (selectedNewOnly.value) {
+    return 'Explora los productos nuevos de nuestro catálogo de articulos promocionales.'
+  }
   if (searchQuery.value) {
     return `Resultados de búsqueda para "${searchQuery.value}" en artículos promocionales.`
   }
@@ -210,7 +223,13 @@ const filteredProducts = computed(() => {
     searchMatches.forEach(p => combined.set(p.id, p))
 
     base = Array.from(combined.values())
-  } else if (!searchQuery.value) {
+  }
+
+  if (selectedNewOnly.value) {
+    base = base.filter(product => isProductNew(product))
+  }
+
+  if (!selectedCategory.value && !searchQuery.value && !selectedNewOnly.value) {
     base = []
   }
 
@@ -219,6 +238,10 @@ const filteredProducts = computed(() => {
   }
 
   return base
+})
+
+const hasNewProducts = computed(() => {
+  return (products.value || []).some(product => isProductNew(product))
 })
 
 const currentPage = ref(1)
@@ -252,6 +275,10 @@ watch(itemsPerPage, (newLimit) => {
 
 // resetear página al cambiar el filtro de cantidad
 watch(selectedMinQty, () => {
+  currentPage.value = 1
+})
+
+watch([selectedCategory, searchQuery, selectedNewOnly], () => {
   currentPage.value = 1
 })
 
@@ -344,12 +371,20 @@ const endItem = computed(() => {
   return Math.min(currentPage.value * itemsPerPage.value, totalProducts.value)
 })
 
-watch(selectedCategory, () => {
-  currentPage.value = 1
-})
-
 const selectCategory = (categoryItem) => {
   router.push({ query: { category: categoryItem } })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const selectNewProducts = () => {
+  router.push({
+    query: {
+      new: 'true',
+      page: undefined,
+      limit: undefined,
+      minQty: undefined
+    }
+  })
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -357,6 +392,7 @@ const clearFilters = () => {
   router.push({
     query: {
       category: undefined,
+      new: undefined,
       search: undefined,
       minQty: undefined,
       page: undefined,
@@ -378,6 +414,9 @@ const clearFilters = () => {
         <p v-if="searchQuery" class="text-lg text-text/70 leading-relaxed">
           Resultados para: "{{ searchQuery }}"
         </p>
+        <p v-else-if="selectedNewOnly" class="text-lg text-text/70 leading-relaxed">
+          Explora los productos mas recientes del catalogo.
+        </p>
         <p v-else class="text-lg text-text/70 leading-relaxed">
           Explora nuestras categorías y encuentra lo que buscas.
         </p>
@@ -387,7 +426,7 @@ const clearFilters = () => {
       <div v-if="loading" class="flex justify-center py-20">
         <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-primary" />
       </div>
-      <div v-else-if="selectedCategory || searchQuery" class="animate-fade-in">
+      <div v-else-if="selectedCategory || searchQuery || selectedNewOnly" class="animate-fade-in">
         <div class="mb-8 flex items-center justify-between">
           <UButton
             icon="i-heroicons-arrow-left"
@@ -506,36 +545,66 @@ const clearFilters = () => {
         </div>
       </div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
-        <div
-          v-for="card in categoriasCards"
-          :key="card.titulo"
-          class="group relative bg-secondary/5 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-secondary/20 hover:-translate-y-2"
+      <div v-else class="space-y-8 animate-fade-in">
+        <button
+          v-if="hasNewProducts"
+          class="group relative w-full overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/15 via-background to-secondary/10 p-8 text-left shadow-lg shadow-secondary/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 cursor-pointer"
+          @click="selectNewProducts"
         >
-          <div class="absolute -top-6 -right-6 opacity-5 group-hover:opacity-10 transition-opacity duration-500 rotate-12">
-            <UIcon :name="card.icono" class="w-48 h-48 text-primary" />
-          </div>
-
-          <div class="p-8 relative z-10 h-full flex flex-col">
-            <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 shadow-sm">
-              <UIcon :name="card.icono" class="w-7 h-7 text-primary group-hover:text-white transition-colors" />
+          <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-primary/15 blur-2xl" />
+          <div class="absolute inset-y-0 right-0 hidden w-1/3 bg-gradient-to-l from-primary/10 to-transparent md:block" />
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_35%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.05),transparent_35%)]" />
+          <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="max-w-2xl">
+              <span class="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-white">
+                NUEVOS
+              </span>
+              <h2 class="mt-4 text-3xl font-extrabold text-secondary dark:text-white">
+                Ver productos nuevos
+              </h2>
+              <p class="mt-2 text-sm leading-relaxed text-text/70 dark:text-white/70 md:text-base">
+                Accede a todos los productos marcados como nuevos usando el filtro dedicado del catalogo.
+              </p>
             </div>
 
-            <h3 class="text-xl font-bold mb-4 text-secondary group-hover:text-primary transition-colors">
-              {{ card.titulo }}
-            </h3>
+            <div class="flex items-center gap-3 self-start rounded-2xl border border-primary/20 bg-background/80 px-4 py-3 text-primary shadow-sm shadow-secondary/5 backdrop-blur-sm transition-colors group-hover:bg-primary group-hover:text-white dark:bg-secondary/20 dark:text-white">
+              <UIcon name="i-heroicons-sparkles" class="h-6 w-6" />
+              <span class="font-semibold">Ir a nuevos</span>
+            </div>
+          </div>
+        </button>
 
-            <ul class="space-y-3 flex-grow">
-              <li
-                v-for="item in card.items"
-                :key="item"
-                class="flex items-start text-sm text-secondary hover:text-primary cursor-pointer group-hover/item:translate-x-1 transition-all duration-300 p-1 -ml-1 rounded-md hover:bg-primary/5"
-                @click="selectCategory(item)"
-              >
-                <UIcon name="i-heroicons-check-circle" class="w-5 h-5 mr-3 text-primary/60 flex-shrink-0 mt-0.5" />
-                <span>{{ item }}</span>
-              </li>
-            </ul>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="card in categoriasCards"
+            :key="card.titulo"
+            class="group relative bg-secondary/5 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-secondary/20 hover:-translate-y-2"
+          >
+            <div class="absolute -top-6 -right-6 opacity-5 group-hover:opacity-10 transition-opacity duration-500 rotate-12">
+              <UIcon :name="card.icono" class="w-48 h-48 text-primary" />
+            </div>
+
+            <div class="p-8 relative z-10 h-full flex flex-col">
+              <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 shadow-sm">
+                <UIcon :name="card.icono" class="w-7 h-7 text-primary group-hover:text-white transition-colors" />
+              </div>
+
+              <h3 class="text-xl font-bold mb-4 text-secondary group-hover:text-primary transition-colors">
+                {{ card.titulo }}
+              </h3>
+
+              <ul class="space-y-3 flex-grow">
+                <li
+                  v-for="item in card.items"
+                  :key="item"
+                  class="flex items-start text-sm text-secondary hover:text-primary cursor-pointer group-hover/item:translate-x-1 transition-all duration-300 p-1 -ml-1 rounded-md hover:bg-primary/5"
+                  @click="selectCategory(item)"
+                >
+                  <UIcon name="i-heroicons-check-circle" class="w-5 h-5 mr-3 text-primary/60 flex-shrink-0 mt-0.5" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

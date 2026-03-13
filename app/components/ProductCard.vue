@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getColorHex } from '~/utils/colorMap'
+import { isProductNew } from '~/utils/products'
 const { user } = useAuth()
 const { formatPriceRange } = usePricing()
 const { openConfigurator } = useQuoteCart()
@@ -13,7 +14,7 @@ const props = defineProps({
 })
 
 const isNew = computed(() => {
-  return props.product.labels?.some(l => l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo'))
+  return isProductNew(props.product)
 })
 
 const hasDiscount = computed(() => {

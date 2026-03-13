@@ -1,9 +1,9 @@
 <script setup>
 import { getColorHex } from '~/utils/colorMap'
+import { isProductNew } from '~/utils/products'
 const route = useRoute()
 const router = useRouter()
 const { getProducts, products } = useProducts()
-const { getProductById } = useProducts()
 const { footerConfig } = useFooter()
 const { trackProductView, trackWhatsAppClick, trackQuoteRequest } = useAnalytics()
 const { setProductSeo } = useSeo()
@@ -97,9 +97,7 @@ const uniqueColorsCount = computed(() => {
 })
 
 const isNew = computed(() => {
-  return product.value?.labels?.some(l =>
-      l.name?.toLowerCase().includes('novedad') || l.name?.toLowerCase().includes('nuevo')
-  )
+  return isProductNew(product.value)
 })
 
 const similarProducts = computed(() => {

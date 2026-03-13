@@ -10,6 +10,7 @@
       <h2 class="text-2xl font-bold mb-4">Cargando...</h2>
     </div>
 
+    <HomeNewProducts />
     <HomeInspiration />
     <HomeSocialProof />
     <HomeProcess />
