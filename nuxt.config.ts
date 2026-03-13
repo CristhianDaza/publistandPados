@@ -1,13 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  routeRules: {
-    '/products/**': { swr: 3600 }
-  },
   compatibilityDate: '2024-11-01',
   future: {
     compatibilityVersion: 4,
   },
   vite: {
+    optimizeDeps: {
+      include: [
+        'firebase/auth',
+        'firebase/firestore',
+        'firebase/app',
+        'firebase/analytics'
+      ]
+    },
     build: {
       chunkSizeWarningLimit: 1024,
       sourcemap: false,

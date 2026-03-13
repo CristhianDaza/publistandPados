@@ -30,37 +30,37 @@ const totalNewProducts = computed(() => newProducts.value.length)
     <UContainer class="relative z-10">
       <NuxtLink
         to="/products?new=true"
-        class="group block overflow-hidden rounded-[2rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-background to-secondary/10 p-8 shadow-xl shadow-secondary/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
+        class="group relative block overflow-hidden rounded-[2rem] border border-secondary/20 bg-background/60 p-8 text-text shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl md:p-10"
       >
-        <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div class="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div class="max-w-3xl">
             <span class="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-[0.24em] text-white">
               NUEVOS
             </span>
 
-            <h2 class="mt-5 text-3xl font-black tracking-tight text-secondary dark:text-white md:text-5xl">
+            <h2 class="mt-5 text-3xl font-black tracking-tight text-text md:text-5xl">
               Productos recien llegados al catalogo
             </h2>
 
-            <p class="mt-4 max-w-2xl text-base leading-relaxed text-text/75 dark:text-white/70 md:text-lg">
+            <p class="mt-4 max-w-2xl text-base leading-relaxed text-secondary md:text-lg">
               Descubre {{ totalNewProducts }} {{ totalNewProducts === 1 ? 'producto nuevo' : 'productos nuevos' }} y accede al filtro dedicado para verlos todos.
             </p>
           </div>
 
-          <div class="flex items-center gap-3 self-start rounded-2xl border border-primary/20 bg-background/80 px-4 py-3 text-primary shadow-sm shadow-secondary/5 backdrop-blur-sm transition-colors group-hover:bg-primary group-hover:text-white dark:bg-secondary/20 dark:text-white">
+          <div class="flex items-center gap-3 self-start rounded-2xl border border-primary/20 bg-background px-4 py-3 text-primary shadow-sm backdrop-blur-sm">
             <UIcon name="i-heroicons-sparkles" class="h-6 w-6" />
             <span class="font-semibold">Ver novedades</span>
           </div>
         </div>
 
-        <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <div class="relative mt-8 grid gap-4 md:grid-cols-3">
           <div
             v-for="product in featuredProducts"
             :key="product.id"
-            class="rounded-2xl border border-secondary/15 bg-background/75 p-4 backdrop-blur-sm transition-colors duration-300 group-hover:border-primary/20 dark:bg-secondary/15"
+            class="rounded-2xl border border-secondary/20 bg-background/75 p-4 text-text backdrop-blur-sm transition-colors duration-300"
           >
             <div class="flex items-start gap-4">
-              <div class="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/80 p-3 shadow-sm dark:bg-black/20">
+              <div class="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-secondary/20 bg-background p-3 shadow-sm">
                 <img
                   :src="product.mainImage"
                   :alt="product.name"
@@ -72,10 +72,10 @@ const totalNewProducts = computed(() => newProducts.value.length)
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">
                   Nuevo
                 </p>
-                <h3 class="mt-2 line-clamp-2 text-base font-bold text-text dark:text-white">
+                <h3 class="mt-2 line-clamp-2 text-base font-bold text-text">
                   {{ product.name }}
                 </h3>
-                <p v-if="product.category?.[0]" class="mt-2 text-sm text-text/65 dark:text-white/60">
+                <p v-if="product.category?.[0]" class="mt-2 text-sm text-secondary">
                   {{ product.category[0] }}
                 </p>
               </div>
